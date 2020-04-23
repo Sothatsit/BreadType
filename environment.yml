@@ -1,0 +1,7 @@
+name: whats_your_bread_type
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python==3.7.7
+  - flask==1.1.1
