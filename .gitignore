@@ -3,4 +3,4 @@
 __pycache__
 
 /env
-/client/res
+/client/static/res
