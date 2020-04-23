@@ -11,14 +11,8 @@ cd "${0%/*}" || exit
 
 
 
-# Make sure the Anaconda environment is created.
-if [ -d "./env" ]; then
-  echo " "
-  echo "The Anaconda environment ./env already exists."
-  echo "If a fresh environment is needed, please delete ./env and run this command again."
-  echo " "
-  exit
-else
+# Make sure the Anaconda environment is created and up to date.
+if [ ! -d "./env" ]; then
   echo " "
   echo "===================================="
   echo "  Creating Anaconda Environment...  "
@@ -26,9 +20,31 @@ else
   echo " "
 
   # Creates a conda environment based on environment.yml.
-  conda env create -p ./env -f environment.yml
+  conda env create -p ./env -f ./environment.yml
 
   echo " "
-  echo "Created the Anaconda Environment $PWD/env"
+  echo "  ==================================="
+  echo "  Created the Anaconda Environment.  "
+  echo "  ==================================="
+  echo " "
+
+else
+
+  echo " "
+  echo "The Anaconda environment ./env already exists."
+  echo "If a fresh environment is needed, please delete ./env and run this command again."
+  echo " "
+  echo "===================================="
+  echo "  Updating Anaconda Environment...  "
+  echo "===================================="
+  echo " "
+
+  # Updates the conda environment based on the environment.yml.
+  conda env update -p ./env -f ./environment.yml
+
+  echo " "
+  echo "====================================="
+  echo "  Updated the Anaconda Environment.  "
+  echo "====================================="
   echo " "
 fi

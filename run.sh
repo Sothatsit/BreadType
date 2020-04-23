@@ -56,7 +56,7 @@ if ! [[ "$CONDA_DEFAULT_ENV" -ef "./env" ]]; then
   conda activate ./env || exit
 
   echo " "
-  echo "Activated the Anaconda Environment $CONDA_DEFAULT_ENV."
+  echo "Activated the Anaconda Environment."
   echo " "
 fi
 
