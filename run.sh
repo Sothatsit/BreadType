@@ -19,8 +19,11 @@ elif [ "$1" == "dev" ] || [ "$1" == "development" ]; then
 else
   echo "Expected production or development mode to be specified."
   echo " "
-  echo "Usage:"
-  echo "  ./run.sh [prod|dev]"
+  echo "To run in production mode:"
+  echo "  ./run.sh prod"
+  echo ""
+  echo "To run in development mode:"
+  echo "  ./run.sh dev"
   echo " "
   exit
 fi
@@ -30,6 +33,17 @@ fi
 # Only activate the environment if it is not already activated, as it can be slow.
 if ! [[ "$CONDA_DEFAULT_ENV" -ef "./env" ]]; then
 
+  # Make sure the environment has been created.
+  if [ ! -d "./env" ]; then
+    echo "Could not find the conda environment to run the server."
+    echo " "
+    echo "Please create it using the following command:"
+    echo "  ./create_environment.sh"
+    echo " "
+    exit
+  fi
+
+  # The environment directory exists, so try to activate it.
   echo "==================================="
   echo "  Activating conda environment...  "
   echo "==================================="
@@ -42,7 +56,7 @@ if ! [[ "$CONDA_DEFAULT_ENV" -ef "./env" ]]; then
   conda activate ./env || exit
 
   echo " "
-  echo "Done!"
+  echo "Activated the conda environment $CONDA_DEFAULT_ENV."
   echo " "
 fi
 
