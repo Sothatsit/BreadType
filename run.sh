@@ -35,17 +35,17 @@ if ! [[ "$CONDA_DEFAULT_ENV" -ef "./env" ]]; then
 
   # Make sure the environment has been created.
   if [ ! -d "./env" ]; then
-    echo "Could not find the conda environment to run the server."
+    echo "Could not find the Anaconda environment to run the server."
     echo " "
     echo "Please create it using the following command:"
-    echo "  ./create_environment.sh"
+    echo "  ./setup.sh"
     echo " "
     exit
   fi
 
   # The environment directory exists, so try to activate it.
   echo "==================================="
-  echo "  Activating conda environment...  "
+  echo "  Activating Anaconda Environment...  "
   echo "==================================="
   echo " "
 
@@ -56,7 +56,7 @@ if ! [[ "$CONDA_DEFAULT_ENV" -ef "./env" ]]; then
   conda activate ./env || exit
 
   echo " "
-  echo "Activated the conda environment $CONDA_DEFAULT_ENV."
+  echo "Activated the Anaconda Environment $CONDA_DEFAULT_ENV."
   echo " "
 fi
 
