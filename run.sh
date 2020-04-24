@@ -49,9 +49,9 @@ if ! [[ "$CONDA_DEFAULT_ENV" -ef "./env" ]]; then
   fi
 
   # The environment directory exists, so try to activate it.
-  echo "==================================="
+  echo "======================================"
   echo "  Activating Anaconda Environment...  "
-  echo "==================================="
+  echo "======================================"
   echo " "
 
   # Make sure conda environments are available in this script.
