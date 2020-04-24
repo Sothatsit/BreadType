@@ -13,9 +13,14 @@ echo " "
 
 # Check whether to run in production or development mode.
 if [ "$1" == "prod" ] || [ "$1" == "production" ]; then
-  DEV_MODE=0
+  # Run Flask in production mode.
+  RUN_MODE="prod"
 elif [ "$1" == "dev" ] || [ "$1" == "development" ]; then
-  DEV_MODE=1
+  # Run Flask in development mode.
+  RUN_MODE="dev"
+elif [ "$1" == "pre-run" ]; then
+  # Setup the environment to run Flask, but don't actually run it.
+  RUN_MODE="pre-run"
 else
   echo "Expected production or development mode to be specified."
   echo " "
@@ -61,19 +66,22 @@ if ! [[ "$CONDA_DEFAULT_ENV" -ef "./env" ]]; then
 fi
 
 
+# If we're running in pre-run mode, we don't want to actually start the Flask server.
+# (Note, we can't just do an early exit because when we call this using pre-run, we call it using source.)
+if [ "$RUN_MODE" != "pre-run" ]; then
+  echo "====================="
+  echo "  Starting Flask...  "
+  echo "====================="
+  echo " "
 
-echo "====================="
-echo "  Starting Flask...  "
-echo "====================="
-echo " "
+  # Set the python file that flask should run.
+  export FLASK_APP=./server
 
-# Set the python file that flask should run.
-export FLASK_APP=./server
+  # Indicate to flask whether to run in development mode.
+  if [ "$RUN_MODE" == "dev" ]; then
+    export FLASK_ENV=development
+  fi
 
-# Indicate to flask whether to run in development mode.
-if [ $DEV_MODE == 1 ]; then
-  export FLASK_ENV=development
+  # Run the webserver.
+  flask run
 fi
-
-# Run the webserver.
-flask run

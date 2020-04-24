@@ -23,9 +23,7 @@ if [ ! -d "./env" ]; then
   conda env create -p ./env -f ./environment.yml
 
   echo " "
-  echo "  ==================================="
-  echo "  Created the Anaconda Environment.  "
-  echo "  ==================================="
+  echo "Created the Anaconda Environment."
   echo " "
 
 else
@@ -43,8 +41,14 @@ else
   conda env update -p ./env -f ./environment.yml
 
   echo " "
-  echo "====================================="
-  echo "  Updated the Anaconda Environment.  "
-  echo "====================================="
+  echo "Updated the Anaconda Environment."
   echo " "
 fi
+
+
+
+# Setup the environment to run the server.
+source ./run.sh pre-run
+
+# Call the Python setup code to create the database.
+python3 -m server.setup
