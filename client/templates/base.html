@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- We load scripts and set page metadata in the head. -->
+<head>
+    <title>Bread Type | {{ title }}}</title>
+
+    <!-- Loads the fonts we use from Google Fonts. -->
+    <link href="https://fonts.googleapis.com/css?family=Baloo+2%7CLobster%7CMontserrat:wght@500&display=swap" rel="stylesheet" />
+
+    <!-- The stylesheet shared by all pages. -->
+    <link type="text/css" rel="stylesheet" href="/shared.css" />
+    <!-- The code shared by all pages. -->
+    <script src="/shared.js"></script>
+
+    {% block head %}
+    {% endblock %}
+</head>
+
+<!-- All of the content of the page is kept in the body. -->
+<body>
+    <!-- The navigation bar at the top of each page. -->
+    <nav>
+        <a class="nav-button" href="{{ url_for('main.home') }}">Home</a>
+        <a class="nav-button" href="{{ url_for('auth.login') }}">Login</a>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>

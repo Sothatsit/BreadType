@@ -68,7 +68,7 @@ echo "====================="
 echo " "
 
 # Set the python file that flask should run.
-export FLASK_APP=./server/server.py
+export FLASK_APP=./server
 
 # Indicate to flask whether to run in development mode.
 if [ $DEV_MODE == 1 ]; then
