@@ -35,9 +35,9 @@ Structure of this Project
 
 **/client/** - The HTML pages, stylesheets, javascript, as well as other resources that are sent to the client.
 
-**/client/static/** - The resources that are sent as is to the client.
+**/client/static/** - The resources that are sent without modification to the client.
 
-**/client/static/res/** - To hold all non-stylesheet and non-javascript files. For example, images.
+**/client/static/res/** - Holds all non-stylesheet and non-javascript files, such as images.
 
 **/client/templates/** - The HTML templates that are modified before being sent to the client.
 
