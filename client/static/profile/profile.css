@@ -1,0 +1,16 @@
+/**
+ * Stylesheet for the profile page.
+ */
+
+body {
+    line-height: 2em;
+}
+
+#profile {
+    max-width: 600px;
+    text-align: center;
+
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}

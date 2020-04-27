@@ -1,4 +1,7 @@
+/**
+ * Stylesheet for the home page.
+ */
 
-#okay {
-    font-size: 2em;
+body {
+    line-height: 2em;
 }

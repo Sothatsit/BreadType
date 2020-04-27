@@ -1,2 +1,2 @@
 
-console.log("home.js loaded");
+console.log("login.js loaded");

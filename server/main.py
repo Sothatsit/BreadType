@@ -2,6 +2,7 @@
 # The main entry-point to the server.
 #
 
+from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app
 
 main = Blueprint('main', __name__)
@@ -12,6 +13,11 @@ def home():
     The home page of the site.
     """
     return render_template("home.html", title="Home")
+
+@main.route('/profile')
+@login_required
+def profile():
+    return render_template("profile.html", name=current_user.name)
 
 @main.route('/<path:path>')
 def static_resources(path):

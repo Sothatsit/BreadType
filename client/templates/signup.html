@@ -2,27 +2,28 @@
 
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/login/login.css" />
+<link type="text/css" rel="stylesheet" href="/signup/signup.css" />
 <!-- The code specific to this page. -->
-<script src="/login/login.js"></script>
+<script src="/signup/signup.js"></script>
 {% endblock %}
 
 
 {% block content %}
-<form method="POST" action="/login">
-    <label>Bread Type Log In</label>
+<form method="POST" action="/signup">
+    <label>Bread Type Sign Up</label>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <br/>
-    <div id="login_error">
+    <div id="signup_error">
         {{ messages[0] }}
     </div>
     {% endif %}
     {% endwith %}
 
     <input type="email" name="email" placeholder="Email" autofocus="">
+    <input type="text" name="name" placeholder="Name" autofocus="">
     <input type="password" name="password" placeholder="Password">
-    <button>Login</button>
+    <button>Sign Up</button>
 </form>
 {% endblock %}

@@ -11,9 +11,9 @@
     <link href="https://fonts.googleapis.com/css?family=Baloo+2%7CLobster%7CMontserrat:wght@500&display=swap" rel="stylesheet" />
 
     <!-- The stylesheet shared by all pages. -->
-    <link type="text/css" rel="stylesheet" href="/shared.css" />
+    <link type="text/css" rel="stylesheet" href="/base.css" />
     <!-- The code shared by all pages. -->
-    <script src="/shared.js"></script>
+    <script src="/base.js"></script>
 
     {% block head %}
     {% endblock %}
@@ -23,8 +23,20 @@
 <body>
     <!-- The navigation bar at the top of each page. -->
     <nav>
-        <a class="nav-button" href="{{ url_for('main.home') }}">Home</a>
-        <a class="nav-button" href="{{ url_for('auth.login') }}">Login</a>
+        <a href="{{ url_for('main.home') }}">Home</a>
+
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.profile') }}">Profile</a>
+        {% endif %}
+
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('auth.login') }}">Login</a>
+        <a href="{{ url_for('auth.signup') }}">Sign Up</a>
+        {% endif %}
+
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% endif %}
     </nav>
 
     {% block content %}
