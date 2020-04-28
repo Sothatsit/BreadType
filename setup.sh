@@ -44,11 +44,3 @@ else
   echo "Updated the Anaconda Environment."
   echo " "
 fi
-
-
-
-# Setup the environment to run the server.
-source ./run.sh pre-run
-
-# Call the Python setup code to create the database.
-python3 -m server.setup

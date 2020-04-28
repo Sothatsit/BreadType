@@ -22,13 +22,19 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../db.sqlite"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # Initialise the additional resources for the app.
+    # Initialise the database of the website.
     db.init_app(app)
+
+    # Make sure all database tables are created.
+    from .model import User
+    with app.app_context():
+        db.create_all()
+
+    # Initialise the login session manager for the website.
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
 
     # Register the method to get the data for a user.
-    from .model import User
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))

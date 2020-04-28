@@ -14,7 +14,7 @@ This section will help you to quickly get the server started for production or d
 1. You will first need to install Anaconda, a Python environment manager.
    Anaconda (conda) will be used to load all the dependencies for running the server.
 
-2. The setup script should then be called so that it can create the Anaconda environment and SQLite database for you.
+2. The setup script should then be called so that it can create the Anaconda environment for you,
    ```./setup.sh```
 
 3. Once the setup script has successfully run, you can now run the server using:
@@ -23,9 +23,9 @@ This section will help you to quickly get the server started for production or d
    
    b) `./run.sh prod` to run in production mode.
 
-4. The server should now be running at http://localhost:5000!
+4. The server should now be running at http://localhost:5000
    
-   Note, if running in `dev` mode, the sever will automatically detect changes to the server code and reload for you!
+   Note, if running in `dev` mode, the sever will automatically detect changes to the server code and reload for you.
 
 
 Structure of this Project

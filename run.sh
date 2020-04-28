@@ -20,6 +20,8 @@ elif [ "$1" == "dev" ] || [ "$1" == "development" ]; then
   RUN_MODE="dev"
 elif [ "$1" == "pre-run" ]; then
   # Setup the environment to run Flask, but don't actually run it.
+  # This can be useful to run non-website scripts that require
+  # the same environment using "source ./run.sh pre-run".
   RUN_MODE="pre-run"
 else
   echo "Expected production or development mode to be specified."
