@@ -28,6 +28,25 @@ This section will help you to quickly get the server started for production or d
    Note, if running in `dev` mode, the sever will automatically detect changes to the server code and reload for you.
 
 
+Commands
+--------
+
+**./setup.sh** - Creates and updates the Anaconda environment used to run the server.
+
+**./run.sh dev** - Runs the server in development mode.
+
+**./run.sh prod** - Runs the server in production mode.
+
+**./run.sh list-users** - Lists all of the registered users.
+
+**./run.sh set-role \<email\> \<role\>** - Sets the role for the given user.<br/>
+Roles are used to restrict functionality for just users with the correct role.
+
+**./run.sh clear-role \<email\>** - Clears the role of the given user.
+
+**./run.sh get-role \<email\>** - Prints the role of the user with the given email.
+
+
 Structure of this Project
 -------------------------
 
@@ -42,6 +61,7 @@ Structure of this Project
 **/client/templates/** - The HTML templates that are modified before being sent to the client.
 
 **/server/** - The Flask server code that controls the back-end of the server.
+<br/><br/>
 
 
 ### Scripts to Manage the Server
@@ -49,11 +69,13 @@ Structure of this Project
 **/setup.sh** - The script that creates the Anaconda environment and the SQLite database.
 
 **/run.sh** - The script that loads the Anaconda environment and runs the Flask server.
+<br/><br/>
 
 
 ### Config Files
 
 **/environment.yml** - The Anaconda environment specification.
+<br/><br/>
 
 
 ### Generated Files

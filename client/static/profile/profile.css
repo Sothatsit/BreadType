@@ -9,6 +9,7 @@ body {
 #profile {
     max-width: 600px;
     text-align: center;
+    font-size: 2em;
 
     margin-top: 100px;
     margin-left: auto;

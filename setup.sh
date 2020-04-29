@@ -7,40 +7,40 @@
 
 
 # Set the working directory to the directory containing this script.
-cd "${0%/*}" || exit
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" || exit
 
 
 
 # Make sure the Anaconda environment is created and up to date.
 if [ ! -d "./env" ]; then
-  echo " "
+  echo
   echo "===================================="
   echo "  Creating Anaconda Environment...  "
   echo "===================================="
-  echo " "
+  echo
 
   # Creates a conda environment based on environment.yml.
   conda env create -p ./env -f ./environment.yml
 
-  echo " "
+  echo
   echo "Created the Anaconda Environment."
-  echo " "
+  echo
 
 else
 
-  echo " "
+  echo
   echo "The Anaconda environment ./env already exists."
   echo "If a fresh environment is needed, please delete ./env and run this command again."
-  echo " "
+  echo
   echo "===================================="
   echo "  Updating Anaconda Environment...  "
   echo "===================================="
-  echo " "
+  echo
 
   # Updates the conda environment based on the environment.yml.
   conda env update -p ./env -f ./environment.yml
 
-  echo " "
+  echo
   echo "Updated the Anaconda Environment."
-  echo " "
+  echo
 fi

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- The stylesheet specific to this page. -->
+<link type="text/css" rel="stylesheet" href="/error/error.css" />
+<!-- The code specific to this page. -->
+<script src="/error/error.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<div id="error">
+    <br/>
+    <h1>
+        {{ error_title }}
+    </h1>
+    <br/>
+    <p>
+        {{ error_message }}
+    </p>
+</div>
+{% endblock %}

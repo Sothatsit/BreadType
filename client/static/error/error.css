@@ -1,0 +1,16 @@
+/**
+ * Stylesheet for the error pages.
+ */
+
+body {
+    line-height: 2em;
+}
+
+#error {
+    text-align: center;
+    font-size: 1.3em;
+}
+
+#error p {
+    font-size: 1.3em;
+}

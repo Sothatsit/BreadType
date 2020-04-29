@@ -22,11 +22,19 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../db.sqlite"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    # Register the cli commands.
+    from .cli import add_commands
+    add_commands(app)
+
+    # Register the error page handlers.
+    from .errors import register_error_handlers
+    register_error_handlers(app)
+
     # Initialise the database of the website.
     db.init_app(app)
 
     # Make sure all database tables are created.
-    from .model import User
+    from .user import User
     with app.app_context():
         db.create_all()
 
@@ -35,9 +43,7 @@ def create_app():
     login_manager.init_app(app)
 
     # Register the method to get the data for a user.
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    from .user import load_user
 
     # Blueprint for authentication routes in our app.
     from .auth import auth as auth_blueprint
