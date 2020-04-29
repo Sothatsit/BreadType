@@ -28,3 +28,13 @@ nav a {
 nav a:hover {
     color: #555555;
 }
+
+#content {
+    max-width: 800px;
+    text-align: center;
+    font-size: 2em;
+
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
