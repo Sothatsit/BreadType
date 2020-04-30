@@ -50,16 +50,16 @@ def requires_role(*roles):
 
 
 class User(UserMixin, db.Model):
-    """ Each registered user of the website. """
+    """ The database entry for each registered user of the website. """
     __tablename__ = 'users'
 
     # The internal key assigned for each user.
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
 
     # User authentication fields.
-    email_address = db.Column(db.String(100), unique=True)
-    password = db.Column(db.String(100))
+    email_address = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
 
     # User fields.
-    name = db.Column(db.String(100))
-    role = db.Column(db.String(16))
+    name = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(16), nullable=True)

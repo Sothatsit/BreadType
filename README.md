@@ -7,6 +7,8 @@ Users of the quiz are categorised based on their answer's
 similarity to the answer weightings set for pre-defined groups.
 
 
+<br/>
+
 Quick Start
 -----------
 This section will help you to quickly get the server started for production or development.
@@ -28,6 +30,8 @@ This section will help you to quickly get the server started for production or d
    Note, if running in `dev` mode, the sever will automatically detect changes to the server code and reload for you.
 
 
+<br/>
+
 Commands
 --------
 
@@ -36,6 +40,8 @@ Commands
 **./run.sh dev** - Runs the server in development mode.
 
 **./run.sh prod** - Runs the server in production mode.
+
+**./test.sh** - Runs the tests for the server.
 
 **./run.sh list-users** - Lists all of the registered users.
 
@@ -46,6 +52,8 @@ Roles are used to restrict functionality for just users with the correct role.
 
 **./run.sh get-role \<email\>** - Prints the role of the user with the given email.
 
+
+<br/>
 
 Structure of this Project
 -------------------------
@@ -84,6 +92,8 @@ Structure of this Project
 
 **/db.sqlite** - The SQLite database.
 
+
+<br/>
 
 Credits
 -------
