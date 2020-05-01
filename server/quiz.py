@@ -199,11 +199,21 @@ class MultiChoiceQuestion(Question):
     def write_html(self, index):
         """ Write this question as HTML. """
         html = "<div class=\"multi-choice\">\n"
+
         for option_index, option in enumerate(self.options):
-            html += "<input type=\"radio\" name=\"question-{}\" value=\"option-{}\">".format(index, option_index)
-            html += "<label for=\"option-{}\">{}</label>".format(option_index, option)
-            html += "<br/>\n"
+            # Javascript that selects this choice.
+            select_js = "document.getElementById(&quot;q{}-o{}&quot;).checked=true".format(index, option_index)
+
+            # Each choice is held within its own div.
+            html += "<div class=\"choice\" onclick=\"{}\">\n".format(select_js)
+            html += "<input type=\"radio\" id=\"q{}-o{}\" name=\"question-{}\" value=\"option-{}\">\n".format(
+                index, option_index, index, option_index
+            )
+            html += "<label for=\"option-{}\">{}</label>\n".format(option_index, option)
+            html += "</div>\n"
+
         html += "</div>"
+        print(html)
         return html
 
     def __eq__(self, other):

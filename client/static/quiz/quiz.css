@@ -6,8 +6,16 @@ body {
     line-height: 2em;
 }
 
+h2:nth-of-type(1) {
+    margin-top: 0.4em;
+}
+
+h2:nth-of-type(n+2) {
+    margin-top: 1em;
+}
+
 h2 {
-    margin-top: 0.5em;
+    margin-bottom: 0.4em;
 }
 
 input, label {
@@ -27,6 +35,20 @@ input[type=range] {
     width: 100%;
 }
 
+.choice {
+    width: 100%;
+    cursor: pointer;
+    user-select: none;
+}
+
+.choice input, .choice label {
+    cursor: pointer;
+}
+
+.choice:hover label {
+    color: #666;
+}
+
 input[type=radio] {
     margin-right: 1em;
 
@@ -37,6 +59,7 @@ input[type=radio] {
 input[type=submit] {
     width: 200px;
     height: 50px;
+    margin-top: 1em;
     margin-bottom: 100px;
 
     background-color: #3A7734;
