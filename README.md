@@ -32,7 +32,7 @@ This section will help you to quickly get the server started for production or d
 
 <br/>
 
-Commands
+Scripts
 --------
 
 **./setup.sh** - Creates and updates the Anaconda environment used to run the server.
@@ -58,6 +58,26 @@ Roles are used to restrict functionality for just users with the correct role.
 Structure of this Project
 -------------------------
 
+### Config Files
+
+**/config.yml** - Stores configuration for the server, such as the Flask secret key.
+
+**/environment.yml** - The Anaconda environment specification.
+
+**/.gitignore** - Lists all files that should be excluded from git.
+<br/><br/>
+
+
+### Script Files
+
+**/setup.sh** - The script that creates the Anaconda environment to run the server.
+
+**/run.sh** - The script that manages running and interacting with the web server.
+
+**/test.sh** - The script that runs the tests of the server code.
+<br/><br/>
+
+
 ### Website Files
 
 **/client/** - The HTML pages, stylesheets, javascript, as well as other resources that are sent to the client.
@@ -69,28 +89,16 @@ Structure of this Project
 **/client/templates/** - The HTML templates that are modified before being sent to the client.
 
 **/server/** - The Flask server code that controls the back-end of the server.
-<br/><br/>
 
-
-### Scripts to Manage the Server
-
-**/setup.sh** - The script that creates the Anaconda environment and the SQLite database.
-
-**/run.sh** - The script that loads the Anaconda environment and runs the Flask server.
-<br/><br/>
-
-
-### Config Files
-
-**/environment.yml** - The Anaconda environment specification.
+**/server/tests/** - Testing scripts for the server code.
 <br/><br/>
 
 
 ### Generated Files
 
-**/env/** - The Anaconda environment.
+**/env/** - The Anaconda environment that contains the dependencies needed to run the server.
 
-**/db.sqlite** - The SQLite database.
+**/db.sqlite** - The SQLite database that stores the users and quizzes of the website.
 
 
 <br/>
