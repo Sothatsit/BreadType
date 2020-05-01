@@ -1,0 +1,51 @@
+/**
+ * Stylesheet for the error pages.
+ */
+
+body {
+    line-height: 2em;
+}
+
+h2 {
+    margin-top: 0.5em;
+}
+
+input, label {
+    line-height: 1em;
+    vertical-align: middle;
+}
+
+.multi-choice, .slider {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+
+    text-align: left;
+}
+
+input[type=range] {
+    width: 100%;
+}
+
+input[type=radio] {
+    margin-right: 1em;
+
+    width: 2em;
+    height: 2em;
+}
+
+input[type=submit] {
+    width: 200px;
+    height: 50px;
+    margin-bottom: 100px;
+
+    background-color: #3A7734;
+
+    font-size: 1em;
+    color: white;
+}
+
+input[type=submit]:hover {
+    cursor: pointer;
+    background-color: #1A5714;
+}

@@ -3,7 +3,6 @@
 #
 
 from functools import wraps
-from flask import render_template, flash
 from flask_login import UserMixin, current_user
 from . import db, login_manager
 from .errors import forbidden
@@ -51,7 +50,7 @@ def requires_role(*roles):
 
 class User(UserMixin, db.Model):
     """ The database entry for each registered user of the website. """
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     # The internal key assigned for each user.
     id = db.Column(db.Integer, primary_key=True, nullable=False)

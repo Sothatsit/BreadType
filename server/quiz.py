@@ -6,9 +6,15 @@ import csv
 from io import StringIO
 from . import db
 
+
+
+def load_quiz(quiz_id):
+    """ Loads the quiz with the given quiz ID. """
+    return Quiz.query.get(int(quiz_id))
+
 class Quiz(db.Model):
     """ The database entry for each quiz available on the site. """
-    __tablename__ = 'quizzes'
+    __tablename__ = 'quiz'
 
     # The internal key assigned for each user.
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -16,13 +22,25 @@ class Quiz(db.Model):
     # Metadata about the quiz.
     name = db.Column(db.String(128), nullable=False)
 
+    # The questions within this quiz.
+    encoded_questions = db.relationship('QuizQuestion', backref='quiz', lazy=False)
+
+    def get_questions(self):
+        """ Returns a list of all the parsed question objects. """
+        ordered_questions = sorted(self.encoded_questions, key=lambda q: q.index)
+        return [entry.get_question() for entry in ordered_questions]
+
+
 
 class QuizQuestion(db.Model):
     """ The database entry for each question within a quiz. """
-    __tablename__ = 'quiz_questions'
+    __tablename__ = 'quiz_question'
 
     # The internal key assigned for each user.
     id = db.Column(db.Integer, primary_key=True, nullable=False)
+
+    # The key of the parent quiz to this question.
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
 
     # Used to sort the questions in the quiz.
     index = db.Column(db.Integer, nullable=False)
@@ -33,49 +51,49 @@ class QuizQuestion(db.Model):
     # A string specifying the question type and the possible answers.
     encoded_question = db.Column(db.String(4096), nullable=False)
 
-    def get_question():
-        """ Return the parsed question object. """
-        return parse_question(self.text, self.encoded_question)
-
-    def set_question(question):
+    def set_question(self, question):
         """ Sets the question content for this object. """
         self.text = question.text
         self.encoded_question = question.encode()
 
+    def get_question(self):
+        """
+        Decodes the underlying question into an object.
+
+        Questions are encoded in the format:
+            type(arg1, arg2, ..., argN)
+        """
+        try:
+            opening_bracket = self.encoded_question.index("(")
+        except ValueError:
+            return MalformedQuestion(text, "Missing opening bracket")
+
+        try:
+            closing_bracket = self.encoded_question.rindex(")")
+        except ValueError:
+            return MalformedQuestion(text, "Missing closing bracket")
+
+        # Extract the type and the arguments as strings from the encoded question.
+        type = self.encoded_question[:opening_bracket]
+        args_str = self.encoded_question[opening_bracket + 1 : closing_bracket]
+
+        # Decode the arguments list in the CSV format.
+        args = list(csv.reader([args_str]))[0]
+
+        # Check if we recognise the type.
+        if type == "multi":
+            return parse_multi_question(self.text, args)
+        if type == "slider":
+            return parse_slider_question(self.text, args)
+        if type == "discrete_slider":
+            return parse_discrete_slider_question(self.text, args)
+
+        # Otherwise, return an errored question.
+        return MalformedQuestion(
+            self.text, "Unknown question type \"" + type + "\" for encoded question: " + encoded_question
+        )
 
 
-def parse_question(text, encoded_question):
-    """
-    Decodes the underlying question into an object.
-
-    Questions are encoded in the format:
-        type(arg1, arg2, ..., argN)
-    """
-    try:
-        opening_bracket = encoded_question.index("(")
-    except ValueError:
-        return MalformedQuestion(text, "Missing opening bracket")
-
-    try:
-        closing_bracket = encoded_question.rindex(")")
-    except ValueError:
-        return MalformedQuestion(text, "Missing closing bracket")
-
-    # Extract the type and the arguments as strings from the encoded question.
-    type = encoded_question[:opening_bracket]
-    args_str = encoded_question[opening_bracket + 1 : closing_bracket]
-
-    # Decode the arguments list in the CSV format.
-    args = list(csv.reader([args_str]))[0]
-
-    # Check if we recognise the type.
-    if type == "multi":
-        return parse_multi_question(text, args)
-    if type == "slider":
-        return parse_slider_question(text, args)
-
-    # Otherwise, return an errored question.
-    return MalformedQuestion(text, "Unknown question type \"" + type + "\" for encoded question: " + encoded_question)
 
 class Question:
     """ A question in a quiz. """
@@ -112,6 +130,14 @@ class Question:
     def encode_to_args(self):
         """ Encodes this question into a list of arguments. """
         raise NotImplementedError
+
+    def write_html(self, index):
+        """ Write this question as HTML. """
+        raise NotImplementedError
+
+    def get_answer_from_form(self, form, index):
+        """ Get the answer that was given for this question from the form. """
+        return form.get("question-{}".format(index))
 
     def __eq__(self, other):
         """ Check that this question is identical to other. """
@@ -170,6 +196,16 @@ class MultiChoiceQuestion(Question):
         """ Encodes this question into a list of arguments. """
         return self.options
 
+    def write_html(self, index):
+        """ Write this question as HTML. """
+        html = "<div class=\"multi-choice\">\n"
+        for option_index, option in enumerate(self.options):
+            html += "<input type=\"radio\" name=\"question-{}\" value=\"option-{}\">".format(index, option_index)
+            html += "<label for=\"option-{}\">{}</label>".format(option_index, option)
+            html += "<br/>\n"
+        html += "</div>"
+        return html
+
     def __eq__(self, other):
         """ Check that this question is identical to other. """
         return super().__eq__(other) and self.options == other.options
@@ -214,6 +250,82 @@ class SliderQuestion(Question):
 
         # The maximum possible value that can be chosen.
         self.max = max
+
+        # The default value for the slider.
+        self.default_value = (min + max) / 2
+
+        # The step between each value. HTML doesn't allow non-discrete sliders, but this is close enough.
+        self.step = (max - min) / 1000000
+
+    def encode_to_args(self):
+        """ Encodes this question into a list of arguments. """
+        return [self.min, self.max]
+
+    def write_html(self, index):
+        """ Write this question as HTML. """
+        html = "<div class=\"slider\">\n"
+        html += "<input type=\"range\" min=\"{}\", max=\"{}\" step=\"{}\" value=\"{}\" name=\"question-{}\">".format(
+            self.min, self.max, self.step, self.default_value, index
+        )
+        html += "</div>"
+        return html
+
+    def __eq__(self, other):
+        """ Check that this question is identical to other. """
+        return super().__eq__(other) and self.min == other.min and self.max == other.max
+
+
+
+def parse_discrete_slider_question(text, args):
+    """
+    Parses a discrete slider question.
+
+    Format:
+        discrete_slider(min, max)
+    """
+
+    # Make sure there are the expected number of arguments.
+    if len(args) != 2:
+        return MalformedQuestion(text, "Expected two arguments, got: " + str(len(args)))
+
+    # Parse the min possible value.
+    try:
+        min = int(args[0])
+    except ValueError:
+        return MalformedQuestion(text, "Expected min to be an integer, instead was: " + args[0])
+
+    # Parse the max possible value.
+    try:
+        max = int(args[1])
+    except ValueError:
+        return MalformedQuestion(text, "Expected max to be an integer, instead was: " + args[1])
+
+    return DiscreteSliderQuestion(text, min, max)
+
+class DiscreteSliderQuestion(Question):
+    """ A question that takes a slider value. """
+
+    def __init__(self, text, min, max):
+        # Initialise the super class.
+        Question.__init__(self, "discrete_slider", text, True)
+
+        # The minimum possible value that can be chosen.
+        self.min = int(min)
+
+        # The maximum possible value that can be chosen.
+        self.max = int(max)
+
+        # The default value for the slider.
+        self.default_value = int((min + max) / 2)
+
+    def write_html(self, index):
+        """ Write this question as HTML. """
+        html = "<div class=\"slider\">\n"
+        html += "<input type=\"range\" min=\"{}\", max=\"{}\" step=\"1\" value=\"{}\" name=\"question-{}\">".format(
+            self.min, self.max, self.default_value, index
+        )
+        html += "</div>"
+        return html
 
     def encode_to_args(self):
         """ Encodes this question into a list of arguments. """

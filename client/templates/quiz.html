@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- The stylesheet specific to this page. -->
+<link type="text/css" rel="stylesheet" href="/quiz/quiz.css" />
+<!-- The code specific to this page. -->
+<script src="/quiz/quiz.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<br/>
+<h1>
+    {{ quiz_name }}
+</h1>
+
+<form action="{{ quiz_id }}" method="POST">
+    {% for index, question in questions %}
+        <br/>
+        <h2>
+            {{ question.text }}
+        </h2>
+        <br/>
+        {{ question.write_html(index)|safe }}
+    {% endfor %}
+    <br/>
+    <input type="submit" value="Submit">
+    <br/>
+</form>
+
+{% endblock %}

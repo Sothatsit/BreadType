@@ -3,6 +3,7 @@
     font-family: 'Montserrat', serif;
     padding: 0;
     margin: 0;
+    line-height: 1.2em;
 }
 
 html, body {
@@ -34,7 +35,6 @@ nav a:hover {
     text-align: center;
     font-size: 2em;
 
-    margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
 }

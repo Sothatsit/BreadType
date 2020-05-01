@@ -17,6 +17,7 @@ def login():
     """
     return render_template("login.html", title="Log In")
 
+
 @auth.route("/login", methods=["POST"])
 def login_post():
     email = request.form.get("email")
@@ -53,8 +54,12 @@ def signup():
     """
     return render_template("signup.html", title="Sign Up")
 
+
 @auth.route("/signup", methods=["POST"])
 def signup_post():
+    """
+    Called when the signup form is submitted.
+    """
     email = request.form.get("email")
     name = request.form.get("name")
     password = request.form.get("password")
