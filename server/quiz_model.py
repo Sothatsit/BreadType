@@ -1,6 +1,9 @@
-#
-# This file manages the database for storing quizzes.
-#
+"""
+Manages the database model that holds quizzes and their questions,
+as well as the formatting of these questions in HTML to send to the client.
+
+In the future will also hold code for assessing the answers of users.
+"""
 
 import csv
 from io import StringIO
@@ -11,6 +14,7 @@ from . import db
 def load_quiz(quiz_id):
     """ Loads the quiz with the given quiz ID. """
     return Quiz.query.get(int(quiz_id))
+
 
 class Quiz(db.Model):
     """ The database entry for each quiz available on the site. """
@@ -182,6 +186,7 @@ def parse_multi_question(text, args):
     """
     return MultiChoiceQuestion(text, args)
 
+
 class MultiChoiceQuestion(Question):
     """ A question that cannot be parsed. """
 
@@ -248,6 +253,7 @@ def parse_slider_question(text, args):
 
     return SliderQuestion(text, min, max)
 
+
 class SliderQuestion(Question):
     """ A question that takes a slider value. """
 
@@ -311,6 +317,7 @@ def parse_discrete_slider_question(text, args):
         return MalformedQuestion(text, "Expected max to be an integer, instead was: " + args[1])
 
     return DiscreteSliderQuestion(text, min, max)
+
 
 class DiscreteSliderQuestion(Question):
     """ A question that takes a slider value. """

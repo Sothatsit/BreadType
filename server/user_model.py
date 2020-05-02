@@ -1,11 +1,11 @@
-#
-# Holds the database models for the server.
-#
+"""
+Holds the database model for storing users, and code for verifying their role.
+"""
 
 from functools import wraps
 from flask_login import UserMixin, current_user
 from . import db, login_manager
-from .errors import forbidden
+from .error_routes import forbidden
 
 
 @login_manager.user_loader
@@ -27,6 +27,7 @@ def load_all_users():
 def has_role(*roles):
     """ Returns whether the current user has any of the given roles. """
     return current_user.role in roles
+
 
 def requires_role(*roles):
     """ An annotation that makes sure the current user has one of the given roles. """

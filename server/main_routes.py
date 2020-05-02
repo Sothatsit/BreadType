@@ -1,14 +1,16 @@
-#
-# The main entry-point to the server.
-#
+"""
+Manages the routes for the main entry-points to the website.
+"""
 
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app, flash, request
-from .user import requires_role
-from .quiz import load_quiz
-from .errors import not_found
+from .user_model import requires_role
+from .quiz_model import load_quiz
+from .error_routes import not_found
+
 
 main = Blueprint("main", __name__)
+
 
 @main.route("/")
 def home():

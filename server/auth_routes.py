@@ -1,14 +1,16 @@
-#
-# Manages user sessions.
-#
+"""
+Manages the routes for user authentication and session management.
+"""
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, Markup
 from flask_login import login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from .user import User, load_user_by_email
+from .user_model import User, load_user_by_email
 from . import db
 
+
 auth = Blueprint("auth", __name__)
+
 
 @auth.route("/login")
 def login():

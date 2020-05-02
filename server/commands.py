@@ -1,14 +1,19 @@
-#
-# Manages the command line interface to the website.
-#
+"""
+Holds the command interfaces to the website.
+
+These commands can be run directly through:
+  ./run.sh prod <command>
+However, many of the commands have shorthands in run.sh so that the "prod" is unnecessary.
+"""
 
 import click
 from flask.cli import with_appcontext
 from . import db
-from .user import load_user_by_email, load_all_users
+from .user_model import load_user_by_email, load_all_users
+
 
 def add_commands(app):
-    """ Add the commands for this website that can be run. """
+    """ Register the commands with the Flask application. """
     app.cli.add_command(list_users)
     app.cli.add_command(set_role)
     app.cli.add_command(clear_role)
@@ -21,7 +26,7 @@ def list_users():
     """ Lists all registered users. """
     users = load_all_users()
     if len(users) == 0:
-        click.echo("There are no registed users.")
+        click.echo("There are no registered users.")
         return
 
     click.echo("Loaded all " + str(len(users)) + " registered users.\n")
