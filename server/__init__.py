@@ -4,8 +4,10 @@ Contains the initialisation code for the Flask application.
 
 import yaml
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, MigrateCommand
 
 
 # The database that holds persistent information for this website.
@@ -52,6 +54,10 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+    # Register the database migration command.
+    migrate = Migrate(app, db)
+    app.cli.add_command("db", MigrateCommand)
+
     # Initialise the login session manager for the website.
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
@@ -63,8 +69,12 @@ def create_app():
     from .auth_routes import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
-    # Blueprint for non-authentication parts of app.
+    # Blueprint for non-authentication parts of the app.
     from .main_routes import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    # Blueprint for the quiz parts of the app.
+    from .quiz_routes import quiz as quiz_blueprint
+    app.register_blueprint(quiz_blueprint)
 
     return app

@@ -39,7 +39,7 @@ elif [ "$1" == "pre-run" ]; then
     exit
   fi
 
-elif [ "$1" == "list-users" ] || [ "$1" == "set-role" ]  || [ "$1" == "clear-role" ]|| [ "$1" == "get-role" ]; then
+elif [ "$1" == "db" ] || [ "$1" == "list-users" ] || [ "$1" == "set-role" ]  || [ "$1" == "clear-role" ]|| [ "$1" == "get-role" ]; then
   # Run flask in production mode, and run a Flask sub-command.
   RUN_MODE="sub-command"
   FLASK_ARGUMENTS=("${@:1}")

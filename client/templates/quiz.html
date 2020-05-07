@@ -13,8 +13,7 @@
 <h1>
     {{ quiz_name }}
 </h1>
-
-<form action="{{ quiz_id }}" method="POST">
+<form action="/quiz/{{ quiz_id }}" method="POST">
     {% for index, question in questions %}
         <h2>
             {{ question.text }}

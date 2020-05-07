@@ -63,3 +63,6 @@ class User(UserMixin, db.Model):
     # User fields.
     name = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(16), nullable=True)
+
+    # The quizzes created by this user.
+    quizzes = db.relationship('Quiz', backref='user', lazy=True)

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- The stylesheet specific to this page. -->
+<link type="text/css" rel="stylesheet" href="/quiz/quiz.css" />
+<!-- The code specific to this page. -->
+<script src="/quiz/quiz.js"></script>
+{% endblock %}
+
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% for message in messages %}
+<div class="error">
+    {{ message }}
+</div>
+{% endfor %}
+{% endwith %}
+
+<form action="{{ url_for('quiz.create_quiz') }}" method="POST">
+    <label for="title"><h2>Quiz Title</h2></label>
+    <div class="text-field">
+        <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ request.form.get('title', '') }}">
+    </div>
+
+    <label for="questions"><h2>Questions</h2></label>
+    <div class="text-field">
+        <textarea name="questions" id="questions" placeholder="multi(A,B,C)">{{ request.form.get("questions", "") }}</textarea>
+    </div>
+
+    <input type="submit" value="Create">
+</form>
+
+{% endblock %}

@@ -32,46 +32,6 @@ def admin():
     return render_template("profile.html", title="Admin", name="admin")
 
 
-@main.route("/quiz/<int:quiz_id>")
-def quiz(quiz_id):
-    """
-    The page for the quiz with the given quiz id.
-    """
-    quiz = load_quiz(quiz_id)
-    if quiz is None:
-        flash("The quiz you were looking for could not be found.")
-        return not_found()
-
-    # Render the quiz page.
-    return render_template(
-        "quiz.html",
-        title="Quiz",
-        quiz_name=quiz.name,
-        quiz_id=quiz.id,
-        questions=enumerate(quiz.get_questions())
-    )
-
-
-@main.route("/quiz/<int:quiz_id>", methods=["POST"])
-def quiz_submit(quiz_id):
-    """
-    Called when the quiz with the given ID has been submitted.
-    """
-    quiz = load_quiz(quiz_id)
-    if quiz is None:
-        flash("The quiz you were looking for could not be found.")
-        return not_found()
-
-    # Extract the answers the user selected.
-    answers = []
-    for index, question in enumerate(quiz.get_questions()):
-        answers.append(question.get_answer_from_form(request.form, index))
-
-    # For now, just return the results using the not_found page for testing.
-    flash("Your answers: " + ", ".join(["None" if a is None else a for a in answers]))
-    return not_found()
-
-
 @main.route("/<path:path>")
 def static_resources(path):
     """
