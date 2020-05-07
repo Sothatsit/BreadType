@@ -39,6 +39,33 @@ def create_db_quiz(owner, title, questions):
     return quiz
 
 
+def edit_db_quiz(quiz, title, questions):
+    """ Edits a quiz in the database. """
+
+    # Update the title of the quiz.
+    quiz.title = title
+
+    # Remove all of the old questions from the quiz.
+    for question in quiz.encoded_questions:
+       db.session.delete(question)
+
+    # Add all the new questions to the quiz.
+    for index, question in enumerate(questions):
+        if not question.is_valid:
+            continue
+
+        db_question = QuizQuestion(
+            quiz_id=quiz.id,
+            index=index,
+            text=question.text,
+            encoded_question=question.encode()
+        )
+        db.session.add(db_question)
+
+    # Commit all the changes
+    db.session.commit()
+    return quiz
+
 
 class Quiz(db.Model):
     """ The database entry for each quiz available on the site. """
@@ -60,6 +87,15 @@ class Quiz(db.Model):
         """ Returns a list of all the parsed question objects. """
         ordered_questions = sorted(self.encoded_questions, key=lambda q: q.index)
         return [entry.get_question() for entry in ordered_questions]
+
+    def get_questions_text(self):
+        """ Returns text that represents all the questions in this quiz. """
+        questions_text = ""
+        for question in self.get_questions():
+            questions_text += question.text + "\n"
+            questions_text += question.encode() + "\n"
+            questions_text += "\n"
+        return questions_text
 
 
 

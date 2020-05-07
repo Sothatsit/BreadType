@@ -12,6 +12,12 @@
 <br/>
 <h1>
     {{ quiz_name }}
+
+    {% if can_edit_quiz %}
+    <a id="edit" href="{{ url_for('quiz.edit_quiz', quiz_id=quiz_id) }}">
+        <img src="/res/edit-icon.png" alt="Edit Quiz" \>
+    </a>
+    {% endif %}
 </h1>
 <form action="/quiz/{{ quiz_id }}" method="POST">
     {% for index, question in questions %}
