@@ -125,5 +125,16 @@ def submit_quiz(quiz_id):
         answers.append(question.get_answer_from_form(request.form, index))
 
     # For now, just return the results using the not_found page for testing.
-    flash("Your answers: " + ", ".join(["None" if a is None else a for a in answers]))
+    flash("Your answers: this is the tests" + ", ".join(["None" if a is None else a for a in answers]))
     return not_found()
+
+@quiz.route("/quiz/view")
+def view_quiz():
+    """
+    The page for viewing all currently created quizes
+    """
+    return render_template(
+        "view_quiz.html",
+        title="View Quiz",
+        previous=request.form
+    )
