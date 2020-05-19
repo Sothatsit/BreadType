@@ -18,11 +18,18 @@ def home():
     return render_template("home.html", title="Home")
 
 
-@main.route("/profile")
+@main.route("/profile/<username>")
 @login_required
-def profile():
+def profile(username):
     """ A profile page for each user. """
-    return render_template("profile.html", title="Profile", name=current_user.name)
+    # figure out how to only show quizes by that user
+    #conn = sqlite3.connect("db.sqlite")
+    #cur = conn.cursor()
+    #cur.execute("SELECT * FROM `quiz`")
+    #rows = cur.fetchall()
+    #cur.execute("SELECT user.name FROM `user` INNER JOIN `quiz` ON user.id = quiz.owner")
+    #names = cur.fetchall()
+    return render_template("profile.html", title=username + "'s Profile", name=username)
 
 
 @main.route("/admin")

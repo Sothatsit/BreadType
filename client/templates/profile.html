@@ -9,5 +9,14 @@
 
 
 {% block content %}
-Welcome, {{ name }}!
+<div>
+    {% if current_user.name == name %}
+        Welcome, {{ name }}!
+    {% else %}
+        Welcome to {{ name }}'s profile!
+    {% endif %}
+</div>
+<div>
+    This is where all the quizes by this user will be 
+</div>
 {% endblock %}
