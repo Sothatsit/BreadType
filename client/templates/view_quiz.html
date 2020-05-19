@@ -2,11 +2,34 @@
 
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/quiz/quiz.css" />
+<link type="text/css" rel="stylesheet" href="/view_quiz/view_quiz.css" />
 <!-- The code specific to this page. -->
-<script src="/quiz/quiz.js"></script>
+<script src="/view_quiz/view_quiz.js"></script>
 {% endblock %}
 
 {% block content %}
+
 <h1>Testing this works to view quiz</h1>
+<br>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Name</th>
+                <th>Created By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id in range(rows|length) %}
+            <tr>
+                <td>{{rows[id][0]}}</td>
+                <td><a href="/quiz/{{rows[id][0]}}">{{rows[id][2]}}</a></td>
+                <td><a href="/profile/{{names[id][0]}}">{{names[id][0]}}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}
