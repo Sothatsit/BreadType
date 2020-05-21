@@ -8,6 +8,7 @@ from .user_model import has_role
 from .quiz_model import load_quiz, create_db_quiz, edit_db_quiz
 from .question_types import Question
 from .error_routes import not_found, forbidden
+import sqlite3
 
 
 quiz = Blueprint("quiz", __name__)
@@ -198,3 +199,23 @@ def submit_edit_quiz(quiz_id):
 
     # Take the user to the edited quiz.
     return redirect(url_for("quiz.take_quiz", quiz_id=quiz.id))
+
+@quiz.route("/quiz/view")
+def view_quiz():
+    """
+    The page for viewing all currently created quizes
+    """
+    # This can be cleaned up to one sql query c'mon sam - sam, 2020
+    conn = sqlite3.connect("db.sqlite")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM `quiz`")
+    rows = cur.fetchall()
+    cur.execute("SELECT user.name FROM `user` INNER JOIN `quiz` ON user.id = quiz.owner")
+    names = cur.fetchall()
+    return render_template(
+        "view_quiz.html",
+        title="View Quiz",
+        rows=rows,
+        names=names,
+        previous=request.form
+    )
