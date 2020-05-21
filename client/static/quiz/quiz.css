@@ -18,6 +18,14 @@ h2 {
     margin-bottom: 0.4em;
 }
 
+#edit, #edit img {
+    height: 0.5em;
+}
+
+#edit img {
+    vertical-align: super;
+}
+
 input, label {
     line-height: 1em;
     vertical-align: middle;
@@ -29,6 +37,40 @@ input, label {
     margin-right: auto;
 
     text-align: left;
+}
+
+/*decoration for slider*/
+
+.sliders {
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 5px;
+    background: #be6767;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.sliders:hover {
+    opacity: 1;
+  }
+  
+.sliders::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 23px;
+    height: 24px;
+    border: 0;
+    background: green;
+    cursor: pointer;
+}
+  
+.sliders::-moz-range-thumb {
+    width: 23px;
+    height: 24px;
+    border: 0;
+    background: green;
+    cursor: pointer;
 }
 
 input[type=text] {
@@ -71,7 +113,8 @@ input[type=radio] {
 }
 
 input[type=submit] {
-    width: 200px;
+    padding-left: 15px;
+    padding-right: 15px;
     height: 50px;
     margin-top: 1em;
     margin-bottom: 100px;

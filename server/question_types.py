@@ -238,7 +238,7 @@ class FloatSliderQuestion(Question):
     def write_html(self, index):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
-        html += "<input type=\"range\" min=\"{}\", max=\"{}\" step=\"{}\" value=\"{}\" name=\"question-{}\">".format(
+        html += "<input class=\"sliders\" type=\"range\" min=\"{}\", max=\"{}\" step=\"{}\" value=\"{}\" name=\"question-{}\">".format(
             self.min, self.max, self.step, self.default_value, index
         )
         html += "</div>"

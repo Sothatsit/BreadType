@@ -10,13 +10,28 @@
 
 {% block content %}
 <div>
-    {% if current_user.name == name %}
+    {% if current_user.is_authenticated and current_user.name == name %}
         Welcome, {{ name }}!
     {% else %}
         Welcome to {{ name }}'s profile!
     {% endif %}
 </div>
 <div>
-    This is where all the quizes by this user will be 
+    <table>
+        <thead>
+        <tr>
+            <th>Number</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quiz in quizzes %}
+        <tr>
+            <td>{{ quiz.id }}</td>
+            <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -18,18 +18,18 @@
 {% endfor %}
 {% endwith %}
 
-<form action="{{ url_for('quiz.create_quiz') }}" method="POST">
+<form action="{{ url_for('quiz.edit_quiz', quiz_id=quiz_id) }}" method="POST">
     <label for="title"><h2>Quiz Title</h2></label>
     <div class="text-field">
-        <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ previous.get('title', '') }}">
+        <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ quiz_title }}">
     </div>
 
     <label for="questions"><h2>Questions</h2></label>
     <div class="text-field">
-        <textarea name="questions" id="questions" placeholder="multi(A,B,C)">{{ previous.get("questions", "") }}</textarea>
+        <textarea name="questions" id="questions" placeholder="multi(A,B,C)">{{ questions_text }}</textarea>
     </div>
 
-    <input type="submit" value="Create">
+    <input type="submit" value="Make Changes">
 </form>
 
 {% endblock %}

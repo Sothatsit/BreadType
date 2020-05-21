@@ -4,6 +4,7 @@ Manages the database model that holds quizzes and their questions.
 
 from . import db
 from .question_types import Question
+from .user_model import load_user
 
 
 def load_quiz(quiz_id):
@@ -11,17 +12,13 @@ def load_quiz(quiz_id):
     return Quiz.query.get(int(quiz_id))
 
 
-def create_db_quiz(owner, title, questions):
-    """ Creates a quiz in the database. """
+def load_all_quizzes():
+    """ Loads all of the quizzes. """
+    return Quiz.query.all()
 
-    # Create the quiz and add it to the database.
-    quiz = Quiz(
-        owner=owner,
-        name=title
-    )
-    db.session.add(quiz)
-    db.session.commit()
 
+def populate_quiz_in_db(quiz, questions):
+    """ Populates a quiz with the given questions. """
     # Add all the questions of the quiz to the database.
     for index, question in enumerate(questions):
         if not question.is_valid:
@@ -35,9 +32,39 @@ def create_db_quiz(owner, title, questions):
         )
         db.session.add(db_question)
 
+    # Commit all the changes.
     db.session.commit()
+
+
+def create_db_quiz(owner, title, questions):
+    """ Creates a quiz in the database. """
+
+    # Create the quiz and add it to the database.
+    quiz = Quiz(
+        owner=owner,
+        name=title
+    )
+    db.session.add(quiz)
+    db.session.commit()
+
+    # Add the questions to the database.
+    populate_quiz_in_db(quiz, questions)
     return quiz
 
+
+def edit_db_quiz(quiz, title, questions):
+    """ Edits a quiz in the database. """
+
+    # Update the title of the quiz.
+    quiz.title = title
+
+    # Remove all of the old questions from the quiz.
+    for question in quiz.encoded_questions:
+        db.session.delete(question)
+
+    # Add the questions to the database.
+    populate_quiz_in_db(quiz, questions)
+    return quiz
 
 
 class Quiz(db.Model):
@@ -56,11 +83,23 @@ class Quiz(db.Model):
     # The questions within this quiz.
     encoded_questions = db.relationship('QuizQuestion', backref='quiz', lazy=False)
 
+    def load_owner_user(self):
+        """ Loads the User object for the owner of this quiz. """
+        return load_user(self.owner)
+
     def get_questions(self):
         """ Returns a list of all the parsed question objects. """
         ordered_questions = sorted(self.encoded_questions, key=lambda q: q.index)
         return [entry.get_question() for entry in ordered_questions]
 
+    def get_questions_text(self):
+        """ Returns text that represents all the questions in this quiz. """
+        questions_text = ""
+        for question in self.get_questions():
+            questions_text += question.text + "\n"
+            questions_text += question.encode() + "\n"
+            questions_text += "\n"
+        return questions_text
 
 
 class QuizQuestion(db.Model):
