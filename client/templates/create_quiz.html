@@ -25,11 +25,28 @@
     </div>
 
     <label for="questions"><h2>Questions</h2></label>
-    <div class="text-field">
-        <textarea name="questions" id="questions" placeholder="multi(A,B,C)">{{ previous.get("questions", "") }}</textarea>
-    </div>
+    <div class="text-field" id="questionbank">
 
+        <!-- To be populated by the javascript functions on adding a question -->
+
+    </div>
+    
+    <span>Add question</span><br>
+    <img class="add-question" src="/res/add-icon.png" alt="Add question" width=40px height=40px>
+
+    <br>
+    
     <input type="submit" value="Create">
 </form>
+
+<script>
+    $(document).ready(function() {
+        var qnum = 1;
+        $(".add-question").click(function() {
+            addQuestion(qnum);
+            qnum += 1;
+        });
+    });
+</script>
 
 {% endblock %}
