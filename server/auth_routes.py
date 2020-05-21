@@ -36,7 +36,7 @@ def login_post():
 
     # Register that the user is logged in with the session manager.
     login_user(user, remember=remember)
-    return redirect(url_for("main.profile", username=current_user.name))
+    return redirect(url_for("main.profile", user_id=current_user.id))
 
 
 @auth.route("/logout")
