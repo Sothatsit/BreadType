@@ -7,7 +7,6 @@ import csv
 from io import StringIO
 
 
-
 class Question:
     """ A question in a quiz. """
 
@@ -149,7 +148,6 @@ class Question:
         return questions
 
 
-
 class MalformedQuestion(Question):
     """ A question that cannot be parsed. """
 
@@ -163,7 +161,6 @@ class MalformedQuestion(Question):
     def __eq__(self, other):
         """ Check that this question is identical to other. """
         return super().__eq__(other) and self.error == other.error
-
 
 
 class MultiChoiceQuestion(Question):
@@ -216,25 +213,35 @@ class MultiChoiceQuestion(Question):
         return MultiChoiceQuestion(text, args)
 
 
+def create_slider_input_html(min_value, max_value, step, default_value, name):
+    """"
+    :return: the HTML for a slider with the given parameters.
+    """
+    html = "<input class=\"sliders\" type=\"range\" "
+    html += "min=\"{}\" max=\"{}\" step=\"{}\"".format(min_value, max_value, step)
+    html += "value=\"{}\" name=\"{}\"".format(default_value, name)
+    html += " \\>"
+    return html
+
 
 class FloatSliderQuestion(Question):
     """ A question that takes a slider value. """
 
-    def __init__(self, text, min, max):
+    def __init__(self, text, min_value, max_value):
         # Initialise the super class.
         Question.__init__(self, "float_slider", text, True)
 
         # The minimum possible value that can be chosen.
-        self.min = min
+        self.min_value = float(min_value)
 
         # The maximum possible value that can be chosen.
-        self.max = max
+        self.max_value = float(max_value)
 
         # The default value for the slider.
-        self.default_value = (min + max) / 2
+        self.default_value = (min_value + max_value) / 2
 
         # The step between each value. HTML doesn't allow non-discrete sliders, but this is close enough.
-        self.step = (max - min) / 1000000
+        self.step = (max_value - min_value) / 1000000
 
     def encode_to_args(self):
         """ Encodes this question into a list of arguments. """
@@ -243,15 +250,15 @@ class FloatSliderQuestion(Question):
     def write_html(self, index):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
-        html += "<input class=\"sliders\" type=\"range\" min=\"{}\", max=\"{}\" step=\"{}\" value=\"{}\" name=\"question-{}\">".format(
-            self.min, self.max, self.step, self.default_value, index
+        html += create_slider_input_html(
+            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index)
         )
         html += "</div>"
         return html
 
     def __eq__(self, other):
         """ Check that this question is identical to other. """
-        return super().__eq__(other) and self.min == other.min and self.max == other.max
+        return super().__eq__(other) and self.min_value == other.min_value and self.max_value == other.max_value
 
     @staticmethod
     def parse(text, args):
@@ -270,52 +277,51 @@ class FloatSliderQuestion(Question):
 
         # Parse the min possible value.
         try:
-            min = float(args[0])
+            min_value = float(args[0])
         except ValueError:
             return MalformedQuestion(text, "Expected min to be a number, instead was: " + args[0])
 
         # Parse the max possible value.
         try:
-            max = float(args[1])
+            max_value = float(args[1])
         except ValueError:
             return MalformedQuestion(text, "Expected max to be a number, instead was: " + args[1])
 
-        return FloatSliderQuestion(text, min, max)
-
+        return FloatSliderQuestion(text, min_value, max_value)
 
 
 class IntSliderQuestion(Question):
     """ A question that takes an integer slider value. """
 
-    def __init__(self, text, min, max):
+    def __init__(self, text, min_value, max_value):
         # Initialise the super class.
         Question.__init__(self, "int_slider", text, True)
 
         # The minimum possible value that can be chosen.
-        self.min = int(min)
+        self.min_value = int(min_value)
 
         # The maximum possible value that can be chosen.
-        self.max = int(max)
+        self.max_value = int(max_value)
 
         # The default value for the slider.
-        self.default_value = int((min + max) / 2)
+        self.default_value = int((min_value + max_value) / 2)
 
     def write_html(self, index):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
-        html += "<input type=\"range\" min=\"{}\", max=\"{}\" step=\"1\" value=\"{}\" name=\"question-{}\">".format(
-            self.min, self.max, self.default_value, index
+        html += create_slider_input_html(
+            self.min_value, self.max_value, 1, self.default_value, "question-{}".format(index)
         )
         html += "</div>"
         return html
 
     def encode_to_args(self):
         """ Encodes this question into a list of arguments. """
-        return [self.min, self.max]
+        return [self.min_value, self.max_value]
 
     def __eq__(self, other):
         """ Check that this question is identical to other. """
-        return super().__eq__(other) and self.min == other.min and self.max == other.max
+        return super().__eq__(other) and self.min_value == other.min_value and self.max_value == other.max_value
 
     @staticmethod
     def parse(text, args):
@@ -334,14 +340,14 @@ class IntSliderQuestion(Question):
 
         # Parse the min possible value.
         try:
-            min = int(args[0])
+            min_value = int(args[0])
         except ValueError:
             return MalformedQuestion(text, "Expected min to be an integer, instead was: " + args[0])
 
         # Parse the max possible value.
         try:
-            max = int(args[1])
+            max_value = int(args[1])
         except ValueError:
             return MalformedQuestion(text, "Expected max to be an integer, instead was: " + args[1])
 
-        return IntSliderQuestion(text, min, max)
+        return IntSliderQuestion(text, min_value, max_value)
