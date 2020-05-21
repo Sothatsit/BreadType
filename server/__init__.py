@@ -16,7 +16,7 @@ db = SQLAlchemy()
 
 # Manages the user sessions for the website.
 login_manager = LoginManager()
-
+login_manager.login_message = u"You must be logged in to access this page."
 
 # Load the configuration for the website.
 with open("config.yml", 'r') as stream:

@@ -3,7 +3,7 @@ Manages the routes for user authentication and session management.
 """
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, Markup
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .user_model import User, load_user_by_email
 from . import db
@@ -36,7 +36,7 @@ def login_post():
 
     # Register that the user is logged in with the session manager.
     login_user(user, remember=remember)
-    return redirect(url_for("main.profile"))
+    return redirect(url_for("main.profile", username=current_user.name))
 
 
 @auth.route("/logout")
@@ -98,4 +98,6 @@ def signup_post():
     db.session.add(new_user)
     db.session.commit()
 
-    return redirect(url_for("auth.login"))
+    login_user(new_user, remember=True)
+
+    return redirect(url_for("main.profile", username=current_user.name))
