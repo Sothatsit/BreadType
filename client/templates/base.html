@@ -24,7 +24,6 @@
     <!-- The navigation bar at the top of each page. -->
     <nav>
         <a href="{{ url_for('main.home') }}">Home</a>
-        <a href="{{ url_for('quiz.create_quiz') }}">Create</a>
         <a href="{{ url_for('quiz.view_quiz') }}">Take a Quiz</a>
 
         {% if not current_user.is_authenticated %}
@@ -33,6 +32,7 @@
         {% endif %}
 
         {% if current_user.is_authenticated %}
+        <a href="{{ url_for('quiz.create_quiz') }}">Create</a>
         <a href="{{ url_for('main.profile', username=current_user.name) }}">Profile</a>
         <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% endif %}
