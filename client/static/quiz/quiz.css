@@ -31,6 +31,40 @@ input, label {
     text-align: left;
 }
 
+/*decoration for slider*/
+
+.sliders {
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 5px;
+    background: #be6767;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.sliders:hover {
+    opacity: 1;
+  }
+  
+.sliders::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 23px;
+    height: 24px;
+    border: 0;
+    background: green;
+    cursor: pointer;
+}
+  
+.sliders::-moz-range-thumb {
+    width: 23px;
+    height: 24px;
+    border: 0;
+    background: green;
+    cursor: pointer;
+}
+
 input[type=text] {
     width: 100%;
     height: 35px;
