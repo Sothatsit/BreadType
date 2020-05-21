@@ -5,11 +5,21 @@
 <link type="text/css" rel="stylesheet" href="/view_quiz/view_quiz.css" />
 <!-- The code specific to this page. -->
 <script src="/view_quiz/view_quiz.js"></script>
+<style>
+    a {
+        text-decoration: none;
+        color: rgb(240, 134, 152);
+    }
+    a:hover {
+        color:pink;
+    }
+
+</style>
 {% endblock %}
 
 {% block content %}
 
-<h1>Testing this works to view quiz</h1>
+<h1>Quizzes created by {{ current_user.name }}</h1>
 <br>
 <div>
     <table>
@@ -21,12 +31,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for quiz, owner in zipped_quizzes_owners %}
+            <div>
             <tr>
                 <td>{{ quiz.id }}</td>
                 <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
                 <td><a href="/profile/{{ owner.id }}">{{ owner.name }}</a></td>
             </tr>
+            </div>
             {% endfor %}
         </tbody>
     </table>

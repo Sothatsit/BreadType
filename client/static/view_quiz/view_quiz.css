@@ -19,3 +19,11 @@ tr td {
     height: 50px;
 }
 
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: pink;
+}
+
