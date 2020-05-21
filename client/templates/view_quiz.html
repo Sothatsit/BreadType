@@ -25,7 +25,7 @@
             <tr>
                 <td>{{rows[id][0]}}</td>
                 <td><a href="/quiz/{{rows[id][0]}}">{{rows[id][2]}}</a></td>
-                <td><a href="/profile/{{names[id][0]}}">{{names[id][0]}}</a></td>
+                <td><a href="{{ url_for('main.profile', username=names[id][0]) }}">{{names[id][0]}}</a></td>
             </tr>
             {% endfor %}
         </tbody>
