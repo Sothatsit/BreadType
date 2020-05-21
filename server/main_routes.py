@@ -4,7 +4,7 @@ Manages the routes for the main entry-points to the website.
 
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app, flash, request
-from .user_model import requires_role
+from .user_model import requires_role, load_user
 from .quiz_model import load_quiz
 from .error_routes import not_found
 
@@ -18,18 +18,16 @@ def home():
     return render_template("home.html", title="Home")
 
 
-@main.route("/profile/<username>")
-@login_required
-def profile(username):
+@main.route("/profile/<int:user_id>")
+def profile(user_id):
     """ A profile page for each user. """
-    # figure out how to only show quizes by that user
-    #conn = sqlite3.connect("db.sqlite")
-    #cur = conn.cursor()
-    #cur.execute("SELECT * FROM `quiz`")
-    #rows = cur.fetchall()
-    #cur.execute("SELECT user.name FROM `user` INNER JOIN `quiz` ON user.id = quiz.owner")
-    #names = cur.fetchall()
-    return render_template("profile.html", title=username + "'s Profile", name=username)
+    user = load_user(user_id)
+    return render_template(
+        "profile.html",
+        title=user.name + "'s Profile",
+        name=user.name,
+        quizzes=user.quizzes
+    )
 
 
 @main.route("/admin")

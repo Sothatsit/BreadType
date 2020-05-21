@@ -26,7 +26,7 @@ def load_all_users():
 
 def has_role(*roles):
     """ Returns whether the current user has any of the given roles. """
-    return current_user.role in roles
+    return current_user.is_authenticated and current_user.role in roles
 
 
 def requires_role(*roles):
@@ -46,7 +46,6 @@ def requires_role(*roles):
             return func(*args, **kwargs)
         return decorated
     return decorator
-
 
 
 class User(UserMixin, db.Model):

@@ -21,11 +21,11 @@
             </tr>
         </thead>
         <tbody>
-            {% for id in range(rows|length) %}
+            {% for quiz, owner in zipped_quizzes_owners %}
             <tr>
-                <td>{{rows[id][0]}}</td>
-                <td><a href="/quiz/{{rows[id][0]}}">{{rows[id][2]}}</a></td>
-                <td><a href="/profile/{{names[id][0]}}">{{names[id][0]}}</a></td>
+                <td>{{ quiz.id }}</td>
+                <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
+                <td><a href="/profile/{{ owner.id }}">{{ owner.name }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
