@@ -3,6 +3,7 @@ Holds the server classes for representing quizzes and their categories.
 """
 
 from .question import Question, AnswerSpec
+from .scoring_function import ScoringFunction
 
 
 class Quiz:
@@ -36,7 +37,8 @@ class Quiz:
 
             for category in self.categories:
                 answer_spec = category.get_answer_spec(question)
-                category_scores[category] += question.score_answer(answer, answer_spec)
+                score = answer_spec.scoring_function.score(answer)
+                category_scores[category] += score
 
         return category_scores
 
@@ -63,7 +65,7 @@ class Quiz:
                 answer_spec = category.get_answer_spec(question)
                 if answer_spec is None:
                     raise RuntimeError("Missing answer spec for question in category " + category.name)
-                encoded += answer_spec.encoded + "\n"
+                encoded += answer_spec.scoring_function.encode() + "\n"
             encoded += "\n"
 
         return encoded
@@ -120,7 +122,8 @@ class Quiz:
             # The rest of the lines correspond to answer specs for categories.
             for index in range(len(section) - 2):
                 encoded_answer_spec = section[2 + index]
-                answer_spec = AnswerSpec(question, encoded_answer_spec)
+                scoring_function = ScoringFunction.parse(encoded_answer_spec)
+                answer_spec = AnswerSpec(question, scoring_function)
                 categories[index].answer_specs.append(answer_spec)
 
         return Quiz(quiz_id, quiz_name, quiz_owner, questions, categories)

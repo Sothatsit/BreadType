@@ -61,14 +61,24 @@ def submit_quiz(quiz_id):
         flash("The quiz you were looking for could not be found.")
         return not_found()
 
-    # Extract the answers the user selected.
-    answers = []
-    for index, question in enumerate(quiz.questions):
-        answers.append(question.get_answer_from_form(request.form, index))
+    # Score the user's responses against the categories.
+    category_scores = quiz.score_responses(request.form)
 
-    # For now, just return the results using the not_found page for testing.
-    flash("Your answers: " + ", ".join(["None" if a is None else a for a in answers]))
-    return not_found()
+    # Find the maximum scoring category.
+    max_category = None
+    max_category_score = None
+    for category, score in category_scores.items():
+        if max_category is None or score > max_category_score:
+            max_category = category
+            max_category_score = score
+
+    # Render the results page.
+    return render_template(
+        "quiz_results.html",
+        title="Your Results",
+        category=max_category,
+        category_scores=category_scores
+    )
 
 
 @quiz.route("/quiz/create")

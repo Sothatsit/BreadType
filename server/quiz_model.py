@@ -5,6 +5,7 @@ Manages the database model that holds quizzes and their questions.
 from . import db
 from .quiz import Quiz, Category
 from .question import AnswerSpec, Question
+from .scoring_function import ScoringFunction
 from .user_model import load_user
 
 
@@ -251,4 +252,5 @@ class DBQuizCategoryAnswerSpec(db.Model):
 
     def get_answer_spec(self, question):
         """ Returns the parsed answer spec that this db answer spec represents. """
-        return AnswerSpec(question, self.encoded_spec)
+        scoring_function = ScoringFunction.parse(self.encoded_spec)
+        return AnswerSpec(question, scoring_function)

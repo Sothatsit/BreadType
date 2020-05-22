@@ -3,16 +3,16 @@ Holds the server classes for representing different types of questions,
 their encoding/decoding from strings, and their formatting as HTML.
 """
 
-import csv
-from io import StringIO
+from .encoding import parse_function, encode_function
+from .scoring_function import ScoringFunction
 
 
 class AnswerSpec:
     """ The specification for scoring an answer to a question. """
 
-    def __init__(self, question, encoded):
+    def __init__(self, question, scoring_function):
         self.question = question
-        self.encoded = encoded
+        self.scoring_function = scoring_function
 
     def __hash__(self):
         """ Hashes this answer spec so it can be used in dictionaries. """
@@ -34,22 +34,12 @@ class Question:
 
     def encode(self):
         """ Encode this question into a string to store in the database. """
-
         # Encoding invalid questions is unsupported.
         if not self.is_valid:
             raise Exception("Encoding invalid questions is unsupported")
 
-        # Encode the question's parameters into a list of arguments.
-        args = self.encode_to_args()
-
-        # Encode the arguments into a CSV string.
-        args_str_io = StringIO()
-        csv.writer(args_str_io).writerow(args)
-        args_str = args_str_io.getvalue().strip()
-        args_str_io.close()
-
-        # Combine the type of this question and the CSV encoded arguments into one string.
-        return self.question_type + "(" + args_str + ")"
+        # Encode the question type into "question_type(args)"
+        return encode_function(self.question_type, self.encode_to_args())
 
     def encode_to_args(self):
         """ Encodes this question into a list of arguments. """
@@ -91,22 +81,11 @@ class Question:
     @staticmethod
     def parse(text, encoded_question):
         """ Parses the given encoded question into a Question object. """
+        # Extract the question type and arguments from the encoded question.
         try:
-            opening_bracket = encoded_question.index("(")
-        except ValueError:
-            return MalformedQuestion(text, "Missing opening bracket")
-
-        try:
-            closing_bracket = encoded_question.rindex(")")
-        except ValueError:
-            return MalformedQuestion(text, "Missing closing bracket")
-
-        # Extract the type and the arguments as strings from the encoded question.
-        question_type = encoded_question[:opening_bracket]
-        args_str = encoded_question[opening_bracket + 1:closing_bracket]
-
-        # Decode the arguments list in the CSV format.
-        args = list(csv.reader([args_str]))[0]
+            question_type, args = parse_function(encoded_question)
+        except ValueError as e:
+            return MalformedQuestion(text, str(e))
 
         # Check if we recognise the type.
         if question_type == "multi":
