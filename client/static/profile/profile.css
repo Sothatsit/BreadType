@@ -23,3 +23,12 @@ th, td {
 tr td {
     height: 50px;
 }
+
+a {
+    text-decoration: none;
+    color: rgb(240, 134, 152);
+}
+
+a:hover {
+    color: pink;
+}
