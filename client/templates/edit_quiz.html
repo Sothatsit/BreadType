@@ -24,6 +24,19 @@
         <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ quiz_title }}">
     </div>
 
+    <!--
+    Sam:
+        This is majoritavely obsolete now. And since we can't just load the direct text input anymore,
+        how the heck are we going to be able to edit a quiz? So much of it is created in JavaScript, so
+        we may have to literally recreate it using a lot of that same JS to get back to the original point.
+        Shouldn't actually be too difficult, but defs tedious.
+
+    Paddy:
+        Given there's no way to setup the categories using the JavaScript interface yet I'll keep this
+        page working through the text interface for the time being. I do think it'd be nice to keep the
+        functionality of being able to edit quizzes though. Should probably also add a way to delete them.
+    -->
+
     <label for="encoded_text"><h2>Questions</h2></label>
     <div class="text-field">
         <textarea name="encoded_text" id="encoded_text" placeholder="multi(A,B,C)">{{ questions_text }}</textarea>

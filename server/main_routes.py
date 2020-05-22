@@ -38,7 +38,9 @@ def profile(user_id):
 @requires_role("admin")
 def admin():
     """ Not actually useful, just for testing @requires_role. """
-    return render_template("profile.html", title="Admin", name="admin")
+    return render_template("profile.html", 
+        title="Admin", 
+        name="admin")
 
 
 @main.route("/<path:path>")
