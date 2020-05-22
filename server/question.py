@@ -179,6 +179,31 @@ class MultiChoiceQuestion(Question):
         """
         return MultiChoiceQuestion(text, args)
 
+    @staticmethod
+    def from_form(question_number, text, form, errors):
+        """
+        Parses a multi-choice question from the given form.
+        """
+        # Get all of the choices out of the form.
+        options = []
+        option_number = 0
+        while "question_{}_multi_choice_{}".format(question_number, option_number + 1) in form:
+            option = form.get("question_{}_multi_choice_{}".format(question_number, option_number + 1), "")
+            option_number += 1
+
+            print("option {}".format(option_number))
+
+            if len(option) == 0:
+                errors.append("Missing text for option {} of multi-choice question {}".format(
+                    option_number, question_number
+                ))
+                continue
+
+            options.append(option)
+
+        # Create the multi-choice question.
+        return MultiChoiceQuestion(text, options)
+
 
 def create_slider_input_html(min_value, max_value, step, default_value, name):
     """"
@@ -265,6 +290,27 @@ class FloatSliderQuestion(Question):
 
         return FloatSliderQuestion(text, min_value, max_value)
 
+    @staticmethod
+    def from_form(question_number, text, form, errors):
+        """ Parse a continuous slider from the given form. """
+        # Get the min and max from the form.
+        min_text = form.get("question_{}_slider_min".format(question_number), "")
+        max_text = form.get("question_{}_slider_max".format(question_number), "")
+        if len(min_text) == 0 or len(max_text) == 0:
+            errors.append("Missing min or max value for slider question {}".format(question_number))
+            return None
+
+        # Convert them to numbers.
+        try:
+            min_value = float(min_text)
+            max_value = float(max_text)
+        except ValueError:
+            errors.append("Min and max must both be numbers for slider question {}".format(question_number))
+            return None
+
+        # Create the slider question.
+        return FloatSliderQuestion(text, min_value, max_value)
+
 
 class IntSliderQuestion(Question):
     """ A question that takes an integer slider value. """
@@ -335,4 +381,25 @@ class IntSliderQuestion(Question):
         except ValueError:
             return MalformedQuestion(text, "Expected max to be an integer, instead was: " + args[1])
 
+        return IntSliderQuestion(text, min_value, max_value)
+
+    @staticmethod
+    def from_form(question_number, text, form, errors):
+        """ Parse a discrete slider from the given form. """
+        # Get the min and max from the form.
+        min_text = form.get("question_{}_slider_min".format(question_number), "")
+        max_text = form.get("question_{}_slider_max".format(question_number), "")
+        if len(min_text) == 0 or len(max_text) == 0:
+            errors.append("Missing min or max value for slider question {}".format(question_number))
+            return None
+
+        # Convert them to numbers.
+        try:
+            min_value = int(min_text)
+            max_value = int(max_text)
+        except ValueError:
+            errors.append("Min and max must both be integers for slider question {}".format(question_number))
+            return None
+
+        # Create the slider question.
         return IntSliderQuestion(text, min_value, max_value)

@@ -66,7 +66,7 @@ def populate_quiz_in_db(db_quiz, quiz):
             db_answer_spec = DBQuizCategoryAnswerSpec(
                 category_id=db_category.id,
                 question_id=db_question.id,
-                encoded_spec=answer_spec.encoded
+                encoded_spec=answer_spec.scoring_function.encode()
             )
             db.session.add(db_answer_spec)
 

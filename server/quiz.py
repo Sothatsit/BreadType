@@ -2,7 +2,7 @@
 Holds the server classes for representing quizzes and their categories.
 """
 
-from .question import Question, AnswerSpec
+from .question import Question, AnswerSpec, MultiChoiceQuestion, IntSliderQuestion, FloatSliderQuestion
 from .scoring_function import ScoringFunction
 
 
@@ -127,6 +127,54 @@ class Quiz:
                 categories[index].answer_specs.append(answer_spec)
 
         return Quiz(quiz_id, quiz_name, quiz_owner, questions, categories)
+
+    @staticmethod
+    def from_form(owner, form, errors):
+        """ Parse a Quiz from the given form. """
+        # Get the title of the quiz from the form.
+        title = form.get("title", "")
+        if len(title) == 0:
+            errors.append("Please enter a quiz title")
+
+        for key, value in form.items():
+            print(key + " = " + value)
+
+        # Get the questions of the quiz out of the form.
+        questions = []
+        question_number = 0
+        while "question_{}_text".format(question_number + 1) in form:
+            # The prefix for all attributes about this question.
+            prefix = "question_{}".format(question_number + 1)
+            question_number += 1
+
+            print("question {}".format(question_number))
+
+            # Get the text of the question.
+            text = form.get(prefix + "_text", "")
+            if len(text) == 0:
+                errors.append("Missing text for question {}".format(question_number))
+                continue
+
+            # Get the type of the question, and build the question accordingly.
+            question_type = form.get(prefix + "_type")
+
+            # Parse the question based on its type.
+            question = None
+            if question_type == "Multiple Choice":
+                question = MultiChoiceQuestion.from_form(question_number, text, form, errors)
+            elif question_type == "Discrete Slider":
+                question = IntSliderQuestion.from_form(question_number, text, form, errors)
+            elif question_type == "Continuous Slider":
+                question = FloatSliderQuestion.from_form(question_number, text, form, errors)
+            else:
+                errors.append("Unknown question type {} for question {}".format(question_type, question_number))
+
+            # Add the question.
+            if question is not None:
+                questions.append(question)
+
+        # Create the quiz object.
+        return Quiz(-1, title, owner, questions, [])
 
 
 class Category:

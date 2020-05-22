@@ -4,12 +4,19 @@
     padding: 0;
     margin: 0;
     line-height: 1.2em;
+    box-sizing: border-box;
 }
 
 html, body {
     width: 100%;
     height: 100%;
 }
+
+
+
+/*
+ * Decoration of the nav-bar.
+ */
 
 nav {
     box-sizing: border-box;
@@ -30,6 +37,11 @@ nav a:hover {
     color: #555555;
 }
 
+
+
+/*
+ * Sizing of the div that holds the contents of the pages.
+ */
 #content {
     max-width: 800px;
     text-align: center;
@@ -39,6 +51,12 @@ nav a:hover {
     margin-right: auto;
 }
 
+
+
+/*
+ * Decoration for error messages.
+ */
+
 .error {
     display: inline-block;
     box-sizing: content-box;
@@ -46,4 +64,143 @@ nav a:hover {
     padding: 10px 20px;
     border-radius: 10px;
     background: #FF9999;
+}
+
+
+
+/*
+ * Decoration for Labels in Forms.
+ */
+label {
+    font-size: 20px;
+}
+
+
+
+/*
+ * Decoration for Sliders.
+ */
+
+input[type=range] {
+    width: 100%;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+input[type=range]:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 23px;
+    height: 24px;
+    border: 0;
+    background: orangered;
+    cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 23px;
+    height: 24px;
+    border: 0;
+    background: orangered;
+    cursor: pointer;
+}
+
+
+input, label {
+    line-height: 1em;
+    vertical-align: middle;
+}
+
+.text-field, .multi-choice, .slider {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+
+    text-align: left;
+}
+
+
+
+/*
+ * Decoration for Text Fields.
+ */
+
+input[type=text] {
+    width: 100%;
+    height: 45px;
+    padding: 5px;
+    font-size: 25px;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+
+
+/*
+ * Decoration for Multiple-Choice Questions.
+ */
+
+.choice {
+    width: 100%;
+    cursor: pointer;
+    user-select: none;
+}
+
+.choice input, .choice label {
+    cursor: pointer;
+}
+
+.choice:hover label {
+    color: #666;
+}
+
+/** The radio button itself. **/
+input[type=radio] {
+    margin-right: 1em;
+    width: 2em;
+    height: 2em;
+}
+
+
+
+/*
+ * Decoration for the form Submit button.
+ */
+
+input[type=submit] {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 50px;
+    margin-top: 1em;
+    margin-bottom: 100px;
+
+    background-color: #3A7734;
+
+    font-size: 1em;
+    color: white;
+}
+
+input[type=submit]:hover {
+    cursor: pointer;
+    background-color: #1A5714;
 }

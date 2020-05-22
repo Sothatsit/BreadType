@@ -2,9 +2,9 @@
 
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/quiz/quiz.css" />
+<link type="text/css" rel="stylesheet" href="/create_quiz/create_quiz.css" />
 <!-- The code specific to this page. -->
-<script src="/quiz/quiz.js"></script>
+<script src="/create_quiz/create_quiz.js"></script>
 {% endblock %}
 
 
@@ -19,34 +19,27 @@
 {% endwith %}
 
 <form action="{{ url_for('quiz.create_quiz') }}" method="POST">
-    <label for="title"><h2>Quiz Title</h2></label>
-    <div class="text-field">
-        <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ previous.get('title', '') }}">
-    </div>
+    <label class="title" for="title">
+        Quiz Title
+    </label>
+    <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ previous.get('title', '') }}">
 
-    <label for="questions"><h2>Questions</h2></label>
-    <div class="text-field" id="questionbank">
+    <label class="title" for="question_bank">Questions</label>
+    <div id="question_bank">
 
         <!-- To be populated by the javascript functions on adding a question -->
 
     </div>
     
-    <span>Add question</span><br>
-    <img class="add-question" src="/res/add-icon.png" alt="Add question" width=40px height=40px>
+    <div id="add_question">
+        <span>Add question</span>
+        <br/>
+        <img src="/res/add-icon.png" alt="Add question" />
+    </div><br>
 
     <br>
     
     <input type="submit" value="Create">
 </form>
-
-<script>
-    $(document).ready(function() {
-        var qnum = 1;
-        $(".add-question").click(function() {
-            addQuestion(qnum);
-            qnum += 1;
-        });
-    });
-</script>
 
 {% endblock %}

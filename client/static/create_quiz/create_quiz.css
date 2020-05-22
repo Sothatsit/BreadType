@@ -1,0 +1,81 @@
+/**
+ * Stylesheet for the create quiz page.
+ */
+
+body {
+    line-height: 2em;
+}
+
+
+
+/*
+ * Decoration for the titles in the page.
+ * e.g. "Quiz Title" and "Questions"
+ */
+
+.title:nth-of-type(1) {
+    margin-top: 10px;
+}
+
+.title:nth-of-type(n+2) {
+    margin-top: 20px;
+}
+
+.title {
+    display: block;
+    font-size: 46px;
+    margin-bottom: 15px;
+}
+
+
+
+/*
+ * Decoration for the questions.
+ */
+
+.question {
+    text-align: left;
+}
+
+.question_text label {
+    font-size: 28px;
+}
+
+.question_text input {
+    margin-top: 10px;
+}
+
+.question_type .choice {
+    display: inline;
+    margin-right: 25px;
+}
+
+.question_type .choice input {
+    margin-right: 5px;
+}
+
+.question_config {
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+
+/*
+ * Decoration for the "Add Question" button.
+ */
+
+#add_question img {
+    display: inline-block;
+    max-width: 40px;
+    max-height: 40px;
+    vertical-align: middle;
+}
+
+#add_question:hover {
+    color: #555555;
+    cursor: pointer;
+}
+
+#add_question:hover img {
+    opacity: 0.7;
+}

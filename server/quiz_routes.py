@@ -6,8 +6,9 @@ from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app, flash, request, redirect, url_for
 from .user_model import has_role
 from .quiz_model import load_quiz, load_all_quizzes, create_db_quiz, edit_db_quiz
-from .quiz import Quiz
 from .error_routes import not_found, forbidden
+from .quiz import Quiz
+from .question import MultiChoiceQuestion, IntSliderQuestion, FloatSliderQuestion
 
 
 quiz = Blueprint("quiz", __name__)
@@ -100,11 +101,17 @@ def submit_create_quiz():
     """
     Called when the quiz create form has been submitted.
     """
-    title = request.form.get("title")
-    encoded_text = request.form.get("encoded_text")
-    quiz = Quiz.parse(-1, title, current_user, encoded_text)
+    # Stores any errors that happen during parsing.
+    errors = []
 
-    # Create the quiz!
+    # Parse the quiz from the form.
+    quiz = Quiz.from_form(current_user, request.form, errors)
+    if len(errors) > 0:
+        for error in errors:
+            flash(error)
+        return create_quiz()
+
+    # Create the quiz in the database.
     errors = create_db_quiz(quiz)
     if len(errors) > 0:
         for error in errors:
