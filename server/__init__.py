@@ -49,8 +49,10 @@ def create_app():
 
     # Make sure all database tables are created.
     from .user_model import User
-    from .quiz_model import Quiz
-    from .quiz_model import QuizQuestion
+    from .quiz_model import DBQuizQuestion
+    from .quiz_model import DBQuizCategoryAnswerSpec
+    from .quiz_model import DBQuizCategory
+    from .quiz_model import DBQuiz
     with app.app_context():
         db.create_all()
 

@@ -22,11 +22,15 @@ def home():
 def profile(user_id):
     """ A profile page for each user. """
     user = load_user(user_id)
+    if user is None:
+        flash("The user you were looking for could not be found.")
+        return not_found()
+
     return render_template(
         "profile.html",
         title=user.name + "'s Profile",
         name=user.name,
-        quizzes=user.quizzes
+        quizzes=user.get_quizzes()
     )
 
 

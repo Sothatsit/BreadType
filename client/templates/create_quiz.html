@@ -24,9 +24,9 @@
         <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ previous.get('title', '') }}">
     </div>
 
-    <label for="questions"><h2>Questions</h2></label>
+    <label for="encoded_text"><h2>Quiz Spec</h2></label>
     <div class="text-field">
-        <textarea name="questions" id="questions" placeholder="multi(A,B,C)">{{ previous.get("questions", "") }}</textarea>
+        <textarea name="encoded_text" id="encoded_text">{{ previous.get("questions", "") }}</textarea>
     </div>
 
     <input type="submit" value="Create">
