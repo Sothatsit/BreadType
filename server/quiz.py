@@ -139,6 +139,12 @@ class Quiz:
         for key, value in form.items():
             print(key + " = " + value)
 
+        # Get the categories of the quiz from the form.
+        categories = []
+        for i in range(4):
+            category = form.get("category_{}".format(i+1))
+            categories.append(category)
+
         # Get the questions of the quiz out of the form.
         questions = []
         question_number = 0
