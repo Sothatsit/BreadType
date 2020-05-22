@@ -103,6 +103,9 @@ class Question:
     @staticmethod
     def parse_many(text_questions):
         """
+        !! This all needs to be changed now. Answers are not yet implemented but they will be in a similar format to how questions are given.
+        !! I've written how the questions should be provided (I think) in each of the other parsing question so I remember and potensh
+        !! so someone can help me. A thank ya - Sam, 2020
         Parses a multi-line set of questions.
 
         Format:
@@ -200,6 +203,8 @@ class MultiChoiceQuestion(Question):
     @staticmethod
     def parse(text, args):
         """
+        !! Format should now be question is given as name="Question_(num)" i.e. q1 is name="Question_1"
+        !! Actual answers are given per question as name="multi_(question_num)_(option_num)" i.e. option 4 in question 6 is "multi_6_4"
         Parses a multi-choice question.
 
         Format:
@@ -258,6 +263,8 @@ class FloatSliderQuestion(Question):
     @staticmethod
     def parse(text, args):
         """
+        !! Format should now be question is given as name="Question_(num)" i.e. q1 is name="Question_1"
+        !! Actual answers are given as name="float_slider_(question_num)_min" and "float_slider_(question_num)_max"
         Parses a slider question.
 
         Format:
@@ -319,6 +326,8 @@ class IntSliderQuestion(Question):
     @staticmethod
     def parse(text, args):
         """
+        !! Format should now be question is given as name="Question_(num)" i.e. q1 is name="Question_1"
+        !! Actual answers are given as name="int_slider(question_num)_min", "int_slider_(question_num)_max" and "int_slider_(question_num)_step"
         Parses a discrete slider question.
 
         Format:

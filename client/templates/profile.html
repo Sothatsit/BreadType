@@ -22,6 +22,9 @@
         <tr>
             <th>Number</th>
             <th>Name</th>
+            {% if current_user.is_authenticated and current_user.name == name %}
+                <th>Edit</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -29,6 +32,9 @@
         <tr>
             <td>{{ quiz.id }}</td>
             <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
+            {% if current_user.is_authenticated and current_user.name == name %}
+                <td><a href="/quiz/{{ quiz.id }}/edit">Edit</a></td>
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>
