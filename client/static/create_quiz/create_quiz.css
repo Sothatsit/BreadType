@@ -6,7 +6,11 @@ body {
     line-height: 2em;
 }
 
+.categories {
+    width: 50%;
+}
 
+/* Category isn't overriding the base.css for some reason???*/
 
 /*
  * Decoration for the titles in the page.
@@ -27,6 +31,31 @@ body {
     margin-bottom: 15px;
 }
 
+
+/*
+ * Decoration for checbox related content.
+ */
+
+.bread_check {
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-top: 15px;
+    float: right;
+    transform: scale(2);
+}
+
+.clear {
+    clear: both;
+}
+
+.check_label {
+    text-orientation: mixed;
+    writing-mode: vertical-lr;
+    float: right;
+    font-size: 20px;
+    margin-left: 8px;
+    margin-right: 5px;
+}
 
 
 /*
