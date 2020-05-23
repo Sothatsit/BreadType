@@ -24,15 +24,14 @@ def login():
 def login_post():
     email = request.form.get("email")
     password = request.form.get("password")
-    remember = True if request.form.get("remember") else False
+    remember = True if request.form.get("remember", False) else False
 
     user = load_user_by_email(email)
 
-    # check if user actually exists
-    # take the user supplied password, hash it, and compare it to the hashed password in database
+    # Check that the user exists, and that their password matches.
     if not user or not check_password_hash(user.password, password):
         flash("Please check your login details and try again.")
-        return redirect(url_for('auth.login')) # if user doesn't exist or password is wrong, reload the page
+        return redirect(url_for('auth.login'))
 
     # Register that the user is logged in with the session manager.
     login_user(user, remember=remember)

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- The stylesheet specific to this page. -->
+<link type="text/css" rel="stylesheet" href="/error/error.css" />
+<!-- The code specific to this page. -->
+<script src="/error/error.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<br/>
+<h1>
+    {{ category.name }}
+</h1>
+<br/>
+<p>
+    {% for category, score in category_scores.items() %}
+        <div>
+            {{ category.name }}: {{ "%.2f" % score }}
+        </div>
+    {% endfor %}
+</p>
+{% endblock %}

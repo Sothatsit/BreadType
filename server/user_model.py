@@ -64,4 +64,8 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(16), nullable=True)
 
     # The quizzes created by this user.
-    quizzes = db.relationship('Quiz', backref='user', lazy=True)
+    db_quizzes = db.relationship('DBQuiz', backref='user', lazy=True)
+
+    def get_quizzes(self):
+        """ Get the normal quiz objects that this user has created. """
+        return [db_quiz.get_quiz() for db_quiz in self.db_quizzes]

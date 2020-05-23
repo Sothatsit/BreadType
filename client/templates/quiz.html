@@ -11,16 +11,16 @@
 {% block content %}
 <br/>
 <h1>
-    {{ quiz_name }}
+    {{ quiz.name }}
 
     {% if can_edit_quiz %}
-    <a id="edit" href="{{ url_for('quiz.edit_quiz', quiz_id=quiz_id) }}">
+    <a id="edit" href="{{ url_for('quiz.edit_quiz', quiz_id=quiz.id) }}">
         <img src="/res/edit-icon.png" alt="Edit Quiz" \>
     </a>
     {% endif %}
 </h1>
-<form action="/quiz/{{ quiz_id }}" method="POST">
-    {% for index, question in questions %}
+<form action="/quiz/{{ quiz.id }}" method="POST">
+    {% for index, question in quiz.enumerated_questions %}
         <h2>
             {{ question.text }}
         </h2>

@@ -6,8 +6,9 @@ from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app, flash, request, redirect, url_for
 from .user_model import has_role
 from .quiz_model import load_quiz, load_all_quizzes, create_db_quiz, edit_db_quiz
-from .question_types import Question
 from .error_routes import not_found, forbidden
+from .quiz import Quiz
+from .question import MultiChoiceQuestion, IntSliderQuestion, FloatSliderQuestion
 
 
 quiz = Blueprint("quiz", __name__)
@@ -15,7 +16,7 @@ quiz = Blueprint("quiz", __name__)
 
 def can_edit_quiz(quiz):
     """ Returns whether the current user can edit the given quiz. """
-    return current_user.is_authenticated and (has_role("admin") or quiz.owner == current_user.id)
+    return current_user.is_authenticated and (has_role("admin") or quiz.owner.id == current_user.id)
 
 
 @quiz.route("/quiz/view")
@@ -24,11 +25,10 @@ def view_quiz():
     The page for viewing all currently created quizes
     """
     quizzes = load_all_quizzes()
-    owners = [quiz.load_owner_user() for quiz in quizzes]
     return render_template(
         "view_quiz.html",
         title="View Quiz",
-        zipped_quizzes_owners=list(zip(quizzes, owners)),
+        quizzes=quizzes,
         previous=request.form
     )
 
@@ -47,9 +47,7 @@ def take_quiz(quiz_id):
     return render_template(
         "quiz.html",
         title="Quiz",
-        quiz_name=quiz.name,
-        quiz_id=quiz.id,
-        questions=enumerate(quiz.get_questions()),
+        quiz=quiz,
         can_edit_quiz=can_edit_quiz(quiz)
     )
 
@@ -64,14 +62,24 @@ def submit_quiz(quiz_id):
         flash("The quiz you were looking for could not be found.")
         return not_found()
 
-    # Extract the answers the user selected.
-    answers = []
-    for index, question in enumerate(quiz.get_questions()):
-        answers.append(question.get_answer_from_form(request.form, index))
+    # Score the user's responses against the categories.
+    category_scores = quiz.score_responses(request.form)
 
-    # For now, just return the results using the not_found page for testing.
-    flash("Your answers: " + ", ".join(["None" if a is None else a for a in answers]))
-    return not_found()
+    # Find the maximum scoring category.
+    max_category = None
+    max_category_score = None
+    for category, score in category_scores.items():
+        if max_category is None or score > max_category_score:
+            max_category = category
+            max_category_score = score
+
+    # Render the results page.
+    return render_template(
+        "quiz_results.html",
+        title="Your Results",
+        category=max_category,
+        category_scores=category_scores
+    )
 
 
 @quiz.route("/quiz/create")
@@ -93,36 +101,21 @@ def submit_create_quiz():
     """
     Called when the quiz create form has been submitted.
     """
-    title = request.form.get("title")
-    questions = Question.parse_many(request.form.get("questions"))
+    # Stores any errors that happen during parsing.
+    errors = []
 
-    # Check that a title has been supplied.
-    if len(title) == 0:
-        flash("Please enter a title.")
+    # Parse the quiz from the form.
+    quiz = Quiz.from_form(current_user, request.form, errors)
+    if len(errors) > 0:
+        for error in errors:
+            flash(error)
         return create_quiz()
 
-    # Check that at least one question has been supplied.
-    if len(questions) == 0:
-        flash("Please enter some questions.")
-        return create_quiz()
-
-    # Check for any invalid questions.
-    any_invalid = False
-    for index, question in enumerate(questions):
-        if question.is_valid:
-            continue
-
-        any_invalid = True
-        flash("Could not parse question {}: {}".format(index, question.error))
-
-    # If there were any parsing errors, report them to the user.
-    if any_invalid:
-        return create_quiz()
-
-    # Create the quiz!
-    quiz = create_db_quiz(current_user.id, title, questions)
-    if quiz is None:
-        flash("There was an error creating the quiz.")
+    # Create the quiz in the database.
+    errors = create_db_quiz(quiz)
+    if len(errors) > 0:
+        for error in errors:
+            flash(error)
         return create_quiz()
 
     # Take the user to the quiz they created.
@@ -138,7 +131,7 @@ def render_edit_quiz(quiz):
         title="Edit Quiz",
         quiz_id=quiz.id,
         quiz_title=request.form.get("title", quiz.name),
-        questions_text=request.form.get("questions", quiz.get_questions_text())
+        questions_text=request.form.get("encoded_text", quiz.encode())
     )
 
 
@@ -148,7 +141,6 @@ def edit_quiz(quiz_id):
     """
     The page for taking the quiz with the given quiz id.
     """
-
     # Find the quiz.
     quiz = load_quiz(quiz_id)
     if quiz is None:
@@ -171,45 +163,27 @@ def submit_edit_quiz(quiz_id):
     Called when the user has submitted changes to the quiz.
     """
     # Find the quiz.
-    quiz = load_quiz(quiz_id)
-    if quiz is None:
+    old_quiz = load_quiz(quiz_id)
+    if old_quiz is None:
         flash("The quiz you were looking for could not be found.")
         return not_found()
 
     # Check that the user has permission to edit this quiz.
-    if not can_edit_quiz(quiz):
+    if not can_edit_quiz(old_quiz):
         flash("You do not have permission to edit this quiz.")
         return forbidden()
 
     # Get the fields that the user may have changed.
     title = request.form.get("title")
-    questions = Question.parse_many(request.form.get("questions"))
+    encoded_text = request.form.get("encoded_text")
+    new_quiz = Quiz.parse(-1, title, current_user, encoded_text)
 
-    # Check that a title has been supplied.
-    if len(title) == 0:
-        flash("Please enter a title.")
-        return render_edit_quiz(quiz)
-
-    # Check that at least one question has been supplied.
-    if len(questions) == 0:
-        flash("Please enter some questions.")
-        return render_edit_quiz(quiz)
-
-    # Check for any invalid questions.
-    any_invalid = False
-    for index, question in enumerate(questions):
-        if question.is_valid:
-            continue
-
-        any_invalid = True
-        flash("Could not parse question {}: {}".format(index, question.error))
-
-    # If there were any parsing errors, report them to the user.
-    if any_invalid:
-        return render_edit_quiz(quiz)
-
-    # Update the quiz.
-    quiz = edit_db_quiz(quiz, title, questions)
+    # Update the quiz!
+    errors = edit_db_quiz(old_quiz, new_quiz)
+    if len(errors) > 0:
+        for error in errors:
+            flash(error)
+        return render_edit_quiz(old_quiz)
 
     # Take the user to the edited quiz.
-    return redirect(url_for("quiz.take_quiz", quiz_id=quiz.id))
+    return redirect(url_for("quiz.take_quiz", quiz_id=old_quiz.id))

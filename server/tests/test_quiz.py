@@ -2,7 +2,7 @@
 # Some question tests.
 #
 
-from ..quiz import parse_question, MalformedQuestion, MultiChoiceQuestion, SliderQuestion
+from ..question import parse_question, MalformedQuestion, MultiChoiceQuestion, SliderQuestion
 
 
 

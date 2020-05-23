@@ -5,7 +5,6 @@
 <link type="text/css" rel="stylesheet" href="/view_quiz/view_quiz.css" />
 <!-- The code specific to this page. -->
 <script src="/view_quiz/view_quiz.js"></script>
-
 {% endblock %}
 
 {% block content %}
@@ -22,12 +21,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for quiz, owner in zipped_quizzes_owners %}
+            {% for quiz in quizzes %}
             <div>
             <tr>
                 <td>{{ quiz.id }}</td>
                 <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
-                <td><a href="/profile/{{ owner.id }}">{{ owner.name }}</a></td>
+                <td><a href="/profile/{{ quiz.owner.id }}">{{ quiz.owner.name }}</a></td>
             </tr>
             </div>
             {% endfor %}
