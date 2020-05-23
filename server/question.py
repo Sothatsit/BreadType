@@ -14,6 +14,21 @@ class AnswerSpec:
         self.question = question
         self.scoring_function = scoring_function
 
+        # The db answer spec associated with this question.
+        self.db_answer_spec = None
+
+    def get_db_answer_spec(self):
+        """ Get the db answer spec associated with this answer spec, or None. """
+        return self.db_answer_spec
+
+    def set_db_answer_spec(self, db_answer_spec):
+        """ Set the db answer spec associated with this answer spec. """
+        self.db_answer_spec = db_answer_spec
+
+    def __eq__(self, other):
+        """ Check that this question is identical to other. """
+        return self.question == other.question and self.scoring_function == other.scoring_function
+
     def __hash__(self):
         """ Hashes this answer spec so it can be used in dictionaries. """
         return hash(id(self))
@@ -31,6 +46,17 @@ class Question:
 
         # Whether the question can be displayed to the user.
         self.is_valid = is_valid
+
+        # The db question associated with this question.
+        self.db_question = None
+
+    def get_db_question(self):
+        """ Get the db question associated with this question, or None. """
+        return self.db_question
+
+    def set_db_question(self, db_question):
+        """ Set the db question associated with this question. """
+        self.db_question = db_question
 
     def encode(self):
         """ Encode this question into a string to store in the database. """
@@ -99,6 +125,14 @@ class Question:
         return MalformedQuestion(
             text, "Unknown question type \"" + question_type + "\" for encoded question: " + encoded_question
         )
+
+    @staticmethod
+    def find(questions, find_question):
+        """ Find a question that equals find_question in the given list and return it, else return None. """
+        for question in questions:
+            if question == find_question:
+                return question
+        return None
 
 
 class MalformedQuestion(Question):

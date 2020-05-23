@@ -20,6 +20,17 @@ class Quiz:
         self.enumerated_questions = enumerate(questions)
         self.enumerated_categories = enumerate(categories)
 
+        # The db quiz associated with this question.
+        self.db_quiz = None
+
+    def get_db_quiz(self):
+        """ Get the db quiz associated with this quiz, or None. """
+        return self.db_quiz
+
+    def set_db_quiz(self, db_quiz):
+        """ Set the db quiz associated with this quiz. """
+        self.db_quiz = db_quiz
+
     def score_responses(self, form):
         """ Score the user's responses to this quiz. """
         category_scores = {}
@@ -228,6 +239,17 @@ class Category:
         self.name = name
         self.answer_specs = answer_specs
 
+        # The db category associated with this question.
+        self.db_category = None
+
+    def get_db_category(self):
+        """ Get the db category associated with this category, or None. """
+        return self.db_category
+
+    def set_db_category(self, db_category):
+        """ Set the db category associated with this category. """
+        self.db_category = db_category
+
     def get_answer_spec(self, question):
         """ Get the answer spec for the given question. """
         for answer_spec in self.answer_specs:
@@ -246,3 +268,11 @@ class Category:
     def __hash__(self):
         """ Hashes this category so it can be used in dictionaries. """
         return hash(id(self))
+
+    @staticmethod
+    def find_by_name(categories, category_name):
+        """ Find a category with the given name in the given list, else returns None. """
+        for category in categories:
+            if category.name == category_name:
+                return category
+        return None
