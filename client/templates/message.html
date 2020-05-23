@@ -2,27 +2,27 @@
 
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/error/error.css" />
+<link type="text/css" rel="stylesheet" href="/message/message.css" />
 <!-- The code specific to this page. -->
-<script src="/error/error.js"></script>
+<script src="/message/message.js"></script>
 {% endblock %}
 
 
 {% block content %}
 <br/>
 <h1>
-    {{ error_title }}
+    {{ message_title }}
 </h1>
 <br/>
 <p>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
         <br/>
-        <div id="login_error">
+        <div id="message">
             {{ messages[0] }}
         </div>
     {% else %}
-        {{ error_message }}
+        {{ backup_message }}
     {% endif %}
     {% endwith %}
 </p>

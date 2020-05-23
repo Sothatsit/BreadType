@@ -5,8 +5,8 @@ Manages the routes for the quiz entry-points to the website.
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app, flash, request, redirect, url_for
 from .user_model import has_role
-from .quiz_model import load_quiz, load_all_quizzes, create_db_quiz, edit_db_quiz
-from .error_routes import not_found, forbidden
+from .quiz_model import load_quiz, load_all_quizzes, create_db_quiz, edit_db_quiz, delete_db_quiz
+from .error_routes import not_found, forbidden, message_page
 from .quiz import Quiz
 from .question import MultiChoiceQuestion, IntSliderQuestion, FloatSliderQuestion
 
@@ -187,3 +187,33 @@ def submit_edit_quiz(quiz_id):
 
     # Take the user to the edited quiz.
     return redirect(url_for("quiz.take_quiz", quiz_id=old_quiz.id))
+
+
+@quiz.route("/quiz/<int:quiz_id>/delete")
+@login_required
+def delete_quiz(quiz_id):
+    """
+    If a user navigates to this page and has permission, deletes the quiz.
+    """
+    # Find the quiz.
+    quiz = load_quiz(quiz_id)
+    if quiz is None:
+        flash("The quiz you were looking for could not be found.")
+        return not_found()
+
+    # Check that the user has permission to edit this quiz.
+    if not can_edit_quiz(quiz):
+        flash("You do not have permission to delete this quiz.")
+        return forbidden()
+
+    # Delete the quiz.
+    errors = delete_db_quiz(quiz)
+    if len(errors) > 0:
+        for error in errors:
+            flash(error)
+        return message_page("Error deleting quiz")
+
+    # Tell the user the quiz has been deleted.
+    message = "The quiz \"{}\" has been deleted.".format(quiz.name)
+    return message_page("Quiz Deleted", message)
+

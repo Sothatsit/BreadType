@@ -6,11 +6,11 @@ body {
     line-height: 2em;
 }
 
-#error {
+#message {
     text-align: center;
     font-size: 1.3em;
 }
 
-#error p {
+#message p {
     font-size: 1.3em;
 }

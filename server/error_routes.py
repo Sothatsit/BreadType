@@ -18,15 +18,23 @@ def register_error_handlers(app):
     app.register_error_handler(404, not_found)
 
 
+def message_page(message_title, backup_message):
+    """
+    Renders the message page with the given title,
+    and the given message if no messaged have been flashed.
+    """
+    return render_template(
+        "message.html",
+        title=message_title,
+        message_title=message_title,
+        backup_message=backup_message
+    )
+
+
 def error_page(error_code, error_name, error_message):
     """ Renders the error page for the given error. """
     error_title = str(error_code) + ": " + error_name
-    template = render_template(
-        "error.html",
-        title=error_name,
-        error_title=error_title,
-        error_message=error_message
-    )
+    template = message_page(error_title, error_message)
     return template, error_code
 
 

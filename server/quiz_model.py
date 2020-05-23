@@ -21,6 +21,67 @@ def load_all_quizzes():
     return [db_quiz.get_quiz() for db_quiz in db_quizzes]
 
 
+def create_db_quiz(quiz):
+    """ Creates a quiz in the database. """
+    errors = check_quiz(quiz)
+    if len(errors) > 0:
+        return errors
+
+    # Create the quiz and add it to the database.
+    db_quiz = DBQuiz(
+        owner=quiz.owner.id,
+        name=quiz.name
+    )
+    quiz.set_db_quiz(db_quiz)
+    db.session.add(db_quiz)
+    db.session.commit()
+
+    # Add all of the contents of the quiz to the database.
+    update_quiz_in_db(None, quiz)
+    return errors
+
+
+def edit_db_quiz(old_quiz, new_quiz):
+    """ Edits a quiz in the database. """
+    errors = check_quiz(new_quiz)
+    if len(errors) > 0:
+        return errors
+
+    # Update the contents of the quiz in the database.
+    update_quiz_in_db(old_quiz, new_quiz)
+    return errors
+
+
+def delete_db_quiz(quiz):
+    """
+    Deletes a quiz from the database.
+    CAUTION: This is not reversible.
+    """
+    errors = []
+
+    # Update the quiz to nothing to remove it.
+    update_quiz_in_db(quiz, None)
+
+    # Delete the quiz itself.
+    db.session.delete(quiz.get_db_quiz())
+    db.session.commit()
+    return errors
+
+
+def check_quiz(quiz):
+    """ Checks a quiz for errors. """
+    errors = []
+    if len(quiz.name) == 0:
+        errors.append("Please enter a title.")
+    if len(quiz.questions) == 0:
+        errors.append("Please enter some questions.")
+    for index, question in enumerate(quiz.questions):
+        if question.is_valid:
+            continue
+        errors.append("Could not parse question {}: {}".format(index, question.error))
+    return errors
+
+
 def diff_quiz_questions(old_quiz, new_quiz):
     """
     Determines the questions that were added and removed from each quiz.
@@ -33,6 +94,9 @@ def diff_quiz_questions(old_quiz, new_quiz):
     # If there is no old quiz, then all the questions must be added.
     if old_quiz is None:
         return new_quiz.questions, []
+    # If there is no new quiz, then all the questions should be removed.
+    if new_quiz is None:
+        return [], old_quiz.questions
 
     # Initialise these lists as all the questions that could
     # have been added or removed, and then narrow it down later.
@@ -69,6 +133,9 @@ def diff_quiz_categories(old_quiz, new_quiz):
     # If there is no old quiz, then all the categories must be added.
     if old_quiz is None:
         return new_quiz.categories, []
+    # If there is no new quiz, then all the categories should be removed.
+    if new_quiz is None:
+        return [], old_quiz.categories
 
     # Initialise these lists as all the categories that could
     # have been added or removed, and then narrow it down later.
@@ -113,9 +180,10 @@ def update_quiz_questions_in_db(db_quiz, old_quiz, new_quiz):
         question.set_db_question(db_question)
         db.session.add(db_question)
 
-    # Update the order index for each question.
-    for index, question in enumerate(new_quiz.questions):
-        question.get_db_question().index = index
+    if new_quiz is not None:
+        # Update the order index for each question.
+        for index, question in enumerate(new_quiz.questions):
+            question.get_db_question().index = index
 
 
 def update_quiz_category_answer_specs_in_db(old_category, new_category):
@@ -126,18 +194,19 @@ def update_quiz_category_answer_specs_in_db(old_category, new_category):
             db.session.delete(answer_spec.get_db_answer_spec())
 
     # Add all of the new answer specs.
-    for answer_spec in new_category.answer_specs:
-        # Get the db question associated with this answer spec.
-        db_question = answer_spec.question.get_db_question()
+    if new_category is not None:
+        for answer_spec in new_category.answer_specs:
+            # Get the db question associated with this answer spec.
+            db_question = answer_spec.question.get_db_question()
 
-        # Create the new answer spec in the database.
-        db_answer_spec = DBQuizCategoryAnswerSpec(
-            category_id=new_category.get_db_category().id,
-            question_id=db_question.id,
-            encoded_spec=answer_spec.scoring_function.encode()
-        )
-        answer_spec.set_db_answer_spec(db_answer_spec)
-        db.session.add(db_answer_spec)
+            # Create the new answer spec in the database.
+            db_answer_spec = DBQuizCategoryAnswerSpec(
+                category_id=new_category.get_db_category().id,
+                question_id=db_question.id,
+                encoded_spec=answer_spec.scoring_function.encode()
+            )
+            answer_spec.set_db_answer_spec(db_answer_spec)
+            db.session.add(db_answer_spec)
 
 
 def update_quiz_categories_in_db(db_quiz, old_quiz, new_quiz):
@@ -149,7 +218,7 @@ def update_quiz_categories_in_db(db_quiz, old_quiz, new_quiz):
     for category in categories_to_remove:
         for answer_spec in category.answer_specs:
             db.session.delete(answer_spec.get_db_answer_spec())
-        db.session.delete(category.get_db_question())
+        db.session.delete(category.get_db_category())
 
     # Add all the new categories of the quiz to the database.
     for category in categories_to_add:
@@ -164,27 +233,30 @@ def update_quiz_categories_in_db(db_quiz, old_quiz, new_quiz):
     db.session.commit()
 
     # Update the answer specs for all of the categories.
-    for new_category in new_quiz.categories:
-        # Find the old category that changed into this new category.
-        if old_quiz is not None:
-            old_category = Category.find_by_name(old_quiz.categories, new_category.name)
-        else:
-            old_category = None
+    if new_quiz is not None:
+        for new_category in new_quiz.categories:
+            # Find the old category that changed into this new category.
+            if old_quiz is not None:
+                old_category = Category.find_by_name(old_quiz.categories, new_category.name)
+            else:
+                old_category = None
 
-        # Update all of the answer specs of the category.
-        update_quiz_category_answer_specs_in_db(old_category, new_category)
+            # Update all of the answer specs of the category.
+            update_quiz_category_answer_specs_in_db(old_category, new_category)
 
 
 def update_quiz_in_db(old_quiz, new_quiz):
     """ Populates a quiz with the given categories and questions. """
     # Get the db quiz we are editing.
     db_quiz = old_quiz.get_db_quiz()
-    new_quiz.set_db_quiz(db_quiz)
 
-    # Make sure the ID of the quiz object is up to date with the ID in the database.
-    new_quiz.id = db_quiz.id
-    # Make sure the title of the quiz is up to date with the title of the quiz in the database.
-    db_quiz.name = new_quiz.name
+    if new_quiz is not None:
+        # Update the db quiz associated with the new quiz.
+        new_quiz.set_db_quiz(db_quiz)
+        # Make sure the ID of the quiz object is up to date with the ID in the database.
+        new_quiz.id = db_quiz.id
+        # Make sure the title of the quiz is up to date with the title of the quiz in the database.
+        db_quiz.name = new_quiz.name
 
     # Update the questions in the database.
     update_quiz_questions_in_db(db_quiz, old_quiz, new_quiz)
@@ -194,51 +266,6 @@ def update_quiz_in_db(old_quiz, new_quiz):
 
     # Commit all of the changes we made.
     db.session.commit()
-
-
-def check_quiz(quiz):
-    """ Checks a quiz for errors. """
-    errors = []
-    if len(quiz.name) == 0:
-        errors.append("Please enter a title.")
-    if len(quiz.questions) == 0:
-        errors.append("Please enter some questions.")
-    for index, question in enumerate(quiz.questions):
-        if question.is_valid:
-            continue
-        errors.append("Could not parse question {}: {}".format(index, question.error))
-    return errors
-
-
-def create_db_quiz(quiz):
-    """ Creates a quiz in the database. """
-    errors = check_quiz(quiz)
-    if len(errors) > 0:
-        return errors
-
-    # Create the quiz and add it to the database.
-    db_quiz = DBQuiz(
-        owner=quiz.owner.id,
-        name=quiz.name
-    )
-    quiz.set_db_quiz(db_quiz)
-    db.session.add(db_quiz)
-    db.session.commit()
-
-    # Add all of the contents of the quiz to the database.
-    update_quiz_in_db(None, quiz)
-    return errors
-
-
-def edit_db_quiz(old_quiz, new_quiz):
-    """ Edits a quiz in the database. """
-    errors = check_quiz(new_quiz)
-    if len(errors) > 0:
-        return errors
-
-    # Update the contents of the quiz in the database.
-    update_quiz_in_db(old_quiz, new_quiz)
-    return errors
 
 
 class DBQuiz(db.Model):
