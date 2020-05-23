@@ -4,7 +4,7 @@ their encoding/decoding from strings, and their formatting as HTML.
 """
 
 from .encoding import parse_function, encode_function
-from .scoring_function import ScoringFunction
+from .scoring_function import ScoringFunction, MultiScoringFunction, GaussianScoringFunction
 
 
 class AnswerSpec:
@@ -13,6 +13,21 @@ class AnswerSpec:
     def __init__(self, question, scoring_function):
         self.question = question
         self.scoring_function = scoring_function
+
+        # The db answer spec associated with this question.
+        self.db_answer_spec = None
+
+    def get_db_answer_spec(self):
+        """ Get the db answer spec associated with this answer spec, or None. """
+        return self.db_answer_spec
+
+    def set_db_answer_spec(self, db_answer_spec):
+        """ Set the db answer spec associated with this answer spec. """
+        self.db_answer_spec = db_answer_spec
+
+    def __eq__(self, other):
+        """ Check that this question is identical to other. """
+        return self.question == other.question and self.scoring_function == other.scoring_function
 
     def __hash__(self):
         """ Hashes this answer spec so it can be used in dictionaries. """
@@ -31,6 +46,17 @@ class Question:
 
         # Whether the question can be displayed to the user.
         self.is_valid = is_valid
+
+        # The db question associated with this question.
+        self.db_question = None
+
+    def get_db_question(self):
+        """ Get the db question associated with this question, or None. """
+        return self.db_question
+
+    def set_db_question(self, db_question):
+        """ Set the db question associated with this question. """
+        self.db_question = db_question
 
     def encode(self):
         """ Encode this question into a string to store in the database. """
@@ -99,6 +125,14 @@ class Question:
         return MalformedQuestion(
             text, "Unknown question type \"" + question_type + "\" for encoded question: " + encoded_question
         )
+
+    @staticmethod
+    def find(questions, find_question):
+        """ Find a question that equals find_question in the given list and return it, else return None. """
+        for question in questions:
+            if question == find_question:
+                return question
+        return None
 
 
 class MalformedQuestion(Question):
@@ -180,7 +214,7 @@ class MultiChoiceQuestion(Question):
         return MultiChoiceQuestion(text, args)
 
     @staticmethod
-    def from_form(question_number, text, form, errors):
+    def from_form(question_number, question_text, question_weight, form, category_names, errors):
         """
         Parses a multi-choice question from the given form.
         """
@@ -191,8 +225,6 @@ class MultiChoiceQuestion(Question):
             option = form.get("question_{}_multi_choice_{}".format(question_number, option_number + 1), "")
             option_number += 1
 
-            print("option {}".format(option_number))
-
             if len(option) == 0:
                 errors.append("Missing text for option {} of multi-choice question {}".format(
                     option_number, question_number
@@ -202,7 +234,33 @@ class MultiChoiceQuestion(Question):
             options.append(option)
 
         # Create the multi-choice question.
-        return MultiChoiceQuestion(text, options)
+        question = MultiChoiceQuestion(question_text, options)
+
+        # Create the category scoring functions for this question out of the form.
+        category_scoring_functions = {}
+        # Find the scoring function for each category.
+        for category_index, category_name in enumerate(category_names):
+            category_number = category_index + 1
+
+            # Find the scoring for each option.
+            scores = []
+            for option_index in range(len(question.options)):
+                option_number = option_index + 1
+                checkbox_name = "question_{}_multi_choice_{}_category_{}".format(
+                    question_number, option_number, category_number
+                )
+                # If the checkbox is checked, give it a score of question_weight, else zero.
+                if checkbox_name in form:
+                    scores.append(question_weight)
+                else:
+                    scores.append(0)
+
+            # Create the scoring function from this set of scores.
+            scoring_function = MultiScoringFunction(scores)
+            category_scoring_functions[category_name] = scoring_function
+
+        # Return the question and its scoring.
+        return question, category_scoring_functions
 
 
 def create_slider_input_html(min_value, max_value, step, default_value, name):
@@ -291,7 +349,7 @@ class FloatSliderQuestion(Question):
         return FloatSliderQuestion(text, min_value, max_value)
 
     @staticmethod
-    def from_form(question_number, text, form, errors):
+    def from_form(question_number, question_text, question_weight, form, category_names, errors):
         """ Parse a continuous slider from the given form. """
         # Get the min and max from the form.
         min_text = form.get("question_{}_slider_min".format(question_number), "")
@@ -309,7 +367,7 @@ class FloatSliderQuestion(Question):
             return None
 
         # Create the slider question.
-        return FloatSliderQuestion(text, min_value, max_value)
+        return FloatSliderQuestion(question_text, min_value, max_value), None
 
 
 class IntSliderQuestion(Question):
@@ -384,7 +442,7 @@ class IntSliderQuestion(Question):
         return IntSliderQuestion(text, min_value, max_value)
 
     @staticmethod
-    def from_form(question_number, text, form, errors):
+    def from_form(question_number, question_text, question_weight, form, category_names, errors):
         """ Parse a discrete slider from the given form. """
         # Get the min and max from the form.
         min_text = form.get("question_{}_slider_min".format(question_number), "")
@@ -402,4 +460,4 @@ class IntSliderQuestion(Question):
             return None
 
         # Create the slider question.
-        return IntSliderQuestion(text, min_value, max_value)
+        return IntSliderQuestion(question_text, min_value, max_value), None

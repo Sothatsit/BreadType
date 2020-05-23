@@ -12,6 +12,13 @@ $(document).ready(function() {
         addQuestion(questionNumber);
         questionNumber += 1;
     });
+
+    // Updates the category name labels when the category names change.
+    var categoryInputs = $(".categories");
+    categoryInputs.change(updateCategoryNames);
+    categoryInputs.keyup(updateCategoryNames);
+    categoryInputs.keydown(updateCategoryNames);
+    categoryInputs.keypress(updateCategoryNames);
 });
 
 
@@ -62,31 +69,14 @@ function createRadioButton(radioName, text, onSelect, checked) {
 /**
  * Create a check button element.
  */
-function createCheckButton(checkName, text, checked) {
-    // The ID for this specific check button, used to link the label and input elements.
-    
-    // A lot of repeating of radio button creater so feel free to combine to one
-    // but tbh it works and i cant be bothered might do when i get it all working
-    var formattedText = text.replace(" ", "_").toLowerCase();
-    var inputID = `${checkName}_${formattedText}`;
-
+function createCheckButton(checkName) {
     // Create the radio button itself.
     var input = document.createElement("input");
     input.type = "checkbox";
-    input.checked = !!checked;
-    input.value = text;
-    input.name = `${checkName}_${formattedText}`;
-    input.id = inputID;
+    input.value = "Yes";
+    input.name = checkName;
     input.className = "bread_check";
-
-    // Create the label associated with the check button.
-    //var label = document.createElement("label");
-    //label.htmlFor = inputID;
-    //label.innerHTML = text;
-    //label.style = "float:right"
-
-    // Create a div to hold the input and label, and return it.
-    return createDiv("choice", [input]);
+    return input;
 }
 
 
@@ -180,6 +170,9 @@ function changeType(questionNumber, type) {
     var questionDiv = document.getElementById(`question_${questionNumber}`);
     var oldConfigDiv = document.getElementById(`question_${questionNumber}_config`);
     questionDiv.replaceChild(configDiv, oldConfigDiv);
+
+    // Make sure all of the category names are up to date.
+    updateCategoryNames();
 }
 
 
@@ -187,18 +180,14 @@ function changeType(questionNumber, type) {
  * Setup the config div for a multiple-choice question.
  */
 function setupMultiChoiceConfig(questionNumber, configDiv) {
-    // First find current bread names from boxes at top of page
-    var checkboxLabels = document.getElementsByClassName("categories");
-
-    for (var label_no = 0; label_no <4; ++label_no) {
-        // The bread names are placed above the multi choice boxes
-        var label = document.createElement("text")
-        label.innerText = checkboxLabels[label_no].value;
-        label.className = "check_label";
+    // The category names above each column of checkboxes.
+    for (var categoryNumber = 0; categoryNumber < 4; ++categoryNumber) {
+        var label = document.createElement("text");
+        label.className = `check_label category_${categoryNumber}_name`;
         configDiv.appendChild(label);
     }
 
-    // Clears away the floating from checbox labels
+    // Clears away the floating from checkbox labels.
     var clearBreak = document.createElement("br");
     clearBreak.className = "clear";
     configDiv.appendChild(clearBreak);
@@ -215,20 +204,41 @@ function setupMultiChoiceConfig(questionNumber, configDiv) {
         input.placeholder = `Multi-Choice Option ${index}`;
 
         // Another thing because stylesheet isn't overriding properly
-        input.style = "width:80%; float:left";
+        input.style = "width: 80%; float: left;";
 
         // Add in the checkboxes
-        breadTypeFormName = `question_${questionNumber}_${index}`
+        var checkNamePrefix = `question_${questionNumber}_multi_choice_${index}`;
         var breadTypeDiv = createDiv("bread_type", [
-            createCheckButton(breadTypeFormName, checkboxLabels[0].value),
-            createCheckButton(breadTypeFormName, checkboxLabels[1].value),
-            createCheckButton(breadTypeFormName, checkboxLabels[2].value),
-            createCheckButton(breadTypeFormName, checkboxLabels[3].value)
+            createCheckButton(`${checkNamePrefix}_category_1`),
+            createCheckButton(`${checkNamePrefix}_category_2`),
+            createCheckButton(`${checkNamePrefix}_category_3`),
+            createCheckButton(`${checkNamePrefix}_category_4`)
         ]);
 
         // Add the text field to the config div.
         configDiv.appendChild(input);
         configDiv.appendChild(breadTypeDiv);
+    }
+}
+
+
+/**
+ * Updates the labels that contain the name of the categories when the category names change.
+ */
+function updateCategoryNames() {
+    // First find current bread names from boxes at top of page
+    var categoryInputs = document.getElementsByClassName("categories");
+
+    // Update the name for each category.
+    for (var categoryNumber = 0; categoryNumber < categoryInputs.length; ++categoryNumber) {
+        var categoryName = categoryInputs[categoryNumber].value;
+
+        // Update all the labels that should contain this category name.
+        var labels = document.getElementsByClassName(`category_${categoryNumber}_name`);
+        for (var index = 0; index < labels.length; ++index) {
+            var label = labels[index];
+            label.innerText = categoryName;
+        }
     }
 }
 
