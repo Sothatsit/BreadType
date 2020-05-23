@@ -140,10 +140,18 @@ class Quiz:
             print(key + " = " + value)
 
         # Get the categories of the quiz from the form.
-        categories = []
-        for i in range(4):
-            category = form.get("category_{}".format(i+1))
-            categories.append(category)
+        category_names = []
+        category_answer_specs = {}
+        category_number = 0
+        while "category_{}_name".format(category_number + 1) in form:
+            category_name = form.get("category_{}_name".format(category_number + 1), "")
+            category_number += 1
+            if category_number == "":
+                errors.append("Please enter a category name for category {}".format(category_number))
+                continue
+
+            category_names.append(category_name)
+            category_answer_specs[category_name] = []
 
         # Get the questions of the quiz out of the form.
         questions = []
@@ -153,12 +161,18 @@ class Quiz:
             prefix = "question_{}".format(question_number + 1)
             question_number += 1
 
-            print("question {}".format(question_number))
-
             # Get the text of the question.
-            text = form.get(prefix + "_text", "")
-            if len(text) == 0:
+            question_text = form.get(prefix + "_text", "")
+            if len(question_text) == 0:
                 errors.append("Missing text for question {}".format(question_number))
+                continue
+
+            # Get the weighting of this question.
+            question_weight_str = form.get(prefix + "_weight", "1")
+            try:
+                question_weight = float(question_weight_str)
+            except ValueError:
+                errors.append("Expected question weight to be a number, not: {}".format(question_weight_str))
                 continue
 
             # Get the type of the question, and build the question accordingly.
@@ -166,21 +180,45 @@ class Quiz:
 
             # Parse the question based on its type.
             question = None
+            category_scoring_functions = None
             if question_type == "Multiple Choice":
-                question = MultiChoiceQuestion.from_form(question_number, text, form, errors)
+                question, category_scoring_functions = MultiChoiceQuestion.from_form(
+                    question_number, question_text, question_weight, form, category_names, errors
+                )
             elif question_type == "Discrete Slider":
-                question = IntSliderQuestion.from_form(question_number, text, form, errors)
+                question, category_scoring_functions = IntSliderQuestion.from_form(
+                    question_number, question_text, question_weight, form, category_names, errors
+                )
             elif question_type == "Continuous Slider":
-                question = FloatSliderQuestion.from_form(question_number, text, form, errors)
+                question, category_scoring_functions = FloatSliderQuestion.from_form(
+                    question_number, question_text, question_weight, form, category_names, errors
+                )
             else:
                 errors.append("Unknown question type {} for question {}".format(question_type, question_number))
+                continue
 
-            # Add the question.
+            # Register the question.
             if question is not None:
+                if category_scoring_functions is None:
+                    errors.append("Missing scoring functions for question {}".format(question_number))
+                    continue
+
+                # Add the question.
                 questions.append(question)
 
+                # Add its scoring functions for each category.
+                for category_name, scoring_function in category_scoring_functions.items():
+                    answer_spec = AnswerSpec(question, scoring_function)
+                    category_answer_specs[category_name].append(answer_spec)
+
+        # Create all of the categories.
+        categories = []
+        for category_name, answer_specs in category_answer_specs.items():
+            category = Category(category_name, answer_specs)
+            categories.append(category)
+
         # Create the quiz object.
-        return Quiz(-1, title, owner, questions, [])
+        return Quiz(-1, title, owner, questions, categories)
 
 
 class Category:

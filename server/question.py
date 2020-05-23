@@ -4,7 +4,7 @@ their encoding/decoding from strings, and their formatting as HTML.
 """
 
 from .encoding import parse_function, encode_function
-from .scoring_function import ScoringFunction
+from .scoring_function import ScoringFunction, MultiScoringFunction, GaussianScoringFunction
 
 
 class AnswerSpec:
@@ -180,7 +180,7 @@ class MultiChoiceQuestion(Question):
         return MultiChoiceQuestion(text, args)
 
     @staticmethod
-    def from_form(question_number, text, form, errors):
+    def from_form(question_number, question_text, question_weight, form, category_names, errors):
         """
         Parses a multi-choice question from the given form.
         """
@@ -191,8 +191,6 @@ class MultiChoiceQuestion(Question):
             option = form.get("question_{}_multi_choice_{}".format(question_number, option_number + 1), "")
             option_number += 1
 
-            print("option {}".format(option_number))
-
             if len(option) == 0:
                 errors.append("Missing text for option {} of multi-choice question {}".format(
                     option_number, question_number
@@ -202,7 +200,33 @@ class MultiChoiceQuestion(Question):
             options.append(option)
 
         # Create the multi-choice question.
-        return MultiChoiceQuestion(text, options)
+        question = MultiChoiceQuestion(question_text, options)
+
+        # Create the category scoring functions for this question out of the form.
+        category_scoring_functions = {}
+        # Find the scoring function for each category.
+        for category_index, category_name in enumerate(category_names):
+            category_number = category_index + 1
+
+            # Find the scoring for each option.
+            scores = []
+            for option_index in range(len(question.options)):
+                option_number = option_index + 1
+                checkbox_name = "question_{}_multi_choice_{}_category_{}".format(
+                    question_number, option_number, category_number
+                )
+                # If the checkbox is checked, give it a score of question_weight, else zero.
+                if checkbox_name in form:
+                    scores.append(question_weight)
+                else:
+                    scores.append(0)
+
+            # Create the scoring function from this set of scores.
+            scoring_function = MultiScoringFunction(scores)
+            category_scoring_functions[category_name] = scoring_function
+
+        # Return the question and its scoring.
+        return question, category_scoring_functions
 
 
 def create_slider_input_html(min_value, max_value, step, default_value, name):
@@ -291,7 +315,7 @@ class FloatSliderQuestion(Question):
         return FloatSliderQuestion(text, min_value, max_value)
 
     @staticmethod
-    def from_form(question_number, text, form, errors):
+    def from_form(question_number, question_text, question_weight, form, category_names, errors):
         """ Parse a continuous slider from the given form. """
         # Get the min and max from the form.
         min_text = form.get("question_{}_slider_min".format(question_number), "")
@@ -309,7 +333,7 @@ class FloatSliderQuestion(Question):
             return None
 
         # Create the slider question.
-        return FloatSliderQuestion(text, min_value, max_value)
+        return FloatSliderQuestion(question_text, min_value, max_value), None
 
 
 class IntSliderQuestion(Question):
@@ -384,7 +408,7 @@ class IntSliderQuestion(Question):
         return IntSliderQuestion(text, min_value, max_value)
 
     @staticmethod
-    def from_form(question_number, text, form, errors):
+    def from_form(question_number, question_text, question_weight, form, category_names, errors):
         """ Parse a discrete slider from the given form. """
         # Get the min and max from the form.
         min_text = form.get("question_{}_slider_min".format(question_number), "")
@@ -402,4 +426,4 @@ class IntSliderQuestion(Question):
             return None
 
         # Create the slider question.
-        return IntSliderQuestion(text, min_value, max_value)
+        return IntSliderQuestion(question_text, min_value, max_value), None
