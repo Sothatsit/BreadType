@@ -9,6 +9,7 @@
 
 
 {% block content %}
+
 <div>
     {% if current_user.is_authenticated and current_user.name == name %}
         Welcome, {{ name }}!
