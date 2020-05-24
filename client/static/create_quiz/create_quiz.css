@@ -44,6 +44,10 @@ input[type=checkbox].bread_check {
     transform: scale(2);
 }
 
+input[type=checkbox].bread_check:hover {
+    cursor: pointer;
+}
+
 .clear {
     clear: both;
 }
