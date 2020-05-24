@@ -87,10 +87,17 @@ class GaussianScoringFunction(ScoringFunction):
         centered on peak_x with a standard deviation of std_dev_x,
         and with a maximum value of score_magnitude.
         """
-        # Normalise to a peak at 0, with a std. dev. of 1
-        x = float(answer - self.peak_x) / self.std_dev_x
-        # Calculate the exponential decay function, and scale it by the desired magnitude.
-        return self.score_magnitude * math.exp(-x*x / 2.0)
+        scores = []
+        # Iterate through the provided peak_x list and calculate the
+        # score for each bread type from the question
+        for category_num in range(len(peak_x)):
+            # Normalise to a peak at 0, with a std. dev. of 1
+            x = float(answer - self.peak_x[category_num]) / self.std_dev_x
+            # Calculate the exponential decay function, and scale it by the desired magnitude.
+            score = self.score_magnitude * math.exp(-x*x / 2.0)
+            # Append to list of scores
+            scores.append(score)
+        return scores
 
     def encode_to_args(self):
         """ Encodes this scoring function into a list of arguments. """
@@ -103,6 +110,6 @@ class GaussianScoringFunction(ScoringFunction):
             raise ValueError("Expected three arguments: score_magnitude, peak_x, and std_dev_x")
 
         score_magnitude = float(args[0])
-        peak_x = float(args[1])
+        peak_x = list(args[1])
         std_dev_x = float(args[2])
         return GaussianScoringFunction(score_magnitude, peak_x, std_dev_x)
