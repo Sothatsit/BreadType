@@ -184,15 +184,19 @@ textarea {
     cursor: pointer;
 }
 
+.choice label {
+    margin: 0;
+}
+
 .choice:hover label {
-    color: #666;
+    color: #666666;
 }
 
 /** The radio button itself. **/
-input[type=radio] {
-    margin-right: 1em;
-    width: 2em;
-    height: 2em;
+.choice input[type=radio] {
+    margin: 0 5px 0 0;
+    width: 16px;
+    height: 16px;
 }
 
 

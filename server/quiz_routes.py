@@ -67,8 +67,9 @@ def submit_quiz(quiz_id):
     # Read the answers that the user gave from the form.
     answer_set = AnswerSet.read_from_form(current_user, quiz, request.form)
 
-    # Save the answers in the database.
-    save_answer_set(answer_set)
+    # Save the answers in the database if the user is logged in.
+    if current_user.is_authenticated:
+        save_answer_set(answer_set)
 
     # Score the user's responses against the categories.
     category_scores = answer_set.score_answers()

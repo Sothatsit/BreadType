@@ -247,7 +247,7 @@ function updateCategoryNames() {
  * Setup the config div for a discrete slider question.
  */
 function setupDiscreteSliderConfig(questionNumber, configDiv) {
-    setupSliderConfig(questionNumber, configDiv, true);
+    setupSliderConfig(questionNumber, configDiv);
 }
 
 
@@ -255,14 +255,14 @@ function setupDiscreteSliderConfig(questionNumber, configDiv) {
  * Setup the config div for a continuous slider question.
  */
 function setupContinuousSliderConfig(questionNumber, configDiv) {
-    setupSliderConfig(questionNumber, configDiv, false);
+    setupSliderConfig(questionNumber, configDiv);
 }
 
 
 /**
  * Setup the config div for a discrete or continuous slider question.
  */
-function setupSliderConfig(questionNumber, configDiv, showStep) {
+function setupSliderConfig(questionNumber, configDiv) {
     // The name prefix for all of the slider parameters.
     var paramNamePrefix = `question_${questionNumber}_slider`;
 
@@ -287,35 +287,15 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     var max_label = document.createElement("label");
     min_label.htmlFor = paramNamePrefix + "_min";
     max_label.htmlFor = paramNamePrefix + "_max";
-    min_label.innerHTML = "Enter the minimum value of the slider (0-10000)";
-    max_label.innerHTML = "Enter the maximum value of the slider (0-10000)";
+    min_label.innerHTML = "Minimum Value";
+    max_label.innerHTML = "Maximum Value";
 
     // Add all the elements to the config div.
+    configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(min);
     configDiv.appendChild(min_label);
     configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(max);
     configDiv.appendChild(max_label);
     configDiv.appendChild(document.createElement("br"));
-
-    if (showStep) {
-        // Create the step input.
-        var step = document.createElement("input");
-        step.type = "number";
-        step.min = "1";
-        step.max = "1000";
-        step.value = "1";
-        step.name = paramNamePrefix + "_step";
-        step.id = paramNamePrefix + "_step";
-
-        // Create the associated label with the step input.
-        var step_label = document.createElement("label");
-        step_label.htmlFor = paramNamePrefix + "_step";
-        step_label.innerHTML = "Enter the step of the slider (0-1000)";
-
-        // Add all the elements for the step config.
-        configDiv.appendChild(step);
-        configDiv.appendChild(step_label);
-        configDiv.appendChild(document.createElement("br"));
-    }
 }

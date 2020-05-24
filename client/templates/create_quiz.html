@@ -22,6 +22,56 @@
 {% endwith %}
 
 <form action="{{ url_for('quiz.create_quiz') }}" method="POST">
+
+    <div id="help">
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="help" data-toggle="modal" data-target="#myModal">?</button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h1 class="modal-title">How to create a quiz</h1>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>1.</b> Set the title of your quiz (e.g What type of bread are you?)
+                        </p>
+                        <br/>
+                        <p>
+                            <b>2.</b> Write four bread types (or wine, cheese, or book types!)
+                            that will correspond to the four possible categories people will be
+                            placed in based on the answers they submit.
+                        </p>
+                        <br/>
+                        <p>
+                            <b>3.</b> Create your questions by first selecting the style of question
+                            from a multiple choice question, a continuous slider, or a discrete slider.
+                            The options available, or the min and max values for the question can now
+                            be configured below the type selector.
+                        </p>
+                        <br/>
+                        <p>
+                            <b>4.</b> Add more questions by hitting the "Add Question" button,
+                            and repeat step 3 to configure them all as you like!
+                        </p>
+                        <br/>
+                        <p>
+                            <b>5.</b> Submit your quiz when you have finished creating questions.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="close_bottom" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="quiz_title">
         <label class="title" for="title">
             Quiz Title
@@ -71,44 +121,8 @@
     <br>
     
     <div class="button">
-        <input type="submit" value="Create">   
+        <input type="submit" value="Create Quiz">
     </div>
-    
-    
-    <div class="container">
-        <h2>Confused on how to make a quiz?</h2>
-        <!-- Trigger the modal with a button -->
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Help</button>
-      
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-          <div class="modal-dialog">
-          
-            <!-- Modal content-->
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Instructions</h4>
-              </div>
-              <div class="modal-body">
-                <p>Step 1. Add a title in Quiz Title(e.g What type of bread are you?</p>
-                <p>Step 2. Chose four bread types which will correspond to the four possible
-                     bread outcomes based on the answers you submit</p>
-                <p>Step 3. Choose your style of question between multiple choice,
-                     where you can assign a bread type that is most like the option for the question, or a discrete slider or a continous slider </p>
-                <p>Step 4. Add more questions and repeat step 3.</p>
-                <p>Step 5. Submit your quiz when you have finished creating questions</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-      </div>
-      
-</div>
 </form>
 
 {% endblock %}

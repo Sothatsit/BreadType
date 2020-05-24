@@ -10,7 +10,7 @@
 
 {% block content %}
 <br/>
-<h1>
+<h1 id="quiz_header">
     {{ quiz.name }}
 
     {% if can_edit_quiz %}
@@ -19,6 +19,12 @@
     </a>
     {% endif %}
 </h1>
+<h2 id="quiz_creator">
+    A quiz by
+    <a href="{{ url_for('main.profile', user_id=quiz.owner.id) }}">
+        {{ quiz.owner.name }}
+    </a>
+</h2>
 <form action="/quiz/{{ quiz.id }}" method="POST">
     <input type="hidden" name="answers_uuid" value="{{ answers_uuid }}">
 

@@ -33,10 +33,10 @@ body {
 
 
 /*
- * Decoration for checbox related content.
+ * Decoration for checkbox related content.
  */
 
-.bread_check {
+input[type=checkbox].bread_check {
     margin-left: 12px;
     margin-right: 12px;
     margin-top: 15px;
@@ -56,6 +56,17 @@ body {
     margin-left: 8px;
     margin-right: 5px;
 }
+
+
+
+/*
+ * Decoration for number input related content.
+ */
+input[type=number] {
+    width: 120px;
+    margin-right: 20px;
+}
+
 
 
 /*
@@ -109,26 +120,61 @@ body {
     opacity: 0.7;
 }
 
-/* styling for the help button to overide the bootstrap styling*/
-.btn {
-    padding-left: 15px;
-    padding-right: 15px;
-    height: 50px;
-    margin-top: 1em;
-    margin-bottom: 100px;
-    border-radius:0%;
-    background-color: #3A7734;
 
-    font-size: 1em;
+
+/*
+ * Decoration for the help button.
+ */
+#help {
+    height: 50px;
+}
+
+#help .modal-content {
+    text-align: left;
+}
+
+#help .modal-body {
+    font-size: 0.8em;
+}
+
+#help button {
+    float: right;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 34px;
+    border-radius: 0;
+    background-color: #1E90FF;
+
+    font-size: 0.8em;
     color: white;
     font-family: 'Montserrat', serif;
-    line-height: 1.2em;
+    line-height: 1em;
     box-sizing: border-box;
     border: none;
 }
 
+#help button.help {
+    width: 34px;
+}
 
-.btn:hover {
+#help button.close_bottom {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 40px;
+}
+
+#help button.close {
+    opacity: 0.8;
+    width: 34px;
+    background-color: black;
+}
+
+#help button:hover {
     cursor: pointer;
-    background-color: #1A5714;
+    background-color: #1873CC;
+}
+
+#help button.close:hover {
+    opacity: 1;
+    background-color: black;
 }

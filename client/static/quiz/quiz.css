@@ -25,3 +25,8 @@ h2 {
 #edit img {
     vertical-align: super;
 }
+
+#quiz_creator {
+    font-size: 30px;
+    margin-bottom: 40px;
+}
