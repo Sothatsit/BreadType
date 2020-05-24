@@ -5,3 +5,18 @@
 body {
     line-height: 2em;
 }
+
+#links {
+    margin-top: 60px;
+}
+
+#links a {
+    padding: 5px 10px;
+    margin-left: 20px;
+    background: black;
+    color: white;
+}
+
+#links a:hover {
+    color: pink;
+}

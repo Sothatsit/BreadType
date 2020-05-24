@@ -9,14 +9,13 @@
 
 {% block content %}
 
-<h1>All Quizes</h1>
+<h1>All Quizzes</h1>
 <br>
 <div>
     <table>
         <thead>
             <tr>
-                <th>Number</th>
-                <th>Name</th>
+                <th id="name_col">Quiz Name</th>
                 <th>Created By</th>
             </tr>
         </thead>
@@ -24,7 +23,6 @@
             {% for quiz in quizzes %}
             <div>
             <tr>
-                <td>{{ quiz.id }}</td>
                 <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
                 <td><a href="/profile/{{ quiz.owner.id }}">{{ quiz.owner.name }}</a></td>
             </tr>
