@@ -177,6 +177,13 @@ def update_quiz_questions_in_db(db_quiz, old_quiz, new_quiz):
             for answer_spec in category.answer_specs:
                 if question == answer_spec.question:
                     db.session.delete(answer_spec.get_db_answer_spec())
+
+        # Delete the user answers dependent on this question.
+        from .user_model import DBUserAnswer
+        answers_to_delete = DBUserAnswer.query.filter_by(question_id=question.get_db_question().id).all()
+        for answer_to_delete in answers_to_delete:
+            db.session.delete(answers_to_delete)
+
         # Delete the question itself.
         db.session.delete(question.get_db_question())
 
