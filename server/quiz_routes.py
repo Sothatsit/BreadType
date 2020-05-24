@@ -2,12 +2,13 @@
 Manages the routes for the quiz entry-points to the website.
 """
 
+import uuid
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app, flash, request, redirect, url_for
-from .user_model import has_role
+from .user_model import has_role, save_answer_set
 from .quiz_model import load_quiz, load_all_quizzes, create_db_quiz, edit_db_quiz, delete_db_quiz
 from .error_routes import not_found, forbidden, message_page
-from .quiz import Quiz
+from .quiz import Quiz, AnswerSet
 from .question import MultiChoiceQuestion, IntSliderQuestion, FloatSliderQuestion
 
 
@@ -48,7 +49,8 @@ def take_quiz(quiz_id):
         "quiz.html",
         title="Quiz",
         quiz=quiz,
-        can_edit_quiz=can_edit_quiz(quiz)
+        can_edit_quiz=can_edit_quiz(quiz),
+        answers_uuid=str(uuid.uuid4())
     )
 
 
@@ -62,22 +64,21 @@ def submit_quiz(quiz_id):
         flash("The quiz you were looking for could not be found.")
         return not_found()
 
-    # Score the user's responses against the categories.
-    category_scores = quiz.score_responses(request.form)
+    # Read the answers that the user gave from the form.
+    answer_set = AnswerSet.read_from_form(current_user, quiz, request.form)
 
-    # Find the maximum scoring category.
-    max_category = None
-    max_category_score = None
-    for category, score in category_scores.items():
-        if max_category is None or score > max_category_score:
-            max_category = category
-            max_category_score = score
+    # Save the answers in the database.
+    save_answer_set(answer_set)
+
+    # Score the user's responses against the categories.
+    category_scores = answer_set.score_answers()
+    best_category = answer_set.find_best_matching_category()
 
     # Render the results page.
     return render_template(
         "quiz_results.html",
         title="Your Results",
-        category=max_category,
+        category=best_category,
         category_scores=category_scores
     )
 

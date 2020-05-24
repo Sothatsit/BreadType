@@ -30,7 +30,8 @@ def profile(user_id):
         "profile.html",
         title=user.name + "'s Profile",
         name=user.name,
-        quizzes=user.get_quizzes()
+        quizzes=user.get_quizzes(),
+        answer_sets=user.get_answer_sets()
     )
 
 

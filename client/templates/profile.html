@@ -16,7 +16,32 @@
         Welcome to {{ name }}'s profile!
     {% endif %}
 </div>
-<div>
+
+{% if answer_sets|length > 0 %}
+<div id="answer_sets">
+    <h2>{{ "Your" if current_user.is_authenticated and current_user.name == name else name + "'s" }} Answers</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Quiz</th>
+            <th>Category</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for answer_set in answer_sets %}
+        <tr>
+            <td><a href="/quiz/{{ answer_set.quiz.id }}">{{ answer_set.quiz.name }}</a></td>
+            <td>{{ answer_set.find_best_matching_category().name }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if quizzes|length > 0 %}
+<div id="quizzes">
+    <h2>{{ "Your" if current_user.is_authenticated and current_user.name == name else name + "'s" }} Quizzes</h2>
     <table>
         <thead>
         <tr>
@@ -32,12 +57,19 @@
         <tr>
             <td>{{ quiz.id }}</td>
             <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
+
             {% if current_user.is_authenticated and current_user.name == name %}
-                <td><a href="/quiz/{{ quiz.id }}/edit">Edit</a></td>
+                <td>
+                    <a id="edit" href="{{ url_for('quiz.edit_quiz', quiz_id=quiz.id) }}">
+                        <img src="/res/edit-icon.png" alt="Edit Quiz">
+                    </a>
+                </td>
             {% endif %}
         </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
+{% endif %}
+
 {% endblock %}

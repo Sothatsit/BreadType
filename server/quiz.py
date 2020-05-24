@@ -2,6 +2,7 @@
 Holds the server classes for representing quizzes and their categories.
 """
 
+import uuid
 from .question import Question, AnswerSpec, MultiChoiceQuestion, IntSliderQuestion, FloatSliderQuestion
 from .scoring_function import ScoringFunction
 
@@ -30,28 +31,6 @@ class Quiz:
     def set_db_quiz(self, db_quiz):
         """ Set the db quiz associated with this quiz. """
         self.db_quiz = db_quiz
-
-    def score_responses(self, form):
-        """ Score the user's responses to this quiz. """
-        category_scores = {}
-
-        # Initialise the score for all categories to zero.
-        for category in self.categories:
-            category_scores[category] = 0
-
-        # Score all of the answers
-        for index, question in enumerate(self.questions):
-            answer = question.get_answer_from_form(form, index)
-            # Skip answers the user has not entered.
-            if answer is None:
-                continue
-
-            for category in self.categories:
-                answer_spec = category.get_answer_spec(question)
-                score = answer_spec.scoring_function.score(answer)
-                category_scores[category] += score
-
-        return category_scores
 
     def __hash__(self):
         """ Hashes this quiz so it can be used in dictionaries. """
@@ -276,3 +255,85 @@ class Category:
             if category.name == category_name:
                 return category
         return None
+
+
+class UserAnswer:
+    """ The answer a user made to a question in a quiz. """
+
+    def __init__(self, uuid, user, question, answer):
+        self.uuid = uuid
+        self.user = user
+        self.question = question
+        self.answer = answer
+
+    @staticmethod
+    def read_answers_from_form(user, quiz, form):
+        """ Reads a set of user answers from the given form. """
+        # Get the ID for this set of answers.
+        answers_uuid = form.get("answers_uuid", str(uuid.uuid4()))
+
+        # Read the answers for each question.
+        user_answers = []
+        for index, question in enumerate(quiz.questions):
+            answer = question.get_answer_from_form(form, index)
+            user_answer = UserAnswer(answers_uuid, user, question, answer)
+            user_answers.append(user_answer)
+        return answers_uuid, user_answers
+
+
+class AnswerSet:
+    """ A set of answers a user has made to a quiz. """
+
+    def __init__(self, quiz, answers_uuid, answers):
+        self.quiz = quiz
+        self.answers_uuid = answers_uuid
+        self.answers = answers
+        self.cached_scores = None
+
+    def score_answers(self):
+        """ Score the user's answers to this quiz. """
+        # Check if we've already calculated the scores.
+        if self.cached_scores is not None:
+            return self.cached_scores
+
+        # If we haven't, calculate them.
+        category_scores = {}
+
+        # Initialise the score for all categories to zero.
+        for category in self.quiz.categories:
+            category_scores[category] = 0
+
+        # Score all of the answers.
+        for user_answer in self.answers:
+            # Skip answers the user has not entered.
+            if user_answer.answer is None:
+                continue
+
+            # Score that answer for each category.
+            for category in self.quiz.categories:
+                answer_spec = category.get_answer_spec(user_answer.question)
+                score = answer_spec.scoring_function.score(user_answer.answer)
+                category_scores[category] += score
+
+        # Cache the scores we found, and return them.
+        self.cached_scores = category_scores
+        return category_scores
+
+    def find_best_matching_category(self):
+        """ Returns the category that best matches this set of answers. """
+        max_category = None
+        max_category_score = None
+        for category, score in self.score_answers().items():
+            if max_category is None or score > max_category_score:
+                max_category = category
+                max_category_score = score
+        return max_category
+
+    @staticmethod
+    def read_from_form(user, quiz, form):
+        """ Reads a set of answers from the given form. """
+        # Load the answers uuid and all of the answers.
+        answers_uuid, answers = UserAnswer.read_answers_from_form(user, quiz, form)
+
+        # Create and return the answer set.
+        return AnswerSet(quiz, answers_uuid, answers)

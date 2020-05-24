@@ -6,6 +6,8 @@ from functools import wraps
 from flask_login import UserMixin, current_user
 from . import db, login_manager
 from .error_routes import forbidden
+from .quiz import UserAnswer, AnswerSet
+from .quiz_model import load_question, load_quiz
 
 
 @login_manager.user_loader
@@ -22,6 +24,27 @@ def load_user_by_email(email):
 def load_all_users():
     """ Loads all of the users registered in the database. """
     return User.query.all()
+
+
+def save_answer_set(answer_set):
+    """ Saves the given answer set in the database. """
+    # Check that this answer set does not already exist in the database.
+    existing = DBUserAnswer.query.filter_by(uuid=answer_set.answers_uuid).first()
+    if existing is not None:
+        return
+
+    # Add all of the answers to the database.
+    for answer in answer_set.answers:
+        db_answer = DBUserAnswer(
+            uuid=answer.uuid,
+            user_id=answer.user.id,
+            question_id=answer.question.get_db_question().id,
+            answer=answer.answer
+        )
+        db.session.add(db_answer)
+
+    # Commit the changes.
+    db.session.commit()
 
 
 def has_role(*roles):
@@ -66,6 +89,71 @@ class User(UserMixin, db.Model):
     # The quizzes created by this user.
     db_quizzes = db.relationship('DBQuiz', backref='user', lazy=True)
 
+    # The answers of this user on quizzes.
+    db_answers = db.relationship('DBUserAnswer', backref='user', lazy=True)
+
     def get_quizzes(self):
         """ Get the normal quiz objects that this user has created. """
         return [db_quiz.get_quiz() for db_quiz in self.db_quizzes]
+
+    def get_answer_sets(self):
+        """
+        Get the answer sets to all the quizzes this user has taken.
+        """
+        # Get all of the answer objects, and group them by uuid.
+        answers_by_uuid = {}
+        for db_answer in self.db_answers:
+            answer = db_answer.get_user_answer(self)
+            if answer.uuid in answers_by_uuid:
+                answers_by_uuid[answer.uuid].append(answer)
+            else:
+                answers_by_uuid[answer.uuid] = [answer]
+
+        # Convert these into answer sets.
+        answer_sets = []
+        for uuid, answers in answers_by_uuid.items():
+            # Find the ID of the quiz that these answers are for.
+            quiz_id = None
+            for answer in answers:
+                answer_quiz_id = answer.question.get_db_question().quiz_id
+                if quiz_id is None:
+                    quiz_id = answer_quiz_id
+                elif quiz_id != answer_quiz_id:
+                    # Skip this answer set as it is inconsistent.
+                    quiz_id = None
+                    break
+
+            # If no unanimous quiz ID could be found, skip it.
+            if quiz_id is None:
+                continue
+
+            # Load the quiz, and create the answer set.
+            quiz = load_quiz(quiz_id)
+            answer_set = AnswerSet(quiz, uuid, answers)
+            answer_sets.append(answer_set)
+
+        # Return the answer sets that were found.
+        return answer_sets
+
+
+class DBUserAnswer(db.Model):
+    """ The answer of a user to a quiz. """
+    # The internal key assigned for each user answer.
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+
+    # The unique UUID that groups the answers to each taking of a quiz.
+    uuid = db.Column(db.String(36), nullable=False)
+
+    # The ID of the user that entered this answer.
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    # The ID of the parent question to this answer.
+    question_id = db.Column(db.Integer, db.ForeignKey('quiz_question.id'), nullable=False)
+
+    # The answer the user entered.
+    answer = db.Column(db.Float, nullable=False)
+
+    def get_user_answer(self, user):
+        """ Get the normal user answer object associated with this db user answer. """
+        question = load_question(self.question_id)
+        return UserAnswer(self.uuid, user, question, self.answer)

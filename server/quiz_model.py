@@ -6,7 +6,6 @@ from . import db
 from .quiz import Quiz, Category
 from .question import AnswerSpec, Question
 from .scoring_function import ScoringFunction
-from .user_model import load_user
 
 
 def load_quiz(quiz_id):
@@ -19,6 +18,12 @@ def load_all_quizzes():
     """ Loads all of the quizzes. """
     db_quizzes = DBQuiz.query.all()
     return [db_quiz.get_quiz() for db_quiz in db_quizzes]
+
+
+def load_question(question_id):
+    """ Loads the quiz question associated with the given question ID. """
+    question = DBQuizQuestion.query.get(int(question_id))
+    return question.get_question() if question is not None else None
 
 
 def create_db_quiz(quiz):
@@ -290,6 +295,7 @@ class DBQuiz(db.Model):
     def get_quiz(self):
         """ Returns a quiz object representing this quiz. """
         # Load the user that owns this quiz.
+        from .user_model import load_user
         owner = load_user(self.owner)
 
         # We want the questions to be ordered as the quiz creator specified.

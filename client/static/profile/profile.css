@@ -10,7 +10,7 @@ table {
     vertical-align: center;
     table-layout: fixed;
     width: 100%;
-    margin-top: 50px;
+    margin-top: 30px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -22,4 +22,26 @@ th, td {
 
 tr td {
     height: 50px;
+}
+
+
+#quizzes, #answer_sets {
+    margin-top: 50px;
+}
+
+
+#edit {
+    opacity: 0.5;
+}
+
+#edit:hover {
+    opacity: 1;
+}
+
+#edit, #edit img {
+    height: 1em;
+}
+
+#edit img {
+    vertical-align: super;
 }
