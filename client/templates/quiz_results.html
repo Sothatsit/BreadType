@@ -9,6 +9,7 @@
 
 
 {% block content %}
+
 <div id="quiz_title">
     {{ quiz.name }}
 </div>
@@ -19,10 +20,11 @@
 
 <div id="links">
     <a href="{{ url_for('quiz.view_quiz') }}">
-        Take another Quiz
+        Take Another Quiz
     </a>
     <a href="{{ url_for('quiz.take_quiz', quiz_id=quiz.id) }}">
         Try Again
     </a>
 </div>
+
 {% endblock %}
