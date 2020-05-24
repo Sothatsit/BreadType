@@ -267,6 +267,17 @@ class UserAnswer:
         self.question = question
         self.answer = answer
 
+        # The db answer associated with this answer.
+        self.db_answer = None
+
+    def get_db_answer(self):
+        """ Get the db answer associated with this answer, or None. """
+        return self.db_answer
+
+    def set_db_answer(self, db_answer):
+        """ Set the db answer associated with this answer. """
+        self.db_answer = db_answer
+
     @staticmethod
     def read_answers_from_form(user, quiz, form):
         """ Reads a set of user answers from the given form. """
@@ -290,6 +301,18 @@ class AnswerSet:
         self.answers_uuid = answers_uuid
         self.answers = answers
         self.cached_scores = None
+
+    def get_representative_id(self):
+        """ Returns the lowest ID of any of the answers in this answer set. """
+        min_id = None
+        for answer in self.answers:
+            if answer.get_db_answer() is None:
+                continue
+
+            answer_id = answer.get_db_answer().id
+            if min_id is None or answer_id < min_id:
+                min_id = answer_id
+        return min_id
 
     def score_answers(self):
         """ Score the user's answers to this quiz. """

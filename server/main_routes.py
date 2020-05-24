@@ -31,7 +31,7 @@ def profile(user_id):
         title=user.name + "'s Profile",
         name=user.name,
         quizzes=user.get_quizzes(),
-        answer_sets=user.get_answer_sets()
+        answer_sets=user.get_latest_answer_sets()
     )
 
 

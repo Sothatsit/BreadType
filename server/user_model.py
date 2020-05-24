@@ -42,6 +42,7 @@ def save_answer_set(answer_set):
             question_id=answer.question.get_db_question().id,
             answer=answer.answer
         )
+        answer.set_db_answer(db_answer)
         db.session.add(db_answer)
 
     # Commit the changes.
@@ -96,6 +97,38 @@ class User(UserMixin, db.Model):
     def get_quizzes(self):
         """ Get the normal quiz objects that this user has created. """
         return [db_quiz.get_quiz() for db_quiz in self.db_quizzes]
+
+    def get_latest_answer_sets(self):
+        """
+        Get the latest answer sets this user has entered for each quiz they've taken.
+        """
+        # Group all of the answer sets by the quizzes they belong to.
+        answer_sets_by_quiz = {}
+        for answer_set in self.get_answer_sets():
+            quiz_id = answer_set.quiz.get_db_quiz().id
+            if answer_set.quiz in answer_sets_by_quiz:
+                answer_sets_by_quiz[quiz_id].append(answer_set)
+            else:
+                answer_sets_by_quiz[quiz_id] = [answer_set]
+
+        # Get the latest answer set from each quiz.
+        latest_answer_sets = []
+        for answer_set_list in answer_sets_by_quiz.values():
+            # Find the answer set with the highest representative ID.
+            latest_answer_set = None
+            latest_answer_set_id = None
+            for answer_set in answer_set_list:
+                answer_set_id = answer_set.get_representative_id()
+                if answer_set_id is None:
+                    continue
+                if latest_answer_set is None or answer_set_id > latest_answer_set_id:
+                    latest_answer_set = answer_set
+                    latest_answer_set_id = answer_set_id
+
+            # Append the highest ID answer set to the list.
+            if latest_answer_set is not None:
+                latest_answer_sets.append(latest_answer_set)
+        return latest_answer_sets
 
     def get_answer_sets(self):
         """
@@ -157,4 +190,6 @@ class DBUserAnswer(db.Model):
     def get_user_answer(self, user):
         """ Get the normal user answer object associated with this db user answer. """
         question = load_question(self.question_id)
-        return UserAnswer(self.uuid, user, question, self.answer)
+        answer = UserAnswer(self.uuid, user, question, self.answer)
+        answer.set_db_answer(self)
+        return answer
