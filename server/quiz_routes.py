@@ -71,8 +71,7 @@ def submit_quiz(quiz_id):
     if current_user.is_authenticated:
         save_answer_set(answer_set)
 
-    # Score the user's responses against the categories.
-    category_scores = answer_set.score_answers()
+    # Find the category that scored the highest, and is therefore the best matching.
     best_category = answer_set.find_best_matching_category()
 
     # Render the results page.
@@ -81,6 +80,34 @@ def submit_quiz(quiz_id):
         title="Your Results",
         category=best_category,
         quiz=quiz
+    )
+
+
+@quiz.route("/quiz/<int:quiz_id>/stats")
+@login_required
+def view_quiz_stats(quiz_id):
+    """
+    Called when a user requests to view the stats of a quiz.
+    """
+    quiz = load_quiz(quiz_id)
+    if quiz is None:
+        flash("The quiz you were looking for could not be found.")
+        return not_found()
+
+    # Check that the user has permission to view the statistics of this quiz.
+    if not can_edit_quiz(quiz):
+        flash("You do not have permission to view the statistics of this quiz.")
+        return forbidden()
+
+    # Load the statistics of the quiz.
+    quiz_stats = quiz.collect_statistics()
+
+    # Render the stats page.
+    return render_template(
+        "quiz_stats.html",
+        title="Quiz Stats",
+        quiz=quiz,
+        quiz_stats=quiz_stats
     )
 
 

@@ -49,6 +49,12 @@ def save_answer_set(answer_set):
     db.session.commit()
 
 
+def load_answers_of_question(question):
+    """ Loads all answers that have been given to the given question. """
+    db_answers = DBUserAnswer.query.filter_by(question_id=question.get_db_question().id).all()
+    return [db_answer.get_user_answer(None, question) for db_answer in db_answers]
+
+
 def has_role(*roles):
     """ Returns whether the current user has any of the given roles. """
     return current_user.is_authenticated and current_user.role in roles
@@ -191,9 +197,12 @@ class DBUserAnswer(db.Model):
     # The answer the user entered.
     answer = db.Column(db.Float, nullable=False)
 
-    def get_user_answer(self, user):
+    def get_user_answer(self, user=None, question=None):
         """ Get the normal user answer object associated with this db user answer. """
-        question = load_question(self.question_id)
+        if user is None:
+            user = load_user(self.user_id)
+        if question is None:
+            question = load_question(self.question_id)
         answer = UserAnswer(self.uuid, user, question, self.answer)
         answer.set_db_answer(self)
         return answer
