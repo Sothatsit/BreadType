@@ -22,6 +22,9 @@ class Quiz:
         self.enumerated_questions = enumerate(questions)
         self.enumerated_categories = enumerate(categories)
 
+        # Determining a quizes ability to be edited
+        self.can_edit = False
+
         # The db quiz associated with this question.
         self.db_quiz = None
 

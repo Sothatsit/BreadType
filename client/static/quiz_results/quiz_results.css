@@ -30,3 +30,7 @@ body {
 #links a:hover {
     color: pink;
 }
+
+#stats {
+    height: 24px;
+}
