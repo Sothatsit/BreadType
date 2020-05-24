@@ -253,7 +253,7 @@ def update_quiz_categories_in_db(db_quiz, old_quiz, new_quiz):
 def update_quiz_in_db(old_quiz, new_quiz):
     """ Populates a quiz with the given categories and questions. """
     # Get the db quiz we are editing.
-    db_quiz = old_quiz.get_db_quiz()
+    db_quiz = (old_quiz if old_quiz is not None else new_quiz).get_db_quiz()
 
     if new_quiz is not None:
         # Update the db quiz associated with the new quiz.

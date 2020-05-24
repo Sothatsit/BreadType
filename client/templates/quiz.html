@@ -12,18 +12,18 @@
 <br/>
 <h1 id="quiz_header">
     {{ quiz.name }}
-
-    {% if can_edit_quiz %}
-    <a id="edit" href="{{ url_for('quiz.edit_quiz', quiz_id=quiz.id) }}">
-        <img src="/res/edit-icon.png" alt="Edit Quiz">
-    </a>
-    {% endif %}
 </h1>
 <h2 id="quiz_creator">
     A quiz by
     <a href="{{ url_for('main.profile', user_id=quiz.owner.id) }}">
         {{ quiz.owner.name }}
     </a>
+
+    {% if can_edit_quiz %}
+    <a id="edit" href="{{ url_for('quiz.edit_quiz', quiz_id=quiz.id) }}">
+        <img src="/res/edit-icon.png" alt="Edit Quiz">
+    </a>
+    {% endif %}
 </h2>
 <form action="/quiz/{{ quiz.id }}" method="POST">
     <input type="hidden" name="answers_uuid" value="{{ answers_uuid }}">
