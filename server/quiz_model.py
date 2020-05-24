@@ -172,6 +172,12 @@ def update_quiz_questions_in_db(db_quiz, old_quiz, new_quiz):
 
     # Remove all of the old questions.
     for question in questions_to_remove:
+        # Delete the answer specs dependent on this question.
+        for category in old_quiz.categories:
+            for answer_spec in category.answer_specs:
+                if question == answer_spec.question:
+                    db.session.delete(answer_spec.get_db_answer_spec())
+        # Delete the question itself.
         db.session.delete(question.get_db_question())
 
     # Add all of the new questions.
