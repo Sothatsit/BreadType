@@ -20,3 +20,7 @@ body {
 #links a:hover {
     color: pink;
 }
+
+.content-wrap {
+    padding-top: 60px;
+}

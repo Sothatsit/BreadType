@@ -32,6 +32,10 @@ tr td {
     margin-top: 50px;
 }
 
+#quizzes {
+    margin-bottom: 50px;
+}
+
 
 #edit {
     opacity: 0.5;
