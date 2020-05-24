@@ -25,6 +25,14 @@
     </a>
     {% endif %}
 </h2>
+{% if can_edit_quiz %}
+<div id="view_stats">
+    <a id="stats" href="{{ url_for('quiz.view_quiz_stats', quiz_id=quiz.id) }}">
+        View Quiz Stats
+        <img src="/res/stats-icon.png" alt="View Quiz Stats">
+    </a>
+</div>
+{% endif %}
 <form action="/quiz/{{ quiz.id }}" method="POST">
     <input type="hidden" name="answers_uuid" value="{{ answers_uuid }}">
 

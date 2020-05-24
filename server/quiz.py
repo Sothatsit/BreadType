@@ -33,6 +33,11 @@ class Quiz:
         """ Set the db quiz associated with this quiz. """
         self.db_quiz = db_quiz
 
+    def collect_statistics(self):
+        """ Returns all of the statistics about this quiz. """
+        from .quiz_stats import QuizStatistics
+        return QuizStatistics.collect_statistics(self)
+
     def __hash__(self):
         """ Hashes this quiz so it can be used in dictionaries. """
         return hash(id(self))

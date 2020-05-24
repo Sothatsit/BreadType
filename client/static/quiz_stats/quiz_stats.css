@@ -1,0 +1,20 @@
+/**
+ * Stylesheet for the page where a user is taking a quiz.
+ */
+
+body {
+    line-height: 2em;
+}
+
+h2 {
+    margin-bottom: 0.4em;
+}
+
+#category_breakdown, .question_stats {
+    max-height: 400px;
+    margin-top: 20px;
+}
+
+.question_stats {
+    margin-bottom: 50px;
+}

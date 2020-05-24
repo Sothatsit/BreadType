@@ -18,7 +18,7 @@ h2 {
     margin-bottom: 0.4em;
 }
 
-#edit, #edit img {
+#edit, #edit img, #stats, #stats img {
     height: 24px;
 }
 
@@ -26,7 +26,16 @@ h2 {
     vertical-align: super;
 }
 
+#stats {
+    margin-left: 10px;
+}
+
 #quiz_creator {
     font-size: 30px;
+    margin-bottom: 10px;
+}
+
+#view_stats {
+    font-size: 20px;
     margin-bottom: 40px;
 }
