@@ -24,7 +24,7 @@ nav {
     padding: 10px;
 }
 
-nav a {
+html nav a {
     display: inline-block;
     padding: 10px 20px;
 
@@ -33,7 +33,7 @@ nav a {
     color: black;
 }
 
-nav a:hover {
+html nav a:hover {
     text-decoration: underline;
     color: #555555;
 }
@@ -43,12 +43,12 @@ nav a:hover {
 /*
  * Styling for links in the site.
  */
-a {
+html a {
     text-decoration: none;
     color: rgb(240, 134, 152);
 }
 
-a:hover {
+html a:hover {
     color: pink;
 }
 
