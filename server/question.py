@@ -270,7 +270,7 @@ def create_slider_input_html(min_value, max_value, step, default_value, name):
     html = "<input class=\"sliders\" type=\"range\" "
     html += "min=\"{}\" max=\"{}\" step=\"{}\"".format(min_value, max_value, step)
     html += "value=\"{}\" name=\"{}\"".format(default_value, name)
-    html += " \\>"
+    html += "oninput=sliderValUpdate(name)>"
     return html
 
 
@@ -295,7 +295,7 @@ class FloatSliderQuestion(Question):
 
     def get_answer_from_form(self, form, index):
         """ Get the answer that was given for this question from the form. """
-        text_answer = super(FloatSliderQuestion, self).get_answer_from_form(form, index)
+        text_answer = super(FloatSliderQuestion, self).get_answer_from_form(form, index+1)
         if text_answer is None:
             return None
         return float(text_answer)
@@ -308,8 +308,14 @@ class FloatSliderQuestion(Question):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
         html += create_slider_input_html(
-            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index)
+            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index+1)
         )
+
+        # Adds in a number below the slider to represent it's current value
+        html += "<p class=\"slider_val\" id=\"question-{}_slider_val\">".format(index+1)
+        html += str(self.default_value)
+        html += "</p>\n"
+
         html += "</div>"
         return html
 
@@ -391,7 +397,7 @@ class IntSliderQuestion(Question):
 
     def get_answer_from_form(self, form, index):
         """ Get the answer that was given for this question from the form. """
-        text_answer = super(IntSliderQuestion, self).get_answer_from_form(form, index)
+        text_answer = super(IntSliderQuestion, self).get_answer_from_form(form, index+1)
         if text_answer is None:
             return None
         return int(text_answer)
@@ -400,8 +406,14 @@ class IntSliderQuestion(Question):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
         html += create_slider_input_html(
-            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index)
+            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index+1)
         )
+
+        #Adds a number below the slider to represent its current value
+        html += "<p class=\"slider_val\" id=\"question-{}_slider_val\">".format(index+1)
+        html += str(self.default_value)
+        html += "</p>\n"
+
         html += "</div>"
         return html
 

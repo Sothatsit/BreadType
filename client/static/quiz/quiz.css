@@ -39,3 +39,9 @@ h2 {
     font-size: 20px;
     margin-bottom: 40px;
 }
+
+.slider_val {
+    text-align: center;
+    font-size: 20px;
+    padding-top: 10px;
+}
