@@ -10,7 +10,8 @@
 
 {% block content %}
 <form method="POST" action="/signup">
-    <label>Bread Type Sign Up</label>
+    <label id="title">Bread Type Sign Up</label>
+    <br/>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}

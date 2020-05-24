@@ -19,6 +19,11 @@ $(document).ready(function() {
     categoryInputs.keyup(updateCategoryNames);
     categoryInputs.keydown(updateCategoryNames);
     categoryInputs.keypress(updateCategoryNames);
+
+    // Stop the user pressing enter to create the quiz.
+    $('form input').on('keypress', function(e) {
+        return e.which !== 13;
+    });
 });
 
 
@@ -247,7 +252,7 @@ function updateCategoryNames() {
  * Setup the config div for a discrete slider question.
  */
 function setupDiscreteSliderConfig(questionNumber, configDiv) {
-    setupSliderConfig(questionNumber, configDiv);
+    setupSliderConfig(questionNumber, configDiv, true);
 }
 
 
@@ -255,14 +260,14 @@ function setupDiscreteSliderConfig(questionNumber, configDiv) {
  * Setup the config div for a continuous slider question.
  */
 function setupContinuousSliderConfig(questionNumber, configDiv) {
-    setupSliderConfig(questionNumber, configDiv);
+    setupSliderConfig(questionNumber, configDiv, false);
 }
 
 
 /**
  * Setup the config div for a discrete or continuous slider question.
  */
-function setupSliderConfig(questionNumber, configDiv) {
+function setupSliderConfig(questionNumber, configDiv, showStep) {
     // The name prefix for all of the slider parameters.
     var paramNamePrefix = `question_${questionNumber}_slider`;
 
@@ -298,4 +303,25 @@ function setupSliderConfig(questionNumber, configDiv) {
     configDiv.appendChild(max);
     configDiv.appendChild(max_label);
     configDiv.appendChild(document.createElement("br"));
+
+    if (showStep) {
+        // Create the step input.
+        var step = document.createElement("input");
+        step.type = "number";
+        step.min = "1";
+        step.max = "1000";
+        step.value = "1";
+        step.name = paramNamePrefix + "_step";
+        step.id = paramNamePrefix + "_step";
+
+        // Create the associated label with the step input.
+        var step_label = document.createElement("label");
+        step_label.htmlFor = paramNamePrefix + "_step";
+        step_label.innerHTML = "Slider Step";
+
+        // Add all the elements for the step config.
+        configDiv.appendChild(step);
+        configDiv.appendChild(step_label);
+        configDiv.appendChild(document.createElement("br"));
+    }
 }

@@ -44,3 +44,11 @@ button {
     border-radius: 10px;
     background: #FF9999;
 }
+
+#title {
+    font-size: 36px;
+}
+
+input[type=email] {
+    margin-top: 16px;
+}
