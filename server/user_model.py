@@ -138,6 +138,10 @@ class User(UserMixin, db.Model):
         answers_by_uuid = {}
         for db_answer in self.db_answers:
             answer = db_answer.get_user_answer(self)
+            # Edge case when editing a quiz of old.
+            if answer.question is None:
+                continue
+
             if answer.uuid in answers_by_uuid:
                 answers_by_uuid[answer.uuid].append(answer)
             else:

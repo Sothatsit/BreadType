@@ -373,7 +373,7 @@ class FloatSliderQuestion(Question):
 class IntSliderQuestion(Question):
     """ A question that takes an integer slider value. """
 
-    def __init__(self, text, min_value, max_value):
+    def __init__(self, text, min_value, max_value, step):
         # Initialise the super class.
         Question.__init__(self, "int_slider", text, True)
 
@@ -382,6 +382,9 @@ class IntSliderQuestion(Question):
 
         # The maximum possible value that can be chosen.
         self.max_value = int(max_value)
+
+        # The step between values that can be chosen.
+        self.step = step
 
         # The default value for the slider.
         self.default_value = int((min_value + max_value) / 2)
@@ -397,18 +400,19 @@ class IntSliderQuestion(Question):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
         html += create_slider_input_html(
-            self.min_value, self.max_value, 1, self.default_value, "question-{}".format(index)
+            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index)
         )
         html += "</div>"
         return html
 
     def encode_to_args(self):
         """ Encodes this question into a list of arguments. """
-        return [self.min_value, self.max_value]
+        return [self.min_value, self.max_value, self.step]
 
     def __eq__(self, other):
         """ Check that this question is identical to other. """
-        return super().__eq__(other) and self.min_value == other.min_value and self.max_value == other.max_value
+        return super().__eq__(other) \
+               and self.min_value == other.min_value and self.max_value == other.max_value and self.step == other.step
 
     def __hash__(self):
         """ Hashes this question so it can be used in dictionaries. """
@@ -420,11 +424,11 @@ class IntSliderQuestion(Question):
         Parses a discrete slider question.
 
         Format:
-            int_slider(min, max)
+            int_slider(min, max[, step])
         """
 
         # Make sure there are the expected number of arguments.
-        if len(args) != 2:
+        if len(args) != 2 and len(args) != 3:
             return MalformedQuestion(text, "Expected two arguments, got: " + str(len(args)))
 
         # Parse the min possible value.
@@ -439,7 +443,16 @@ class IntSliderQuestion(Question):
         except ValueError:
             return MalformedQuestion(text, "Expected max to be an integer, instead was: " + args[1])
 
-        return IntSliderQuestion(text, min_value, max_value)
+        # Parse the step.
+        if len(args) == 3:
+            try:
+                step = int(args[2])
+            except ValueError:
+                return MalformedQuestion(text, "Expected step to be an integer, instead was: " + args[1])
+        else:
+            step = 1
+
+        return IntSliderQuestion(text, min_value, max_value, step)
 
     @staticmethod
     def from_form(question_number, question_text, question_weight, form, category_names, errors):
@@ -447,17 +460,19 @@ class IntSliderQuestion(Question):
         # Get the min and max from the form.
         min_text = form.get("question_{}_slider_min".format(question_number), "")
         max_text = form.get("question_{}_slider_max".format(question_number), "")
-        if len(min_text) == 0 or len(max_text) == 0:
-            errors.append("Missing min or max value for slider question {}".format(question_number))
+        step_text = form.get("question_{}_slider_step".format(question_number), "")
+        if len(min_text) == 0 or len(max_text) == 0 or len(step_text) == 0:
+            errors.append("Missing min, max, or step value for slider question {}".format(question_number))
             return None
 
         # Convert them to numbers.
         try:
             min_value = int(min_text)
             max_value = int(max_text)
+            step = int(step_text)
         except ValueError:
-            errors.append("Min and max must both be integers for slider question {}".format(question_number))
+            errors.append("Min, max, and step must all be integers for slider question {}".format(question_number))
             return None
 
         # Create the slider question.
-        return IntSliderQuestion(question_text, min_value, max_value), None
+        return IntSliderQuestion(question_text, min_value, max_value, step), None
