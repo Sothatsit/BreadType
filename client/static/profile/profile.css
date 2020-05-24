@@ -10,9 +10,8 @@ table {
     vertical-align: center;
     table-layout: fixed;
     width: 100%;
-    margin-top: 30px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 10px auto 20px;
+    border-collapse: collapse;
 }
 
 th, td {
@@ -22,6 +21,10 @@ th, td {
 
 tr td {
     height: 50px;
+}
+
+#edit_col {
+    width: 32px;
 }
 
 
@@ -39,7 +42,7 @@ tr td {
 }
 
 #edit, #edit img {
-    height: 1em;
+    height: 32px;
 }
 
 #edit img {
