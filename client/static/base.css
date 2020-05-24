@@ -40,6 +40,20 @@ nav a:hover {
 
 
 /*
+ * Styling for links in the site.
+ */
+a {
+    text-decoration: none;
+    color: rgb(240, 134, 152);
+}
+
+a:hover {
+    color: pink;
+}
+
+
+
+/*
  * Sizing of the div that holds the contents of the pages.
  */
 #content {

@@ -52,7 +52,7 @@
         <tbody>
         {% for quiz in quizzes %}
         <tr>
-            <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
+            <td><a href="{{ url_for('quiz.take_quiz', quiz_id=quiz.id) }}">{{ quiz.name }}</a></td>
 
             {% if current_user.is_authenticated and current_user.name == name %}
                 <td>

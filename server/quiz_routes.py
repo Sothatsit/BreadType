@@ -79,7 +79,7 @@ def submit_quiz(quiz_id):
         "quiz_results.html",
         title="Your Results",
         category=best_category,
-        category_scores=category_scores
+        quiz=quiz
     )
 
 

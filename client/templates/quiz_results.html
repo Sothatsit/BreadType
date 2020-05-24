@@ -2,23 +2,27 @@
 
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/error/error.css" />
+<link type="text/css" rel="stylesheet" href="/quiz_results/quiz_results.css" />
 <!-- The code specific to this page. -->
-<script src="/error/error.js"></script>
+<script src="/quiz_results/quiz_results.js"></script>
 {% endblock %}
 
 
 {% block content %}
-<br/>
-<h1>
+<div id="quiz_title">
+    {{ quiz.name }}
+</div>
+
+<div id="answer">
     {{ category.name }}
-</h1>
-<br/>
-<p>
-    {% for category, score in category_scores.items() %}
-        <div>
-            {{ category.name }}: {{ "%.2f" % score }}
-        </div>
-    {% endfor %}
-</p>
+</div>
+
+<div id="links">
+    <a href="{{ url_for('quiz.view_quiz') }}">
+        Take another Quiz
+    </a>
+    <a href="{{ url_for('quiz.take_quiz', quiz_id=quiz.id) }}">
+        Try Again
+    </a>
+</div>
 {% endblock %}
