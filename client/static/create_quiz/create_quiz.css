@@ -108,3 +108,27 @@ body {
 #add_question:hover img {
     opacity: 0.7;
 }
+
+/* styling for the help button to overide the bootstrap styling*/
+.btn {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 50px;
+    margin-top: 1em;
+    margin-bottom: 100px;
+    border-radius:0%;
+    background-color: #3A7734;
+
+    font-size: 1em;
+    color: white;
+    font-family: 'Montserrat', serif;
+    line-height: 1.2em;
+    box-sizing: border-box;
+    border: none;
+}
+
+
+.btn:hover {
+    cursor: pointer;
+    background-color: #1A5714;
+}

@@ -21,6 +21,7 @@ tr td {
 
 a {
     text-decoration: none;
+    color: rgb(240, 134, 152);
 }
 
 a:hover {
