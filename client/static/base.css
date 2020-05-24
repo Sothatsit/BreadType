@@ -222,3 +222,29 @@ input[type=submit]:hover {
     cursor: pointer;
     background-color: #1A5714;
 }
+
+
+
+/*
+ * Formatting for the footer
+ */
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: lightslategray;
+    text-align: center;
+    height: 2.5rem;
+    font-size: 12px;
+}
+
+.page-container {
+    position: relative;
+    min-height: 90vh;
+  }
+
+.content-wrap {
+    padding-bottom: 2.5rem;
+}

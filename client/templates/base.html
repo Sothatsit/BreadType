@@ -39,10 +39,24 @@
         {% endif %}
     </nav>
 
-    <div id="content">
-        {% block content %}
-        {% endblock %}
+    <div class="page-container" id="content">
+        <div class="content-wrap">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <footer>
+            <p>
+                This project was created by 
+                Maddy Sommer,
+                Paddy Lamont,
+                Sam Joyner
+            </p>
+            <p>
+                <a href="https://github.com/Sothatsit/BreadType">GitHub repository for this website</a>
+            </p>
+        </footer>        
     </div>
 </body>
+
 
 </html>
