@@ -1,4 +1,4 @@
-import unittest, os, time
+import unittest, os
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
 from ..user_model import User
@@ -19,7 +19,6 @@ class SystemTest(unittest.TestCase):
             self.skipTest('Web browser for available')
         else:
             db.init_app(app)
-            u1 = User(id=11, email_address='test@test.com', name='test', password="pass")
             with app.app_context():
                 db.create_all()
                 db.session.commit()
@@ -37,19 +36,24 @@ class SystemTest(unittest.TestCase):
     def test_signup(self):
         self.driver.get('http://127.0.0.1:5000/signup')
         self.driver.implicitly_wait(5)
+
         num_field = self.driver.find_element_by_id('email')
         num_field.send_keys('test@test.com')
+
         pref_name = self.driver.find_element_by_id('name')
         pref_name.send_keys('test')
+
         new_password = self.driver.find_element_by_id('password')
         new_password.send_keys('pass')
-        time.sleep(1)
+
         self.driver.implicitly_wait(5)
         submit = self.driver.find_element_by_id('signup')
         submit.click()
+
         self.driver.implicitly_wait(3)
         logout = self.driver.find_element_by_partial_link_text('Logout')
-
+        self.assertEqual(logout.get_attribute('innerHTML'), 'Logout', msg='Logout Fail')
+        logout.click()
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
