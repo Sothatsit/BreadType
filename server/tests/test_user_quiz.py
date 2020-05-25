@@ -73,7 +73,7 @@ class SystemTest(unittest.TestCase):
         catg4_field = self.driver.find_element_by_id('catg4')
         catg4_field.send_keys('catg4')
 
-        # Fill in the first question title, options and select some answers
+        # MULTI : Fill in the first question title, options and select some answers
         q1_field = self.driver.find_element_by_name('question_1_text')
         q1_field.send_keys('q1')
 
@@ -94,6 +94,44 @@ class SystemTest(unittest.TestCase):
         box_3.click()
         box_4 = self.driver.find_element_by_name('question_1_multi_choice_4_category_4')
         box_4.click()
+
+        # INT_SLIDER: Same as above
+        add_question = self.driver.find_element_by_id("add_question")
+        add_question.click()
+
+        q2_field = self.driver.find_element_by_name('question_2_text')
+        q2_field.send_keys('q2')
+
+        int_radio = self.driver.find_element_by_id("question_2_type_discrete_slider")
+        int_radio.click()
+
+        peak_1 = self.driver.find_element_by_name("question_2_slider_category_0_peak")
+        peak_1.send_keys('10')
+        peak_2 = self.driver.find_element_by_name("question_2_slider_category_1_peak")
+        peak_2.send_keys('30')
+        peak_3 = self.driver.find_element_by_name("question_2_slider_category_2_peak")
+        peak_3.send_keys('50')
+        peak_4 = self.driver.find_element_by_name("question_2_slider_category_3_peak")
+        peak_4.send_keys('70')
+
+        # FLOAT_SLIDER: same as above
+        add_question = self.driver.find_element_by_id("add_question")
+        add_question.click()
+
+        q3_field = self.driver.find_element_by_name('question_3_text')
+        q3_field.send_keys('q3')
+
+        float_radio = self.driver.find_element_by_id("question_3_type_continuous_slider")
+        float_radio.click()
+
+        peak_1 = self.driver.find_element_by_name("question_3_slider_category_0_peak")
+        peak_1.send_keys('10')
+        peak_2 = self.driver.find_element_by_name("question_3_slider_category_1_peak")
+        peak_2.send_keys('30')
+        peak_3 = self.driver.find_element_by_name("question_3_slider_category_2_peak")
+        peak_3.send_keys('50')
+        peak_4 = self.driver.find_element_by_name("question_3_slider_category_3_peak")
+        peak_4.send_keys('70')
 
         # Now that we have all questions filled, create the quiz
         create_quiz = self.driver.find_element_by_id("create_quiz")
