@@ -182,9 +182,16 @@ class SystemTest(unittest.TestCase):
                 self.assertEqual(url, 'http://localhost:5000/quiz/1')
 
 
-            # Select the first multi option and submit the quiz
+            # Select the first multi option
             option = driver.find_element_by_id("q0-o0")
             option.click()
+
+            # Check that the sliders registered as float and int successfully
+            int_slider = driver.find_element_by_id("question-2_slider_val")
+            float_slider = driver.find_element_by_id("question-3_slider_val")
+
+            self.assertEqual(int_slider.get_attribute('innerHTML').strip(), '50', msg='int slider successful')
+            self.assertEqual(float_slider.get_attribute('innerHTML').strip(), '50.0', msg='float slider successful')
 
             submit = driver.find_element_by_id("submit")
             submit.click()
@@ -193,6 +200,8 @@ class SystemTest(unittest.TestCase):
             answer = driver.find_element_by_id('answer')
             self.assertEqual(answer.get_attribute('innerHTML').strip(), 'catg2', msg='Correct answer')
             time.sleep(3)
+
+            # Check we can log out
             logout = driver.find_element_by_partial_link_text('Logout')
             self.assertEqual(logout.get_attribute('innerHTML'), 'Logout', msg='Logout Fail')
             logout.click()
