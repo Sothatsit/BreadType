@@ -1,6 +1,9 @@
+import unittest, os, test
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
-from .user_model import User
+from ..user_model import User
+from app import app, db
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 class SystemTest(unittest.TestCase):
     driver = None
@@ -8,16 +11,16 @@ class SystemTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.FireFox(executable_path='/Documents/Github/BreadType/')
     
-    if not self.driver:
-        self.skipTest('Web browser for available')
-    else:
-        db.init_app(app)
-        db.create_all()
-        u1 = User(id=22, email_address='test@gmail.com', name='test',)
-        db.session.add(u1)
-        db.session.commit()
-        self.driver.maximize_window()
-        self.driver.get('http://localhost:5000/')
+        if not self.driver:
+            self.skipTest('Web browser for available')
+        else:
+            db.init_app(app)
+            db.create_all()
+            u1 = User(id=22, email_address='test@gmail.com', name='test',)
+            db.session.add(u1)
+            db.session.commit()
+            self.driver.maximize_window()
+            self.driver.get('http://localhost:5000/')
     
     def tearDown(self):
         if self.drvier:
