@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
+<!-- This template creates the profile page for a user. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/profile/profile.css" />
-<!-- The code specific to this page. -->
-<script src="/profile/profile.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/profile.css" />
 {% endblock %}
 
 
 {% block content %}
 
+<!-- We display a little welcome message stating the name of the user. -->
 <div>
     {% if current_user.is_authenticated and current_user.name == name %}
         Welcome, {{ name }}!
@@ -18,6 +20,7 @@
     {% endif %}
 </div>
 
+<!-- If the user has submitted answers to quizzes, we display their results to them on this page. -->
 {% if answer_sets|length > 0 %}
 <div id="answer_sets">
     <h2>{{ "Your" if current_user.is_authenticated and current_user.name == name else name + "'s" }} Answers</h2>
@@ -38,6 +41,7 @@
 </div>
 {% endif %}
 
+<!-- If the user has created any quizzes, we display them on their profile as well. -->
 {% if quizzes|length > 0 %}
 <div id="quizzes">
     <h2>{{ "Your" if current_user.is_authenticated and current_user.name == name else name + "'s" }} quizzes</h2>

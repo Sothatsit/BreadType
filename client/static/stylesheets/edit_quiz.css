@@ -1,0 +1,56 @@
+/**
+ * Stylesheet for the page where a user is taking a quiz.
+ */
+
+body {
+    line-height: 2em;
+}
+
+h2:nth-of-type(1) {
+    margin-top: 0.4em;
+}
+
+h2:nth-of-type(n+2) {
+    margin-top: 1em;
+}
+
+h2 {
+    margin-bottom: 0.4em;
+}
+
+#quiz_creator {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+#view_stats {
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+#delete_container {
+    margin-bottom: 40px;
+}
+
+#delete {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 50px;
+
+    background-color: #9f0000;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+
+    vertical-align: middle;
+    line-height: 50px;
+}
+
+#delete:hover {
+    background-color: #770000;
+}
+
+input[type=submit].submit_changes {
+    margin-bottom: 20px;
+}

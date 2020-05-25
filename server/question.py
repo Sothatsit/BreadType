@@ -271,7 +271,7 @@ def create_slider_input_html(min_value, max_value, step, default_value, name):
     html = "<input class=\"sliders\" type=\"range\" "
     html += "min=\"{}\" max=\"{}\" step=\"{}\"".format(min_value, max_value, step)
     html += "value=\"{}\" name=\"{}\"".format(default_value, name)
-    html += "oninput=sliderValUpdate(name)>"
+    html += "oninput=updateSliderValue(\"{}\")>".format(name)
     return html
 
 

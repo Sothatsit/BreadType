@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page where users are able to take a quiz. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/quiz/quiz.css" />
+<link type="text/css" rel="stylesheet" href="/stylesheets/quiz.css" />
 <!-- The code specific to this page. -->
-<script src="/quiz/quiz.js"></script>
+<script src="/scripts/quiz.js"></script>
 {% endblock %}
 
 
@@ -12,16 +15,20 @@
 
 <br/>
 
+<!-- The title of the quiz. -->
 <h1 id="quiz_header">
     {{ quiz.name }}
 </h1>
 
+<!-- A small attribution to which user created this quiz. -->
 <h2 id="quiz_creator">
     A quiz by
     <a href="{{ url_for('main.profile', user_id=quiz.owner.id) }}">
         {{ quiz.owner.name }}
     </a>
 
+    <!-- If this is the current user's quiz, or if the current user is an admin, -->
+    <!-- display an edit icon that can take users to a page where they can edit the quiz. -->
     {% if can_edit_quiz %}
     <a id="edit" href="{{ url_for('quiz.edit_quiz', quiz_id=quiz.id) }}">
         <img src="/res/edit-icon.png" alt="Edit Quiz">
@@ -29,6 +36,8 @@
     {% endif %}
 </h2>
 
+<!-- If this is the current user's quiz, or if the current user is an admin, -->
+<!-- display a prompt to take the user to the page containing the statistics for this quiz. -->
 {% if can_edit_quiz %}
 <div id="view_stats">
     <a id="stats" href="{{ url_for('quiz.view_quiz_stats', quiz_id=quiz.id) }}">
@@ -38,6 +47,7 @@
 </div>
 {% endif %}
 
+<!-- The form containing the actual questions that the user can answer. -->
 <form action="/quiz/{{ quiz.id }}" method="POST">
     <input type="hidden" name="answers_uuid" value="{{ answers_uuid }}">
 

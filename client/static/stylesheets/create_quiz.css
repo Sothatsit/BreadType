@@ -1,6 +1,7 @@
-/**
- * Stylesheet for the create quiz page.
+/*
+ * The stylesheet for the create quiz page.
  */
+
 
 body {
     line-height: 2em;
@@ -14,7 +15,6 @@ body {
  * Decoration for the titles in the page.
  * e.g. "Quiz Title" and "Questions"
  */
-
 .title:nth-of-type(1) {
     margin-top: 10px;
 }
@@ -31,9 +31,8 @@ body {
 
 
 /*
- * Decoration for checkbox related content.
+ * Styling for checkbox related content.
  */
-
 input[type=checkbox].bread_check {
     margin-left: 12px;
     margin-right: 12px;
@@ -64,6 +63,7 @@ label {
     max-width: 80%;
 }
 
+
 /*
  * Decoration for number input related content.
  */
@@ -79,7 +79,6 @@ input[type=number] {
 /*
  * Decoration for the questions.
  */
-
 .question {
     text-align: left;
 }
@@ -110,7 +109,6 @@ input[type=number] {
 /*
  * Decoration for the "Add Question" button.
  */
-
 #add_question img {
     display: inline-block;
     max-width: 40px;
@@ -126,7 +124,6 @@ input[type=number] {
 #add_question:hover img {
     opacity: 0.7;
 }
-
 
 
 /*
@@ -190,7 +187,6 @@ input[type=number] {
 /*
  * Allows positioning two divs side by side.
  */
-
 .flex_row {
     display: flex;
 }
@@ -213,7 +209,6 @@ input[type=number] {
 /*
  * Decoration of the table for answer scoring for sliders.
  */
-
 .discrete_slider, .continuous_slider {
     margin-top: 30px;
 }

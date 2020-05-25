@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page where users are able to log in. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/login/login.css" />
-<!-- The code specific to this page. -->
-<script src="/login/login.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/login.css" />
 {% endblock %}
 
 
 {% block content %}
 
+<!-- This form contains the credentials users need to enter to log in to the site. -->
 <form method="POST" action="/login">
+    <!-- The title of this page. -->
     <label id="title">Bread Type Log In</label>
     <br/>
 
+    <!-- If there was an error with a users log in attempt, report it to them. -->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <br/>
@@ -23,9 +27,11 @@
     {% endif %}
     {% endwith %}
 
+    <!-- The inputs that the user can enter their credentials into. -->
     <input type="email" name="email" placeholder="Email" autofocus="">
     <input type="password" name="password" placeholder="Password">
 
+    <!-- The button that allows users to submit their credentials and log in. -->
     <button id="login">Login</button>
 </form>
 

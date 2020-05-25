@@ -1,15 +1,23 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page used to edit quizzes. -->
+<!-- This page is rather outdated and confusing, as unfortunately we did not -->
+<!-- have the time to update it to function as the create quiz page does. -->
+<!-- Therefore, it still uses a text representation of the quizzes. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/edit_quiz/edit_quiz.css" />
+<link type="text/css" rel="stylesheet" href="/stylesheets/edit_quiz.css" />
+
 <!-- The code specific to this page. -->
-<script src="/edit_quiz/edit_quiz.js"></script>
+<script src="/scripts/edit_quiz.js"></script>
 {% endblock %}
 
 
 {% block content %}
 
+<!-- If there were any errors with editing the quiz, they will be displayed here. -->
 {% with messages = get_flashed_messages() %}
 {% for message in messages %}
 <div class="error">
@@ -18,32 +26,27 @@
 {% endfor %}
 {% endwith %}
 
+<!-- This form allows users to edit the properties of a quiz. -->
 <form action="{{ url_for('quiz.edit_quiz', quiz_id=quiz_id) }}" method="POST">
-    <label for="title"><h2>Quiz Title</h2></label>
+
+    <!-- Allow the user to edit the title of the quiz. -->
+    <h2>Quiz Title</h2>
     <div class="text-field">
         <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ quiz_title }}">
     </div>
 
-    <!--
-    Sam:
-        This is majoritavely obsolete now. And since we can't just load the direct text input anymore,
-        how the heck are we going to be able to edit a quiz? So much of it is created in JavaScript, so
-        we may have to literally recreate it using a lot of that same JS to get back to the original point.
-        Shouldn't actually be too difficult, but defs tedious.
-
-    Paddy:
-        Given there's no way to setup the categories using the JavaScript interface yet I'll keep this
-        page working through the text interface for the time being. I do think it'd be nice to keep the
-        functionality of being able to edit quizzes though. Should probably also add a way to delete them.
-    -->
-
-    <label for="encoded_text"><h2>Questions</h2></label>
+    <!-- Allow the user to edit the text-version of the quiz. -->
+    <!-- This still uses the legacy system for creating quizzes -->
+    <!-- before the new create quiz page was added. -->
+    <h2>Questions</h2>
     <div class="text-field">
         <textarea name="encoded_text" id="encoded_text" placeholder="multi(A,B,C)">{{ questions_text }}</textarea>
     </div>
 
+    <!-- Once the user has made their changes, they can submit the changes by clicking this button. -->
     <input type="submit" class="submit_changes" value="Make Changes">
 
+    <!-- If a user wishes to delete their quiz, they can press this button three times. -->
     <div id="delete_container">
         <div id="delete">Delete Quiz</div>
     </div>

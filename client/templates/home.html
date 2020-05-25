@@ -1,26 +1,30 @@
 {% extends "base.html" %}
 
+<!-- This This template creates the home page of the site. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/home/home.css" />
-<!-- The code specific to this page. -->
-<script src="/home/home.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/home.css" />
 {% endblock %}
 
 
 {% block content %}
+
 <br>
 <h1>Welcome to BreadType!</h1>
 <br>
 <h2>What type of bread are you?</h2>
 <br>
 
+<!-- A paragraph conveying the themes of this site. -->
 <div id="message">
     Have you been going a bit stale in isolaton and wanted to find out what
     type of bread you are? This versatile website allows users to create 
     their own doughy quizzes as well as try other users' crusty quizzes.
 </div>
 
+<!-- Links to encourage the user to use this page. -->
 <div id="links">
     <a href="{{ url_for('quiz.view_quiz') }}">
         Jump In, Take a Quiz

@@ -1,4 +1,4 @@
-/**
+/*
  * Stylesheet for the page where a user is taking a quiz.
  */
 
@@ -34,6 +34,6 @@ body {
     color: pink;
 }
 
-#stats {
+#stats, #stats img {
     height: 24px;
 }

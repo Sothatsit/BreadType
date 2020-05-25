@@ -1,23 +1,27 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page where users are sent to view the results of the quiz they took. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/quiz_results/quiz_results.css" />
-<!-- The code specific to this page. -->
-<script src="/quiz_results/quiz_results.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/quiz_results.css" />
 {% endblock %}
 
 
 {% block content %}
 
+<!-- Display the title of the quiz. -->
 <div id="quiz_title">
     {{ quiz.name }}
 </div>
 
+<!-- Display the category the user was placed into based upon their answers. -->
 <div id="answer">
     {{ category.name }}
 </div>
 
+<!-- Display links for the user to take another quiz, or to take the quiz again. -->
 <div id="links">
     <a href="{{ url_for('quiz.view_quiz') }}">
         Take Another Quiz
@@ -29,10 +33,12 @@
 
 <br>
 
+<!-- If this is the user's own quiz, or if the current user is an admin, -->
+<!-- display a link to take the user to the statistics for that quiz. -->
 {% if can_edit_quiz %}
 <a id="stats" href="{{ url_for('quiz.view_quiz_stats', quiz_id=quiz.id) }}">
     View Quiz Stats
-    <img src="/res/stats-icon.png" alt="View Quiz Stats" id="stats">
+    <img src="/res/stats-icon.png" alt="View Quiz Stats">
 </a>
 {% endif %}
 

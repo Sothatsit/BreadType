@@ -1,5 +1,5 @@
-/**
- * Stylesheet for the signup page.
+/*
+ * Stylesheet for the login page.
  */
 
 body {
@@ -36,7 +36,7 @@ button {
     cursor: pointer;
 }
 
-#signup_error {
+#login_error {
     display: inline-block;
     box-sizing: content-box;
     margin: 10px;

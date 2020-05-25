@@ -1,4 +1,11 @@
+/*
+ * The stylesheet with CSS common to all pages.
+ */
 
+
+/*
+ * Default styling for all elements.
+ */
 * {
     font-family: 'Montserrat', serif;
     padding: 0;
@@ -7,17 +14,19 @@
     box-sizing: border-box;
 }
 
+
+/*
+ * We want the BODY to take up the whole page, even if its contents are shorter than the page.
+ */
 html, body {
     width: 100%;
     height: 100%;
 }
 
 
-
 /*
- * Decoration of the nav-bar.
+ * Styling of the nav-bar.
  */
-
 nav {
     box-sizing: border-box;
     width: 100%;
@@ -39,7 +48,6 @@ html nav a:hover {
 }
 
 
-
 /*
  * Styling for links in the site.
  */
@@ -53,9 +61,8 @@ html a:hover {
 }
 
 
-
 /*
- * Sizing of the div that holds the contents of the pages.
+ * Sizing of the divs that hold the contents of the pages.
  */
 #content {
     max-width: 800px;
@@ -66,12 +73,20 @@ html a:hover {
     margin-right: auto;
 }
 
+.page-container {
+    position: relative;
+    min-height: 90vh;
+    box-sizing: border-box;
+}
+
+.content-wrap {
+    padding-bottom: 2.5rem;
+}
 
 
 /*
- * Decoration for error messages.
+ * Styling of error messages that can be displayed in some of the pages.
  */
-
 .error {
     display: inline-block;
     box-sizing: content-box;
@@ -82,20 +97,33 @@ html a:hover {
 }
 
 
-
 /*
- * Decoration for Labels in Forms.
+ * Styling of labels in forms.
  */
 label {
     font-size: 20px;
 }
 
 
+/*
+ * General styling for some of the common inputs we use.
+ */
+input, label {
+    line-height: 1em;
+    vertical-align: middle;
+}
+
+.text-field, .multi-choice, .slider {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
 
 /*
- * Decoration for Sliders.
+ * Styling for any sliders.
  */
-
 input[type=range] {
     width: 100%;
 }
@@ -137,25 +165,10 @@ input[type=range]::-moz-range-thumb {
     border-radius: 10%;
 }
 
-input, label {
-    line-height: 1em;
-    vertical-align: middle;
-}
-
-.text-field, .multi-choice, .slider {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-
-    text-align: left;
-}
-
-
 
 /*
- * Decoration for Text Fields.
+ * Styling specific to text inputs.
  */
-
 input[type=text] {
     width: 100%;
     height: 45px;
@@ -171,11 +184,9 @@ textarea {
 }
 
 
-
 /*
- * Decoration for Multiple-Choice Questions.
+ * Styling specific to multiple-choice questions.
  */
-
 .choice {
     width: 100%;
     cursor: pointer;
@@ -202,11 +213,9 @@ textarea {
 }
 
 
-
 /*
- * Decoration for the form Submit button.
+ * Styling for the form Submit button.
  */
-
 input[type=submit] {
     padding-left: 15px;
     padding-right: 15px;
@@ -227,9 +236,8 @@ input[type=submit]:hover {
 
 
 /*
- * Formatting for the footer
+ * Styling for the footer at the bottom of all pages in the site.
  */
-
 footer {
     position: absolute;
     left: 0;
@@ -239,14 +247,4 @@ footer {
     text-align: center;
     height: 2.5rem;
     font-size: 12px;
-}
-
-.page-container {
-    position: relative;
-    min-height: 90vh;
-    box-sizing: border-box;
-  }
-
-.content-wrap {
-    padding-bottom: 2.5rem;
 }

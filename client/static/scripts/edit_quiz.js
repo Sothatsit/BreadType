@@ -1,3 +1,10 @@
+/**
+ * This code makes users click the button to delete a quiz three times
+ * before it will redirect them to actually delete the quiz.
+ *
+ * This is done to reduce the chances of someone unintentionally deleting a quiz.
+ */
+
 
 // Stores the state for the delete button.
 var deleteState = {
