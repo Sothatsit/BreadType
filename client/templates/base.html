@@ -42,6 +42,10 @@
         <a href="{{ url_for('quiz.create_quiz') }}">Create</a>
         <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% endif %}
+
+        {% if current_user.is_admin() %}
+        <a href="{{ url_for('main.admin') }}">Admin Page</a>
+        {% endif %}
     </nav>
 
     <div class="page-container" id="content">
