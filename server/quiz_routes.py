@@ -23,9 +23,12 @@ def can_edit_quiz(quiz):
 @quiz.route("/quiz/view")
 def view_quiz():
     """
-    The page for viewing all currently created quizes
+    The page for viewing all currently created quizzes
     """
     quizzes = load_all_quizzes()
+    for quiz in quizzes:
+        if can_edit_quiz(quiz):
+            quiz.can_edit = True
     return render_template(
         "view_quiz.html",
         title="View Quiz",
@@ -79,6 +82,7 @@ def submit_quiz(quiz_id):
         "quiz_results.html",
         title="Your Results",
         category=best_category,
+        can_edit_quiz=can_edit_quiz(quiz),
         quiz=quiz
     )
 

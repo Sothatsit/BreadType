@@ -123,18 +123,19 @@ input[type=range]::-webkit-slider-thumb {
     width: 23px;
     height: 24px;
     border: 0;
-    background: orangered;
+    background:  #1E90FF;
     cursor: pointer;
+    border-radius: 10%;
 }
 
 input[type=range]::-moz-range-thumb {
     width: 23px;
     height: 24px;
     border: 0;
-    background: orangered;
+    background: #1E90FF;;
     cursor: pointer;
+    border-radius: 10%;
 }
-
 
 input, label {
     line-height: 1em;
@@ -223,7 +224,6 @@ input[type=submit]:hover {
     cursor: pointer;
     background-color: #1A5714;
 }
-
 
 
 /*
