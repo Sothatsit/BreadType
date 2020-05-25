@@ -100,6 +100,10 @@ class User(UserMixin, db.Model):
     # The answers of this user on quizzes.
     db_answers = db.relationship('DBUserAnswer', backref='user', lazy=True)
 
+    def is_admin(self):
+        """ Returns whether this user is an admin. """
+        return self.role == "admin"
+
     def get_quizzes(self):
         """ Get the normal quiz objects that this user has created. """
         return [db_quiz.get_quiz() for db_quiz in self.db_quizzes]
