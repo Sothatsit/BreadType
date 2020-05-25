@@ -90,7 +90,6 @@ function createNumberBoxes(numberName) {
     input.type = "number";
     input.value = "0";
     input.name = numberName;
-    input.className = "number_check";
     return input;
 }
 
@@ -150,12 +149,6 @@ function addQuestion(questionNumber) {
     // Add the question to the document.
     var questionBank = document.getElementById("question_bank");
     questionBank.appendChild(question);
-
-    // Add a break to clear the floats of checkboxes
-    var clearBreak = document.createElement("br");
-    clearBreak.className = "clear";
-    questionBank.appendChild(clearBreak);
-    questionBank.appendChild(document.createElement("br"));
 
     // Setup the question to initially be a multiple choice question.
     changeType(questionNumber, "Multiple Choice");
@@ -234,6 +227,11 @@ function setupMultiChoiceConfig(questionNumber, configDiv) {
         configDiv.appendChild(input);
         configDiv.appendChild(breadTypeDiv);
     }
+
+    // Add a break to clear the floats of checkboxes
+    var clearBreak2 = document.createElement("div");
+    clearBreak2.className = "clear";
+    configDiv.appendChild(clearBreak2);
 }
 
 
@@ -247,6 +245,9 @@ function updateCategoryNames() {
     // Update the name for each category.
     for (var categoryNumber = 0; categoryNumber < categoryInputs.length; ++categoryNumber) {
         var categoryName = categoryInputs[categoryNumber].value;
+        if (categoryName.length === 0) {
+            categoryName = "Category " + (categoryNumber + 1);
+        }
 
         // Update all the labels that should contain this category name.
         var labels = document.getElementsByClassName(`category_${categoryNumber}_name`);
@@ -281,12 +282,24 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     // The name prefix for all of the slider parameters.
     var paramNamePrefix = `question_${questionNumber}_slider`;
 
-    // The category names above each number box.
-    for (var categoryNumber = 0; categoryNumber < 4; ++categoryNumber) {
-        var label = document.createElement("text");
-        label.className = `num_label category_${categoryNumber}_name`;
-        configDiv.appendChild(label);
-    }
+    // Create the div that holds the configuration for the slider itself.
+    var sliderConfigDiv = createSliderPropertiesConfig(paramNamePrefix, showStep);
+
+    // Create the div that holds the configuration for the scoring of user answers.
+    var scoringConfigDiv = createSliderScoringConfig(paramNamePrefix);
+
+    // Append the config divs to the config div.
+    sliderConfigDiv.className = "left";
+    scoringConfigDiv.className = "right";
+    configDiv.appendChild(createDiv("flex_row", [sliderConfigDiv, scoringConfigDiv]));
+}
+
+/**
+ * Creates the div that allows the configuration of just the slider properties.
+ * Does not include the configuration options for the scoring of user's answers.
+ */
+function createSliderPropertiesConfig(paramNamePrefix, showStep) {
+    var configDiv = document.createElement("div");
 
     // Create the min/max inputs.
     var min = document.createElement("input");
@@ -304,7 +317,6 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     max.value = "100";
     max.name = paramNamePrefix + "_max";
     max.id = paramNamePrefix + "_max";
-    //max.style = "float: left;";
 
     // Create the labels associated with the inputs.
     var min_label = document.createElement("label");
@@ -313,18 +325,15 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     max_label.htmlFor = paramNamePrefix + "_max";
     min_label.innerHTML = "Minimum Value";
     max_label.innerHTML = "Maximum Value";
-    //min_label.style = "float: left;";
-    //max_label.style = "float: left;";
 
     // Add all the elements to the config div.
+    configDiv.appendChild(min_label);
     configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(min);
     configDiv.appendChild(document.createElement("br"));
-    configDiv.appendChild(min_label);
+    configDiv.appendChild(max_label);
     configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(max);
-    configDiv.appendChild(document.createElement("br"));
-    configDiv.appendChild(max_label);
     configDiv.appendChild(document.createElement("br"));
 
     if (showStep) {
@@ -336,56 +345,84 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
         step.value = "1";
         step.name = paramNamePrefix + "_step";
         step.id = paramNamePrefix + "_step";
-        //step.style = "float: left";
 
         // Create the associated label with the step input.
         var step_label = document.createElement("label");
         step_label.htmlFor = paramNamePrefix + "_step";
         step_label.innerHTML = "Slider Step";
-        //step_label.style = "float: left";
 
         // Add all the elements for the step config.
-        configDiv.appendChild(step);
-        configDiv.appendChild(document.createElement("br"));
         configDiv.appendChild(step_label);
+        configDiv.appendChild(document.createElement("br"));
+        configDiv.appendChild(step);
         configDiv.appendChild(document.createElement("br"));
     }
 
-    // Add in categories
-    var breadTypeDiv = createDiv("bread_type", [
-        createNumberBoxes(`${paramNamePrefix}_category_1_peak`),
-        createNumberBoxes(`${paramNamePrefix}_category_2_peak`),
-        createNumberBoxes(`${paramNamePrefix}_category_3_peak`),
-        createNumberBoxes(`${paramNamePrefix}_category_4_peak`)
-    ]);
-    configDiv.appendChild(breadTypeDiv);
-
-    // Add in accuray metric (std_dev_x) that determines the rate
-    // of dropoff in scores the further away an answer is from 
+    // Add in accuracy metric (std_dev_x) that determines the rate
+    // of drop off in scores the further away an answer is from
     // the created answers.
-    var accuracy = document.createElement("input");
-    accuracy.type = "number";
-    accuracy.min = "0";
-    accuracy.max = "10000";
-    accuracy.value = "1";
-    accuracy.name = paramNamePrefix + "_std_dev_x";
-    accuracy.id = paramNamePrefix + "_std_dev_x";
-    //accuracy.style = "float: left;";
+    var error_margin = document.createElement("input");
+    error_margin.type = "number";
+    error_margin.min = "1";
+    error_margin.max = "10000";
+    error_margin.value = "1";
+    error_margin.name = paramNamePrefix + "_std_dev_x";
+    error_margin.id = paramNamePrefix + "_std_dev_x";
 
     // Create the associated label with the accuracy input
-    var accuracy_label = document.createElement("label");
-    accuracy_label.htmlFor = paramNamePrefix + "_std_dev_x";
-    accuracy_label.innerHTML = "Accuracy";
-    //accuracy_label.style = "float: left;";
+    var error_margin_label = document.createElement("label");
+    error_margin_label.htmlFor = paramNamePrefix + "_std_dev_x";
+    error_margin_label.innerHTML = "Margin of Error";
 
-    configDiv.appendChild(accuracy);
+    configDiv.appendChild(error_margin_label);
     configDiv.appendChild(document.createElement("br"));
-    configDiv.appendChild(accuracy_label);
-    configDiv.appendChild(document.createElement("br"));
+    configDiv.appendChild(error_margin);
+
+    return configDiv;
+}
 
 
-    // Clears away the floating from labels.
-    var clearBreak = document.createElement("br");
-    clearBreak.className = "clear";
-    //configDiv.appendChild(clearBreak);
+/**
+ * Creates the config div used for setting up the scoring functions
+ * of users answers for each category.
+ */
+function createSliderScoringConfig(paramNamePrefix) {
+    var configDiv = document.createElement("div");
+
+    // Create a table for the expected answers.
+    var expectedTable = document.createElement("table");
+    var expectedTableHeader = document.createElement("thead");
+    var expectedTableHeaderRow = document.createElement("tr");
+
+    var expectedTableHeaderRowCategory = document.createElement("th");
+    expectedTableHeaderRowCategory.innerText = "Category";
+    expectedTableHeaderRow.appendChild(expectedTableHeaderRowCategory);
+
+    var expectedTableHeaderRowValue = document.createElement("th");
+    expectedTableHeaderRowValue.innerText = "Expected Value";
+    expectedTableHeaderRow.appendChild(expectedTableHeaderRowValue);
+    expectedTableHeader.appendChild(expectedTableHeaderRow);
+    expectedTable.appendChild(expectedTableHeader);
+
+    // Append a row for every category with its name and expected answer.
+    var expectedTableBody = document.createElement("tbody");
+    for (var categoryNumber = 0; categoryNumber < 4; ++categoryNumber) {
+        var peakInput = createNumberBoxes(`${paramNamePrefix}_category_${categoryNumber}_peak`);
+        var peakLabel = document.createElement("text");
+        peakLabel.className = `category_${categoryNumber}_name`;
+
+        var tableRow = document.createElement("tr");
+        var colLabel = document.createElement("td");
+        colLabel.appendChild(peakLabel);
+        tableRow.appendChild(colLabel);
+
+        var colInput = document.createElement("td");
+        colInput.appendChild(peakInput);
+        tableRow.appendChild(colInput);
+        expectedTableBody.appendChild(tableRow);
+    }
+    expectedTable.appendChild(expectedTableBody);
+    configDiv.appendChild(expectedTable);
+
+    return configDiv;
 }
