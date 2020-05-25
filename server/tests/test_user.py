@@ -1,15 +1,22 @@
 import unittest, os, test
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from ..user_model import User
-from app import app, db
-basedir = os.path.abspath(os.path.dirname(__file__))
+import unittest, os, time
+
+base_path = os.path.dirname(os.path.realpath(__file__))
 
 class SystemTest(unittest.TestCase):
     driver = None
 
     def setUp(self):
-        self.driver = webdriver.FireFox(executable_path='/Documents/Github/BreadType/')
+        cap = DesiredCapabilities().FIREFOX
+        cap["marionette"] = False
+
+        self.driver = webdriver.Firefox(capabilities=cap,
+            executable_path = base_path + "/drivers/geckodriver"
+        )
     
         if not self.driver:
             self.skipTest('Web browser for available')
@@ -21,7 +28,7 @@ class SystemTest(unittest.TestCase):
             db.session.commit()
             self.driver.maximize_window()
             self.driver.get('http://localhost:5000/')
-    
+        
     def tearDown(self):
         if self.drvier:
             self.driver.close()
