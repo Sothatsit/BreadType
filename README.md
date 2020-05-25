@@ -42,6 +42,7 @@ on a Mac or Linux environment.
    
    Email: "example_user@example.com", Password: "example"
    
+   This example user is also an admin user on the website.
    However, feel free to create your own user through the Sign Up page.
 
 <br/>
