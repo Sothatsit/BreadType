@@ -124,6 +124,7 @@ Structure of this Project
 ### Unit Testing 
 
 **/server/tests/test_user_quiz** - Testing scripts to ensure that users can register, login, create, and take a test.
+
 !!! Note that for this test, chromedriver, geckodriver, and IEdriver must be in path for full functionality. If they are not, it will ignore them.
 
 <br/>
