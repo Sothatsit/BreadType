@@ -1,15 +1,20 @@
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from ..user_model import User
 import unittest, os, time
+
+base_path = os.path.dirname(os.path.realpath(__file__))
 
 class SystemTest(unittest.TestCase):
     driver = None
 
     def setUp(self):
-        self.driver = webdriver.Firefox(
-            executable_path=os.path.dirname(os.path.realpath(__file__)) +
-            r"/drivers/geckodriver"
+        cap = DesiredCapabilities().FIREFOX
+        cap["marionette"] = False
+
+        self.driver = webdriver.Firefox(capabilities=cap,
+            executable_path = base_path + "/drivers/geckodriver"
         )
     
         if not self.driver:
