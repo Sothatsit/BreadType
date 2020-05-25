@@ -67,11 +67,6 @@ class MultiScoringFunction(ScoringFunction):
         return MultiScoringFunction(option_scores)
 
 
-def pdf(x, mu=0.0, sigma=1.0):
-    x = float(x - mu) / sigma
-    return math.exp(-x*x/2.0) / math.sqrt(2.0*math.pi) / sigma
-
-
 class GaussianScoringFunction(ScoringFunction):
     """ A function that scores answers based on a gaussian curve. """
 
@@ -87,17 +82,11 @@ class GaussianScoringFunction(ScoringFunction):
         centered on peak_x with a standard deviation of std_dev_x,
         and with a maximum value of score_magnitude.
         """
-        scores = []
-        # Iterate through the provided peak_x list and calculate the
-        # score for each bread type from the question
-        for category_num in range(len(peak_x)):
-            # Normalise to a peak at 0, with a std. dev. of 1
-            x = float(answer - self.peak_x[category_num]) / self.std_dev_x
-            # Calculate the exponential decay function, and scale it by the desired magnitude.
-            score = self.score_magnitude * math.exp(-x*x / 2.0)
-            # Append to list of scores
-            scores.append(score)
-        return scores
+        # Normalise to a peak at 0, with a std. dev. of 1
+        x = float(answer - self.peak_x[category_num]) / self.std_dev_x
+        # Calculate the exponential decay function, and scale it by the desired magnitude.
+        score = self.score_magnitude * math.exp(-x*x / 2.0)
+        return score
 
     def encode_to_args(self):
         """ Encodes this scoring function into a list of arguments. """

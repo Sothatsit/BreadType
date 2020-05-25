@@ -386,6 +386,7 @@ class FloatSliderQuestion(Question):
             ))
         except ValueError:
             errors.append("Please enter a number for accuracy in slider questions.")
+            return None
 
         # Find the scoring functions for each category
         for category_index, category_name in enumerate(category_names):
@@ -393,20 +394,16 @@ class FloatSliderQuestion(Question):
 
             # Find the scoring for each option
             score_magnitude = question_weight
-            peak_x = []
-            box_name = "question_{}_slider_category_{}".format(
+            box_name = "question_{}_slider_category_{}_peak".format(
                 question_number, category_number
             )
-            print(form.get(box_name))
+
             # If the number box has a number, take that number as peak_x
-            if box_name in form:
-                peak_x.append(
-                    form.get(
-                        box_name
-                    )
-                )
+            peak_x_str = form.get(box_name, "")
+            if len(peak_x_str) > 0:
+                peak_x = float(peak_x_str)
             else:
-                peak_x.append(0)
+                peak_x = 0
         
             # Create the scoring function from this set of scores
             scoring_function = GaussianScoringFunction(
@@ -451,7 +448,7 @@ class IntSliderQuestion(Question):
             self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index+1)
         )
 
-        #Adds a number below the slider to represent its current value
+        # Adds a number below the slider to represent its current value
         html += "<p class=\"slider_val\" id=\"question-{}_slider_val\">".format(index+1)
         html += str(self.default_value)
         html += "</p>\n"
@@ -541,6 +538,7 @@ class IntSliderQuestion(Question):
             ))
         except ValueError:
             errors.append("Please enter a number for accuracy in slider questions.")
+            return None
 
         # Find the scoring functions for each category
         for category_index, category_name in enumerate(category_names):
@@ -548,20 +546,16 @@ class IntSliderQuestion(Question):
 
             # Find the scoring for each option
             score_magnitude = question_weight
-            peak_x = []
-            box_name = "question_{}_slider_category_{}".format(
+            box_name = "question_{}_slider_category_{}_peak".format(
                 question_number, category_number
             )
-            print(form.get(box_name))
+
             # If the number box has a number, take that number as peak_x
-            if box_name in form:
-                peak_x.append(
-                    form.get(
-                        box_name
-                    )
-                )
+            peak_x_str = form.get(box_name, "")
+            if len(peak_x_str) > 0:
+                peak_x = float(peak_x_str)
             else:
-                peak_x.append(0)
+                peak_x = 0
         
             # Create the scoring function from this set of scores
             scoring_function = GaussianScoringFunction(
