@@ -10,14 +10,20 @@ app = create_app()
 app.testing = True
 
 class SystemTest(unittest.TestCase):
-    driver = None
-
+    driver1 = None
+    driver2 = None
+    
     def setUp(self):
-        self.driver = webdriver.Firefox(
+        # Test with Firefox
+        self.driver1 = webdriver.Firefox(
             executable_path = base_path + "/drivers/geckodriver"
         )
+        # Test with Chrome -  sorry
+        self.driver2 = webdriver.Chrome(
+            executable_path = base_path + "/drivers/chromedriver"
+        )
     
-        if not self.driver:
+        if not self.driver1 or not self.driver2:
             self.skipTest('Web browser not available')
         else:
             db.init_app(app)
@@ -25,12 +31,14 @@ class SystemTest(unittest.TestCase):
                 db.create_all()
                 db.session.commit()
             # self.driver.maximize_window()
-            self.driver.get('http://localhost:5000/')
+            self.driver1.get('http://localhost:5000/')
+            self.driver2.get('http://localhost:5000/')
 
         
     def tearDown(self):
-        if self.driver:
-            self.driver.close()
+        if self.driver1 or self.driver2:
+            self.driver1.close()
+            self.driver2.close()
             with app.app_context():
                 for quiz in load_all_quizzes():
                     delete_db_quiz(quiz)
@@ -39,124 +47,135 @@ class SystemTest(unittest.TestCase):
                 db.session.remove()
 
     def test_signup_quiz(self):
-        self.driver.get('http://localhost:5000/signup')
-        self.driver.implicitly_wait(5)
+        for driver in [self.driver1, self.driver2]:
+            driver.get('http://localhost:5000/signup')
+            driver.implicitly_wait(5)
 
-        num_field = self.driver.find_element_by_id('email')
-        num_field.send_keys('test@test.com')
+            if driver == self.driver1:
+                num_field = driver.find_element_by_id('email')
+                num_field.send_keys('test1@test.com')
 
-        pref_name = self.driver.find_element_by_id('name')
-        pref_name.send_keys('test')
+                pref_name = driver.find_element_by_id('name')
+                pref_name.send_keys('test1')
+            elif driver == self.driver2:
+                num_field = driver.find_element_by_id('email')
+                num_field.send_keys('test2@test.com')
 
-        new_password = self.driver.find_element_by_id('password')
-        new_password.send_keys('pass')
+                pref_name = driver.find_element_by_id('name')
+                pref_name.send_keys('test2')
 
-        self.driver.implicitly_wait(5)
-        submit = self.driver.find_element_by_id('signup')
-        submit.click()
-        logout = self.driver.find_element_by_partial_link_text('Logout')
-        self.assertEqual(logout.get_attribute('innerHTML'), 'Logout', msg='Can\'t log out')
+            new_password = driver.find_element_by_id('password')
+            new_password.send_keys('pass')
 
-        # Start testing the functionality of quizzes
+            driver.implicitly_wait(5)
+            submit = driver.find_element_by_id('signup')
+            submit.click()
+            logout = driver.find_element_by_partial_link_text('Logout')
+            self.assertEqual(logout.get_attribute('innerHTML'), 'Logout', msg='Can\'t log out')
 
-        self.driver.get('http://localhost:5000/quiz/create')
-        self.driver.implicitly_wait(5)
-        
-        # Find and fill in the title and category fields
-        title_field = self.driver.find_element_by_name('title')
-        title_field.send_keys('my quiz')
+            # Start testing the functionality of quizzes
 
-        catg1_field = self.driver.find_element_by_id('catg1')
-        catg1_field.send_keys('catg1')
-        catg2_field = self.driver.find_element_by_id('catg2')
-        catg2_field.send_keys('catg2')
-        catg3_field = self.driver.find_element_by_id('catg3')
-        catg3_field.send_keys('catg3')
-        catg4_field = self.driver.find_element_by_id('catg4')
-        catg4_field.send_keys('catg4')
+            driver.get('http://localhost:5000/quiz/create')
+            driver.implicitly_wait(5)
+            
+            # Find and fill in the title and category fields
+            title_field = driver.find_element_by_name('title')
+            title_field.send_keys('my quiz')
 
-        # MULTI : Fill in the first question title, options and select some answers
-        q1_field = self.driver.find_element_by_name('question_1_text')
-        q1_field.send_keys('q1')
+            catg1_field = driver.find_element_by_id('catg1')
+            catg1_field.send_keys('catg1')
+            catg2_field = driver.find_element_by_id('catg2')
+            catg2_field.send_keys('catg2')
+            catg3_field = driver.find_element_by_id('catg3')
+            catg3_field.send_keys('catg3')
+            catg4_field = driver.find_element_by_id('catg4')
+            catg4_field.send_keys('catg4')
 
-        multi_1 = self.driver.find_element_by_name('question_1_multi_choice_1')
-        multi_1.send_keys('option 1')
-        multi_2 = self.driver.find_element_by_name('question_1_multi_choice_2')
-        multi_2.send_keys('option 2')
-        multi_3 = self.driver.find_element_by_name('question_1_multi_choice_3')
-        multi_3.send_keys('option 3')
-        multi_4 = self.driver.find_element_by_name('question_1_multi_choice_4')
-        multi_4.send_keys('option 4')
+            # MULTI : Fill in the first question title, options and select some answers
+            q1_field = driver.find_element_by_name('question_1_text')
+            q1_field.send_keys('q1')
 
-        box_1 = self.driver.find_element_by_name('question_1_multi_choice_1_category_1')
-        box_1.click()
-        box_2 = self.driver.find_element_by_name('question_1_multi_choice_2_category_2')
-        box_2.click()
-        box_3 = self.driver.find_element_by_name('question_1_multi_choice_3_category_3')
-        box_3.click()
-        box_4 = self.driver.find_element_by_name('question_1_multi_choice_4_category_4')
-        box_4.click()
+            multi_1 = driver.find_element_by_name('question_1_multi_choice_1')
+            multi_1.send_keys('option 1')
+            multi_2 = driver.find_element_by_name('question_1_multi_choice_2')
+            multi_2.send_keys('option 2')
+            multi_3 = driver.find_element_by_name('question_1_multi_choice_3')
+            multi_3.send_keys('option 3')
+            multi_4 = driver.find_element_by_name('question_1_multi_choice_4')
+            multi_4.send_keys('option 4')
 
-        # INT_SLIDER: Same as above
-        add_question = self.driver.find_element_by_id("add_question")
-        add_question.click()
+            box_1 = driver.find_element_by_name('question_1_multi_choice_1_category_1')
+            box_1.click()
+            box_2 = driver.find_element_by_name('question_1_multi_choice_2_category_2')
+            box_2.click()
+            box_3 = driver.find_element_by_name('question_1_multi_choice_3_category_3')
+            box_3.click()
+            box_4 = driver.find_element_by_name('question_1_multi_choice_4_category_4')
+            box_4.click()
 
-        q2_field = self.driver.find_element_by_name('question_2_text')
-        q2_field.send_keys('q2')
+            # INT_SLIDER: Same as above
+            add_question = driver.find_element_by_id("add_question")
+            add_question.click()
 
-        int_radio = self.driver.find_element_by_id("question_2_type_discrete_slider")
-        int_radio.click()
+            q2_field = driver.find_element_by_name('question_2_text')
+            q2_field.send_keys('q2')
 
-        peak_1 = self.driver.find_element_by_name("question_2_slider_category_0_peak")
-        peak_1.send_keys('10')
-        peak_2 = self.driver.find_element_by_name("question_2_slider_category_1_peak")
-        peak_2.send_keys('30')
-        peak_3 = self.driver.find_element_by_name("question_2_slider_category_2_peak")
-        peak_3.send_keys('50')
-        peak_4 = self.driver.find_element_by_name("question_2_slider_category_3_peak")
-        peak_4.send_keys('70')
+            int_radio = driver.find_element_by_id("question_2_type_discrete_slider")
+            int_radio.click()
 
-        # FLOAT_SLIDER: same as above
-        add_question = self.driver.find_element_by_id("add_question")
-        add_question.click()
+            peak_1 = driver.find_element_by_name("question_2_slider_category_0_peak")
+            peak_1.send_keys('10')
+            peak_2 = driver.find_element_by_name("question_2_slider_category_1_peak")
+            peak_2.send_keys('30')
+            peak_3 = driver.find_element_by_name("question_2_slider_category_2_peak")
+            peak_3.send_keys('50')
+            peak_4 = driver.find_element_by_name("question_2_slider_category_3_peak")
+            peak_4.send_keys('70')
 
-        q3_field = self.driver.find_element_by_name('question_3_text')
-        q3_field.send_keys('q3')
+            # FLOAT_SLIDER: same as above
+            add_question = driver.find_element_by_id("add_question")
+            add_question.click()
 
-        float_radio = self.driver.find_element_by_id("question_3_type_continuous_slider")
-        float_radio.click()
+            q3_field = driver.find_element_by_name('question_3_text')
+            q3_field.send_keys('q3')
 
-        peak_1 = self.driver.find_element_by_name("question_3_slider_category_0_peak")
-        peak_1.send_keys('10')
-        peak_2 = self.driver.find_element_by_name("question_3_slider_category_1_peak")
-        peak_2.send_keys('30')
-        peak_3 = self.driver.find_element_by_name("question_3_slider_category_2_peak")
-        peak_3.send_keys('50')
-        peak_4 = self.driver.find_element_by_name("question_3_slider_category_3_peak")
-        peak_4.send_keys('70')
+            float_radio = driver.find_element_by_id("question_3_type_continuous_slider")
+            float_radio.click()
 
-        # Now that we have all questions filled, create the quiz
-        create_quiz = self.driver.find_element_by_id("create_quiz")
-        create_quiz.click()
+            peak_1 = driver.find_element_by_name("question_3_slider_category_0_peak")
+            peak_1.send_keys('10')
+            peak_2 = driver.find_element_by_name("question_3_slider_category_1_peak")
+            peak_2.send_keys('30')
+            peak_3 = driver.find_element_by_name("question_3_slider_category_2_peak")
+            peak_3.send_keys('50')
+            peak_4 = driver.find_element_by_name("question_3_slider_category_3_peak")
+            peak_4.send_keys('70')
 
-        # Check we got brought to the view quiz page
-        url = self.driver.current_url
-        self.assertEqual(url, 'http://localhost:5000/quiz/1')
+            # Now that we have all questions filled, create the quiz
+            create_quiz = driver.find_element_by_id("create_quiz")
+            create_quiz.click()
 
-        # Select the first multi option and submit the quiz
-        option = self.driver.find_element_by_id("q0-o0")
-        option.click()
+            # Check we got brought to the view quiz page
+            url = driver.current_url
+            if driver == self.driver1:
+                self.assertEqual(url, 'http://localhost:5000/quiz/1')
+            elif driver == self.driver2:
+                self.assertEqual(url, 'http://localhost:5000/quiz/2')
 
-        submit = self.driver.find_element_by_id("submit")
-        submit.click()
+            # Select the first multi option and submit the quiz
+            option = driver.find_element_by_id("q0-o0")
+            option.click()
 
-        # Check that answer is catg2
-        answer = self.driver.find_element_by_id('answer')
-        self.assertEqual(answer.get_attribute('innerHTML').strip(), 'catg2', msg='Correct answer')
-        time.sleep(3)
-        logout = self.driver.find_element_by_partial_link_text('Logout')
-        self.assertEqual(logout.get_attribute('innerHTML'), 'Logout', msg='Logout Fail')
-        logout.click()
+            submit = driver.find_element_by_id("submit")
+            submit.click()
+
+            # Check that answer is catg2
+            answer = driver.find_element_by_id('answer')
+            self.assertEqual(answer.get_attribute('innerHTML').strip(), 'catg2', msg='Correct answer')
+            time.sleep(3)
+            logout = driver.find_element_by_partial_link_text('Logout')
+            self.assertEqual(logout.get_attribute('innerHTML'), 'Logout', msg='Logout Fail')
+            logout.click()
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
