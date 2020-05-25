@@ -2,9 +2,9 @@
 
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/quiz/quiz.css" />
+<link type="text/css" rel="stylesheet" href="/edit_quiz/edit_quiz.css" />
 <!-- The code specific to this page. -->
-<script src="/quiz/quiz.js"></script>
+<script src="/edit_quiz/edit_quiz.js"></script>
 {% endblock %}
 
 
@@ -42,7 +42,11 @@
         <textarea name="encoded_text" id="encoded_text" placeholder="multi(A,B,C)">{{ questions_text }}</textarea>
     </div>
 
-    <input type="submit" value="Make Changes">
+    <input type="submit" class="submit_changes" value="Make Changes">
+
+    <div id="delete_container">
+        <div id="delete">Delete Quiz</div>
+    </div>
 </form>
 
 {% endblock %}

@@ -75,12 +75,22 @@ function createRadioButton(radioName, text, onSelect, checked) {
  * Create a check button element.
  */
 function createCheckButton(checkName) {
-    // Create the radio button itself.
+    // Create the check button itself.
     var input = document.createElement("input");
     input.type = "checkbox";
     input.value = "Yes";
     input.name = checkName;
     input.className = "bread_check";
+    return input;
+}
+
+function createNumberBoxes(numberName) {
+    // Create a number input box to contain categories
+    var input = document.createElement("input");
+    input.type = "number";
+    input.value = "0";
+    input.name = numberName;
+    input.className = "number_check";
     return input;
 }
 
@@ -271,6 +281,13 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     // The name prefix for all of the slider parameters.
     var paramNamePrefix = `question_${questionNumber}_slider`;
 
+    // The category names above each number box.
+    for (var categoryNumber = 0; categoryNumber < 4; ++categoryNumber) {
+        var label = document.createElement("text");
+        label.className = `num_label category_${categoryNumber}_name`;
+        configDiv.appendChild(label);
+    }
+
     // Create the min/max inputs.
     var min = document.createElement("input");
     min.type = "number";
@@ -279,6 +296,7 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     min.value = "0";
     min.name = paramNamePrefix + "_min";
     min.id = paramNamePrefix + "_min";
+    //min.style = "float: left;";
     var max = document.createElement("input");
     max.type = "number";
     max.min = "0";
@@ -286,6 +304,7 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     max.value = "100";
     max.name = paramNamePrefix + "_max";
     max.id = paramNamePrefix + "_max";
+    //max.style = "float: left;";
 
     // Create the labels associated with the inputs.
     var min_label = document.createElement("label");
@@ -294,13 +313,17 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     max_label.htmlFor = paramNamePrefix + "_max";
     min_label.innerHTML = "Minimum Value";
     max_label.innerHTML = "Maximum Value";
+    //min_label.style = "float: left;";
+    //max_label.style = "float: left;";
 
     // Add all the elements to the config div.
     configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(min);
+    configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(min_label);
     configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(max);
+    configDiv.appendChild(document.createElement("br"));
     configDiv.appendChild(max_label);
     configDiv.appendChild(document.createElement("br"));
 
@@ -313,15 +336,57 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
         step.value = "1";
         step.name = paramNamePrefix + "_step";
         step.id = paramNamePrefix + "_step";
+        //step.style = "float: left";
 
         // Create the associated label with the step input.
         var step_label = document.createElement("label");
         step_label.htmlFor = paramNamePrefix + "_step";
         step_label.innerHTML = "Slider Step";
+        //step_label.style = "float: left";
 
         // Add all the elements for the step config.
         configDiv.appendChild(step);
+        configDiv.appendChild(document.createElement("br"));
         configDiv.appendChild(step_label);
         configDiv.appendChild(document.createElement("br"));
     }
+
+    // Add in categories
+    var numberNamePrefix = `question_${questionNumber}_slider`;
+    var breadTypeDiv = createDiv("bread_type", [
+        createNumberBoxes(`${numberNamePrefix}_category_1`),
+        createNumberBoxes(`${numberNamePrefix}_category_2`),
+        createNumberBoxes(`${numberNamePrefix}_category_3`),
+        createNumberBoxes(`${numberNamePrefix}_category_4`)
+    ]);
+    configDiv.appendChild(breadTypeDiv);
+
+    // Add in accuray metric (std_dev_x) that determines the rate
+    // of dropoff in scores the further away an answer is from 
+    // the created answers.
+    var accuracy = document.createElement("input");
+    accuracy.type = "number";
+    accuracy.min = "0";
+    accuracy.max = "10000";
+    accuracy.value = "1";
+    accuracy.name = paramNamePrefix + "_std_dev_x";
+    accuracy.id = paramNamePrefix + "_std_dev_x";
+    //accuracy.style = "float: left;";
+
+    // Create the associated label with the accuracy input
+    var accuracy_label = document.createElement("label");
+    accuracy_label.htmlFor = paramNamePrefix + "_std_dev_x";
+    accuracy_label.innerHTML = "Accuracy";
+    //accuracy_label.style = "float: left;";
+
+    configDiv.appendChild(accuracy);
+    configDiv.appendChild(document.createElement("br"));
+    configDiv.appendChild(accuracy_label);
+    configDiv.appendChild(document.createElement("br"));
+
+
+    // Clears away the floating from labels.
+    var clearBreak = document.createElement("br");
+    clearBreak.className = "clear";
+    //configDiv.appendChild(clearBreak);
 }

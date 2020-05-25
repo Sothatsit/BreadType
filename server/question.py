@@ -238,6 +238,7 @@ class MultiChoiceQuestion(Question):
 
         # Create the category scoring functions for this question out of the form.
         category_scoring_functions = {}
+
         # Find the scoring function for each category.
         for category_index, category_name in enumerate(category_names):
             category_number = category_index + 1
@@ -270,7 +271,7 @@ def create_slider_input_html(min_value, max_value, step, default_value, name):
     html = "<input class=\"sliders\" type=\"range\" "
     html += "min=\"{}\" max=\"{}\" step=\"{}\"".format(min_value, max_value, step)
     html += "value=\"{}\" name=\"{}\"".format(default_value, name)
-    html += " \\>"
+    html += "oninput=sliderValUpdate(name)>"
     return html
 
 
@@ -295,7 +296,7 @@ class FloatSliderQuestion(Question):
 
     def get_answer_from_form(self, form, index):
         """ Get the answer that was given for this question from the form. """
-        text_answer = super(FloatSliderQuestion, self).get_answer_from_form(form, index)
+        text_answer = super(FloatSliderQuestion, self).get_answer_from_form(form, index+1)
         if text_answer is None:
             return None
         return float(text_answer)
@@ -308,8 +309,14 @@ class FloatSliderQuestion(Question):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
         html += create_slider_input_html(
-            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index)
+            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index+1)
         )
+
+        # Adds in a number below the slider to represent it's current value
+        html += "<p class=\"slider_val\" id=\"question-{}_slider_val\">".format(index+1)
+        html += str(self.default_value)
+        html += "</p>\n"
+
         html += "</div>"
         return html
 
@@ -367,7 +374,48 @@ class FloatSliderQuestion(Question):
             return None
 
         # Create the slider question.
-        return FloatSliderQuestion(question_text, min_value, max_value), None
+        question = FloatSliderQuestion(question_text, min_value, max_value)
+
+        # Create the category scoring functions for this question out of the form.
+        category_scoring_functions = {}
+        
+        # Finding std_dev_x from the form
+        try:
+            std_dev_x = form.get("question_{}_slider_std_dev_x".format(
+                question_number
+            ))
+        except ValueError:
+            errors.append("Please enter a number for accuracy in slider questions.")
+
+        # Find the scoring functions for each category
+        for category_index, category_name in enumerate(category_names):
+            category_number = category_index + 1
+
+            # Find the scoring for each option
+            score_magnitude = question_weight
+            peak_x = []
+            box_name = "question_{}_slider_category_{}".format(
+                question_number, category_number
+            )
+            print(form.get(box_name))
+            # If the number box has a number, take that number as peak_x
+            if box_name in form:
+                peak_x.append(
+                    form.get(
+                        box_name
+                    )
+                )
+            else:
+                peak_x.append(0)
+        
+            # Create the scoring function from this set of scores
+            scoring_function = GaussianScoringFunction(
+                score_magnitude, peak_x, std_dev_x
+            )
+            category_scoring_functions[category_name] = scoring_function
+
+        return question, category_scoring_functions
+
 
 
 class IntSliderQuestion(Question):
@@ -391,7 +439,7 @@ class IntSliderQuestion(Question):
 
     def get_answer_from_form(self, form, index):
         """ Get the answer that was given for this question from the form. """
-        text_answer = super(IntSliderQuestion, self).get_answer_from_form(form, index)
+        text_answer = super(IntSliderQuestion, self).get_answer_from_form(form, index+1)
         if text_answer is None:
             return None
         return int(text_answer)
@@ -400,8 +448,14 @@ class IntSliderQuestion(Question):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
         html += create_slider_input_html(
-            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index)
+            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index+1)
         )
+
+        #Adds a number below the slider to represent its current value
+        html += "<p class=\"slider_val\" id=\"question-{}_slider_val\">".format(index+1)
+        html += str(self.default_value)
+        html += "</p>\n"
+
         html += "</div>"
         return html
 
@@ -475,4 +529,44 @@ class IntSliderQuestion(Question):
             return None
 
         # Create the slider question.
-        return IntSliderQuestion(question_text, min_value, max_value, step), None
+        question = IntSliderQuestion(question_text, min_value, max_value, step)
+
+        # Create the category scoring functions for this question out of the form.
+        category_scoring_functions = {}
+        
+        # Finding std_dev_x from the form
+        try:
+            std_dev_x = form.get("question_{}_slider_std_dev_x".format(
+                question_number
+            ))
+        except ValueError:
+            errors.append("Please enter a number for accuracy in slider questions.")
+
+        # Find the scoring functions for each category
+        for category_index, category_name in enumerate(category_names):
+            category_number = category_index + 1
+
+            # Find the scoring for each option
+            score_magnitude = question_weight
+            peak_x = []
+            box_name = "question_{}_slider_category_{}".format(
+                question_number, category_number
+            )
+            print(form.get(box_name))
+            # If the number box has a number, take that number as peak_x
+            if box_name in form:
+                peak_x.append(
+                    form.get(
+                        box_name
+                    )
+                )
+            else:
+                peak_x.append(0)
+        
+            # Create the scoring function from this set of scores
+            scoring_function = GaussianScoringFunction(
+                score_magnitude, peak_x, std_dev_x
+            )
+            category_scoring_functions[category_name] = scoring_function
+
+        return question, category_scoring_functions

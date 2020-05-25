@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<h1>All Quizzes</h1>
+<h1>All quizzes</h1>
 <br>
 <div>
     <table>
@@ -24,7 +24,13 @@
             <div>
             <tr>
                 <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
-                <td><a href="/profile/{{ quiz.owner.id }}">{{ quiz.owner.name }}</a></td>
+                <td><a href="/profile/{{ quiz.owner.id }}">{{ quiz.owner.name }}</a>
+                {% if quiz.can_edit %}
+                    <a id="stats" href="{{ url_for('quiz.view_quiz_stats', quiz_id=quiz.id) }}">
+                        <img src="/res/stats-icon.png" alt="View Quiz Stats" id="stats">
+                    </a>
+                {% endif %}
+                </td>
             </tr>
             </div>
             {% endfor %}

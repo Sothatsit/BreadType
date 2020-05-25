@@ -27,4 +27,13 @@
     </a>
 </div>
 
+<br>
+
+{% if can_edit_quiz %}
+<a id="stats" href="{{ url_for('quiz.view_quiz_stats', quiz_id=quiz.id) }}">
+    View Quiz Stats
+    <img src="/res/stats-icon.png" alt="View Quiz Stats" id="stats">
+</a>
+{% endif %}
+
 {% endblock %}

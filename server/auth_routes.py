@@ -99,4 +99,4 @@ def signup_post():
 
     login_user(new_user, remember=True)
 
-    return redirect(url_for("main.profile", username=current_user.name))
+    return redirect(url_for("main.profile", user_id=current_user.id))

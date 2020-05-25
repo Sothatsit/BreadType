@@ -10,8 +10,6 @@ body {
     width: 50%;
 }
 
-/* Category isn't overriding the base.css for some reason???*/
-
 /*
  * Decoration for the titles in the page.
  * e.g. "Quiz Title" and "Questions"
@@ -52,7 +50,7 @@ input[type=checkbox].bread_check:hover {
     clear: both;
 }
 
-.check_label {
+.check_label, .num_label {
     text-orientation: mixed;
     writing-mode: vertical-lr;
     float: right;
@@ -61,7 +59,9 @@ input[type=checkbox].bread_check:hover {
     margin-right: 5px;
 }
 
-
+label {
+    max-width: 80%;
+}
 
 /*
  * Decoration for number input related content.
@@ -69,8 +69,17 @@ input[type=checkbox].bread_check:hover {
 input[type=number] {
     width: 120px;
     margin-right: 20px;
+    max-width: 80%;
 }
 
+input[type=number].number_check {
+    margin-left: -12px;
+    margin-right: -12px;
+    margin-top: 10px;
+    width: 60px;
+    float: right;
+    transform: scale(0.5);
+}
 
 
 /*
