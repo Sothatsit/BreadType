@@ -157,6 +157,17 @@ Structure of this Project
 
 <br/>
 
+
+Libraries Used
+--------------
+This project uses several libraries to assist in its creation, among which are:
+- Chart.js, a Javascript charting library.
+- Bootstrap, a styling library.
+- JQuery, a Javascript helper library.
+- Flask, a Python web server framework.
+- Selenium, a website integration testing tool.
+
+
 Credits
 -------
 This project was created by **Sam Joyner**, **Maddy Sommer**, and **Paddy Lamont**.
