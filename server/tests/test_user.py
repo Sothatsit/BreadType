@@ -1,6 +1,7 @@
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
-from .user_model import User
+from ..user_model import User
+import unittest
 
 class SystemTest(unittest.TestCase):
     driver = None
