@@ -429,7 +429,7 @@ class IntSliderQuestion(Question):
 
         # Make sure there are the expected number of arguments.
         if len(args) != 2 and len(args) != 3:
-            return MalformedQuestion(text, "Expected two arguments, got: " + str(len(args)))
+            return MalformedQuestion(text, "Expected two or three arguments, got: " + str(len(args)))
 
         # Parse the min possible value.
         try:
