@@ -400,6 +400,10 @@ class DBQuizCategoryAnswerSpec(db.Model):
     """
     __tablename__ = "quiz_category_answer_spec"
 
+    __mapper_args__ = {
+        'confirm_deleted_rows' : False
+    }
+
     # The internal key assigned for each category answer.
     id = db.Column(db.Integer, primary_key=True, nullable=False)
 
