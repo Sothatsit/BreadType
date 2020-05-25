@@ -1,8 +1,7 @@
-import unittest, os, test
+import unittest, os, time
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
 from ..user_model import User
-import unittest, os, time
 from .. import create_app, db
 
 base_path = os.path.dirname(os.path.realpath(__file__))
@@ -23,7 +22,6 @@ class SystemTest(unittest.TestCase):
             u1 = User(id=11, email_address='test@test.com', name='test', password="pass")
             with app.app_context():
                 db.create_all()
-                db.session.add(u1)
                 db.session.commit()
             self.driver.maximize_window()
             self.driver.get('http://localhost:5000/')
@@ -37,9 +35,6 @@ class SystemTest(unittest.TestCase):
                 db.session.remove()
 
     def test_signup(self):
-        with app.app_context():
-            u = User.query.get(11)
-        self.assertEqual(u.name, 'test', msg='user exist in db')
         self.driver.get('http://127.0.0.1:5000/signup')
         self.driver.implicitly_wait(5)
         num_field = self.driver.find_element_by_id('email')
@@ -52,8 +47,8 @@ class SystemTest(unittest.TestCase):
         self.driver.implicitly_wait(5)
         submit = self.driver.find_element_by_id('signup')
         submit.click()
-        logout = self.driver.find_element_by_partial_link_text('logout')
-        self.assertEqual(logout.get_attribute(innerHTML), 'logout test', msg='logged in')
+        self.driver.implicitly_wait(3)
+        logout = self.driver.find_element_by_partial_link_text('Logout')
 
 
 if __name__ == '__main__':
