@@ -1,25 +1,28 @@
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
 from ..user_model import User
-import unittest
+import unittest, os, time
 
 class SystemTest(unittest.TestCase):
     driver = None
 
     def setUp(self):
-        self.driver = webdriver.FireFox(executable_path='/Documents/Github/BreadType/')
+        self.driver = webdriver.Firefox(
+            executable_path=os.path.dirname(os.path.realpath(__file__)) +
+            r"/drivers/geckodriver"
+        )
     
-    if not self.driver:
-        self.skipTest('Web browser for available')
-    else:
-        db.init_app(app)
-        db.create_all()
-        u1 = User(id=22, email_address='test@gmail.com', name='test',)
-        db.session.add(u1)
-        db.session.commit()
-        self.driver.maximize_window()
-        self.driver.get('http://localhost:5000/')
-    
+        if not self.driver:
+            self.skipTest('Web browser for available')
+        else:
+            db.init_app(app)
+            db.create_all()
+            u1 = User(id=22, email_address='test@gmail.com', name='test',)
+            db.session.add(u1)
+            db.session.commit()
+            self.driver.maximize_window()
+            self.driver.get('http://localhost:5000/')
+        
     def tearDown(self):
         if self.drvier:
             self.driver.close()
