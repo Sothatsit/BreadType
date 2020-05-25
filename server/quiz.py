@@ -296,6 +296,8 @@ class UserAnswer:
         user_answers = []
         for index, question in enumerate(quiz.questions):
             answer = question.get_answer_from_form(form, index)
+            if answer is None:
+                continue
             user_answer = UserAnswer(answers_uuid, user, question, answer)
             user_answers.append(user_answer)
         return answers_uuid, user_answers
@@ -316,7 +318,6 @@ class AnswerSet:
         for answer in self.answers:
             if answer.get_db_answer() is None:
                 continue
-
             answer_id = answer.get_db_answer().id
             if min_id is None or answer_id < min_id:
                 min_id = answer_id
