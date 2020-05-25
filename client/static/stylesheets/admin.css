@@ -1,0 +1,33 @@
+table {
+    vertical-align: center;
+    table-layout: fixed;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+th, td {
+    border-bottom: 1px solid #dddddd;
+    overflow: hidden;
+}
+
+tr td {
+    height: 50px;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(240, 134, 152);
+}
+
+a:hover {
+    color: pink;
+}
+
+#delete-user {
+    display: inline-block;
+    max-width: 40px;
+    max-height: 40px;
+    vertical-align: middle;
+}

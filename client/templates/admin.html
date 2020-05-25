@@ -2,9 +2,7 @@
 
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/" />
-<!-- The code specific to this page. -->
-<script src="/"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/admin.css" />
 {% endblock %}
 
 {% block content %}
@@ -17,16 +15,16 @@
             <tr>
                 <th id="name_col">User Name</th>
                 <th>Email</th>
+                <th>Delete User</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
-            <div>
             <tr>
                 <td><a href="/profile/{{ user.id }}">{{ user.name }}</a></td>
                 <td><a href="mailto:{{ user.email_address }}">{{ user.email_address }}</td>
+                <td><a href="{{ url_for('main.delete_user', user_id = user.id) }}"><img src="/res/delete-icon.png" id="delete-user" alt="Delete"></a></td>
             </tr>
-            </div>
             {% endfor %}
         </tbody>
     </table>

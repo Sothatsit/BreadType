@@ -49,8 +49,35 @@ on a Mac or Linux environment.
 
 Windows Quick Start
 -------------------
+This section will help you to quickly get the server started for production or development
+on a Windows environment.
 
-Sam pls?
+1. You will first need to install Anaconda, a Python environment manager.
+   Anaconda (conda) will be used to load all the dependencies for running the server,
+   as defined in the 'environment.yml' file.
+
+2. Create the conda evironment using the following code in a shell:
+   conda env create -p ./env -f ./environment.yml
+
+3. Once the setup script has successfully run, you now need to set some variables. 
+   Firstly: set FLASK_APP=./server
+   Secondly, for dev mode: set FLASK_ENV=development
+   Or for production mode: set FLASK_ENV=production
+   Each line is entered as is in a shell script.
+
+4. The server will be running at http://localhost:5000
+
+   Please note that if you are running in development mode, the server will automatically
+   detect changes to the server code and reload it for you
+
+5. The default database has an example user that can be logged into using the credentials:
+
+   Email: "example_user@example.com", Password "example"
+
+   This example user is also an admin with the power to delete other users.
+   However, feel free to create your own user through the Sign Up page.
+
+<br>
 
 Scripts
 --------
