@@ -100,6 +100,9 @@ Structure of this Project
 
 **/db.sqlite** - The SQLite database that stores the users and quizzes of the website.
 
+### Unit Testing 
+
+**/server/tests/test_user** - Testing scripts to ensure that users can register and login.
 
 <br/>
 
