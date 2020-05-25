@@ -63,8 +63,9 @@ class Quiz:
             for category in self.categories:
                 answer_spec = category.get_answer_spec(question)
                 if answer_spec is None:
-                    raise RuntimeError("Missing answer spec for question in category " + category.name)
-                encoded += answer_spec.scoring_function.encode() + "\n"
+                    encoded += "ERROR: No answer spec for this category\n"
+                else:
+                    encoded += answer_spec.scoring_function.encode() + "\n"
             encoded += "\n"
 
         return encoded

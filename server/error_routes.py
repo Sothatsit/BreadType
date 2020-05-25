@@ -2,10 +2,6 @@
 Manages the routes for responding with errors to the user.
 """
 
-#
-# The error pages of the server.
-#
-
 from flask import Blueprint, render_template, flash
 
 

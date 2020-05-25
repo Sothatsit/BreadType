@@ -264,14 +264,14 @@ class MultiChoiceQuestion(Question):
         return question, category_scoring_functions
 
 
-def create_slider_input_html(min_value, max_value, step, default_value, name):
+def create_slider_input_html(min_value, max_value, step, default_value, name, onInputFn):
     """"
     :return: the HTML for a slider with the given parameters.
     """
     html = "<input class=\"sliders\" type=\"range\" "
     html += "min=\"{}\" max=\"{}\" step=\"{}\"".format(min_value, max_value, step)
     html += "value=\"{}\" name=\"{}\"".format(default_value, name)
-    html += "oninput=updateSliderValue(\"{}\")>".format(name)
+    html += "oninput={}(\"{}\")>".format(onInputFn, name)
     return html
 
 
@@ -309,7 +309,8 @@ class FloatSliderQuestion(Question):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
         html += create_slider_input_html(
-            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index+1)
+            self.min_value, self.max_value, self.step, self.default_value,
+            "question-{}".format(index+1), "updateContinuousSliderValue"
         )
 
         # Adds in a number below the slider to represent it's current value
@@ -445,7 +446,8 @@ class IntSliderQuestion(Question):
         """ Write this question as HTML. """
         html = "<div class=\"slider\">\n"
         html += create_slider_input_html(
-            self.min_value, self.max_value, self.step, self.default_value, "question-{}".format(index+1)
+            self.min_value, self.max_value, self.step, self.default_value,
+            "question-{}".format(index+1), "updateDiscreteSliderValue"
         )
 
         # Adds a number below the slider to represent its current value
