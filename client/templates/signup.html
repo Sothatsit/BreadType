@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page where users are able to sign up to the site. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/signup/signup.css" />
-<!-- The code specific to this page. -->
-<script src="/signup/signup.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/signup.css" />
 {% endblock %}
 
 
 {% block content %}
 
+<!-- The form that allows users to enter their information to create a new user. -->
 <form method="POST" action="/signup">
+    <!-- The title of the page. -->
     <label id="title">Bread Type Sign Up</label>
     <br/>
 
+    <!-- If there were any errors during signup, display them. -->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <br/>
@@ -23,10 +27,12 @@
     {% endif %}
     {% endwith %}
 
+    <!-- The input fields for users to enter their information for signup. -->
     <input type="email" name="email" placeholder="Email" autofocus="" id="email">
     <input type="text" name="name" placeholder="Name" autofocus="" id="name">
     <input type="password" name="password" placeholder="Password" id="password">
-    
+
+    <!-- Once users have entered all their information, they can click this button to create their user. -->
     <button id='signup'>Sign Up</button>
 </form>
 

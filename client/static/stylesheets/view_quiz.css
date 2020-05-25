@@ -29,6 +29,6 @@ a:hover {
     color: pink;
 }
 
-#stats {
+#stats, #stats img {
     height: 24px;
 }

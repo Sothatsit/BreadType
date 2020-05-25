@@ -1,18 +1,24 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page used to create quizzes. -->
+
+
 {% block head %}
 <!-- We use bootstrap to add a modal help dialog. -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/create_quiz/create_quiz.css" />
+<link type="text/css" rel="stylesheet" href="/stylesheets/create_quiz.css" />
+
 <!-- The code specific to this page. -->
-<script src="/create_quiz/create_quiz.js"></script>
+<script src="/scripts/create_quiz.js"></script>
 {% endblock %}
 
 
 {% block content %}
 
+<!-- If there was an error when a user tried to create a quiz, display it. -->
 {% with messages = get_flashed_messages() %}
 {% for message in messages %}
 <div class="error">
@@ -21,75 +27,79 @@
 {% endfor %}
 {% endwith %}
 
-<form action="{{ url_for('quiz.create_quiz') }}" method="POST">
 
-    <div id="help">
-        <!-- Trigger the modal with a button -->
-        <button type="button" class="help" data-toggle="modal" data-target="#myModal">?</button>
+<!-- This adds a help button in the top right of the page for users that are confused about how to use this page. -->
+<div id="help">
+    <!-- Trigger the modal with a button -->
+    <button type="button" class="help" data-toggle="modal" data-target="#myModal">?</button>
 
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h1 class="modal-title">How to create a quiz</h1>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            <b>1.</b> Set the title of your quiz (e.g What type of bread are you?)
-                        </p>
-                        <br/>
-                        <p>
-                            <b>2.</b> Enter four bread types (or wine, cheese, or book types!)
-                            that will correspond to the four possible categories people will be
-                            placed in based on the answers they submit.
-                        </p>
-                        <br/>
-                        <p>
-                            <b>3.</b> Come up with your first question! Type in what you would like
-                            to ask your users, and then think about how you want them to answer it.
-                            The currently available methods are multiple choice, a discrete slider,
-                            and a continuous slider. 
-                        </p>
-                        <br/>
-                        <p>
-                            <b>4.</b> Write in the possible options for this question. If you're doing
-                            multiple choice, this will be four different answers that the user can select. 
-                            If it's a slider, it might be the range of values you want them to be able to 
-                            select, and what the step is between those values.
-                        </p>
-                        <br/>
-                        <p>
-                            <b>5.</b> Configure the answers for each option or value to the right of your
-                            options. Each answer helps in determining what category the user should be placed 
-                            in. For example, if one of the possible categories is Ciabatta, and you ask the 
-                            question "What is your favourite type of bread?", then an option for Ciabatta 
-                            would suggest the user is Ciabatta bread, while an answer of Wholegrain bread 
-                            would not.
-                        </p>
-                        <br/>
-                        <p>
-                            <b>6.</b> Add more questions by hitting the "Add Question" button,
-                            and repeat steps 3, 4 and 5 to configure them all as you like!
-                        </p>
-                        <br/>
-                        <p>
-                            <b>7.</b> Submit your quiz when you have finished creating questions.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="close_bottom" data-dismiss="modal">Close</button>
-                    </div>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h1 class="modal-title">How to create a quiz</h1>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <b>1.</b> Set the title of your quiz (e.g What type of bread are you?)
+                    </p>
+                    <br/>
+                    <p>
+                        <b>2.</b> Enter four bread types (or wine, cheese, or book types!)
+                        that will correspond to the four possible categories people will be
+                        placed in based on the answers they submit.
+                    </p>
+                    <br/>
+                    <p>
+                        <b>3.</b> Come up with your first question! Type in what you would like
+                        to ask your users, and then think about how you want them to answer it.
+                        The currently available methods are multiple choice, a discrete slider,
+                        and a continuous slider.
+                    </p>
+                    <br/>
+                    <p>
+                        <b>4.</b> Write in the possible options for this question. If you're doing
+                        multiple choice, this will be four different answers that the user can select.
+                        If it's a slider, it might be the range of values you want them to be able to
+                        select, and what the step is between those values.
+                    </p>
+                    <br/>
+                    <p>
+                        <b>5.</b> Configure the answers for each option or value to the right of your
+                        options. Each answer helps in determining what category the user should be placed
+                        in. For example, if one of the possible categories is Ciabatta, and you ask the
+                        question "What is your favourite type of bread?", then an option for Ciabatta
+                        would suggest the user is Ciabatta bread, while an answer of Wholegrain bread
+                        would not.
+                    </p>
+                    <br/>
+                    <p>
+                        <b>6.</b> Add more questions by hitting the "Add Question" button,
+                        and repeat steps 3, 4 and 5 to configure them all as you like!
+                    </p>
+                    <br/>
+                    <p>
+                        <b>7.</b> Submit your quiz when you have finished creating questions.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="close_bottom" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
+<!-- This form contains all of the inputs required to specify the contents of a quiz. -->
+<form action="{{ url_for('quiz.create_quiz') }}" method="POST">
+
+    <!-- The user must enter a title for their quiz. -->
     <div id="quiz_title">
-        <h2 class="title" for="title">
+        <h2 class="title">
             Quiz Title
         </h2>
         <input type="text" name="title" id="title" placeholder="Quiz Title" value="{{ previous.get('title', '') }}">
@@ -98,8 +108,9 @@
     <br>
     <br>
 
+    <!-- Quizzes must also define four categories that users can be placed into. -->
     <div id="quiz_categories">
-        <h2 class="title" for="quiz_categories">
+        <h2 class="title">
             Categories
         </h2>
         <input type="text" name="category_1_name" class="categories" placeholder="Category 1"
@@ -111,22 +122,19 @@
         <input type="text" name="category_4_name" class="categories" placeholder="Category 4"
                style="width:50%; float: right;" id='catg4'>
     </div>
-    <!-- Styling is preferring base.css width=100% over class in create_quiz.css for some
-        reason, so keeping like this til i can figure out why.-->
 
     <br class="clear">
     <br>
 
-    <h2 class="title" for="question_bank">
+    <!-- The questions of the quiz will now all be listed in order, all created dynamically by Javascript. -->
+    <h2 class="title">
         Questions
     </h2>
     <div id="question_bank">
-
         <!-- To be populated by the javascript functions on adding a question -->
-
     </div>
 
-
+    <!-- This button can be pressed to add a new question to the quiz. -->
     <div id="add_question">
         <span>Add question</span>
         <br/>
@@ -135,7 +143,8 @@
     
     <br>
     <br>
-    
+
+    <!-- Once a user has created their quiz, they can press this button to create it. -->
     <div class="button">
         <input type="submit" value="Create Quiz" id="create_quiz">
     </div>

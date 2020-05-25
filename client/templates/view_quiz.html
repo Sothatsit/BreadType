@@ -1,16 +1,19 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page where users are able to view all of the available quizzes. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/view_quiz/view_quiz.css" />
-<!-- The code specific to this page. -->
-<script src="/view_quiz/view_quiz.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/view_quiz.css" />
 {% endblock %}
 
 {% block content %}
 
 <h1>All Quizzes</h1>
 <br>
+
+<!-- Contains a table with all of the quizzes available on this website. -->
 <div>
     <table>
         <thead>
@@ -22,16 +25,18 @@
         <tbody>
             {% for quiz in quizzes %}
             <div>
-            <tr>
-                <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
-                <td><a href="/profile/{{ quiz.owner.id }}">{{ quiz.owner.name }}</a>
-                {% if quiz.can_edit %}
-                    <a id="stats" href="{{ url_for('quiz.view_quiz_stats', quiz_id=quiz.id) }}">
-                        <img src="/res/stats-icon.png" alt="View Quiz Stats" id="stats">
-                    </a>
-                {% endif %}
-                </td>
-            </tr>
+                <tr>
+                    <td><a href="/quiz/{{ quiz.id }}">{{ quiz.name }}</a></td>
+                    <td><a href="/profile/{{ quiz.owner.id }}">{{ quiz.owner.name }}</a></td>
+
+                    <!-- If the user has permission to edit this quiz, display an icon to allow them to directly. -->
+                    {% if quiz.can_edit %}
+                        <a id="stats" href="{{ url_for('quiz.view_quiz_stats', quiz_id=quiz.id) }}">
+                            <img src="/res/stats-icon.png" alt="View Quiz Stats">
+                        </a>
+                    {% endif %}
+                    </td>
+                </tr>
             </div>
             {% endfor %}
         </tbody>

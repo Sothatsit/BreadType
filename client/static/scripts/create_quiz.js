@@ -1,3 +1,8 @@
+/**
+ * This file contains the code behind the create quiz page,
+ * allowing users to dynamically add new questions to the form.
+ */
+
 
 // Once the document has been loaded, setup our listeners.
 $(document).ready(function() {

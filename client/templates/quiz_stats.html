@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
+<!-- This template creates the page used to view the statistics of a quiz. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/quiz_stats/quiz_stats.css" />
-<!-- The code specific to this page. -->
-<script src="/quiz_stats/quiz_stats.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/quiz_stats.css" />
 <!-- We use chart.js to display some statistics. -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 {% endblock %}
@@ -12,17 +13,20 @@
 
 {% block content %}
 
+<!-- Display the title of the quiz. -->
 <br/>
 <h1 id="quiz_header">
     {{ quiz.name }}
 </h1>
 
+<!-- Display a breakdown of how many users were placed into each category. -->
 <br/>
 <h2>User's Responses</h2>
 <div id="category_breakdown">
     {{ quiz_stats.generate_category_breakdown_html()|safe }}
 </div>
 
+<!-- Display a breakdown of the answers users gave for each question. -->
 {% for question_stat in quiz_stats.question_stats %}
     <br/>
     <h2>{{ question_stat.question.text }}</h2>

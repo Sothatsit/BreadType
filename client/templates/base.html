@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- This template is used as the base template for all pages on the site. -->
+
+
 <!-- We load scripts and set page metadata in the head. -->
 <head>
     <title>Bread Type | {{ title }}</title>
-
     <link rel="icon" href="/favicon.ico?" />
 
     <!-- Loads the fonts we use from Google Fonts. -->
     <link href="https://fonts.googleapis.com/css?family=Baloo+2%7CLobster%7CMontserrat:wght@500&display=swap" rel="stylesheet" />
 
     <!-- The stylesheet shared by all pages. -->
-    <link type="text/css" rel="stylesheet" href="/base.css" />
-    <!-- The code shared by all pages. -->
+    <link type="text/css" rel="stylesheet" href="/stylesheets/base.css" />
+
+    <!-- A lot of the pages use JQuery for some of their functionality. -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="/base.js"></script>
 
     {% block head %}
     {% endblock %}

@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 
+<!-- This template is used as a basis for all error pages in the site. -->
+
+
 {% block head %}
 <!-- The stylesheet specific to this page. -->
-<link type="text/css" rel="stylesheet" href="/message/message.css" />
-<!-- The code specific to this page. -->
-<script src="/message/message.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/message.css" />
 {% endblock %}
 
 
 {% block content %}
 
+<!-- The title summary of this message. -->
 <br/>
 <h1>
     {{ message_title }}
 </h1>
 <br/>
+
+<!-- Display the more detailed message underneath the title of the page. -->
 <p>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
