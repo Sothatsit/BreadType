@@ -2,6 +2,10 @@
 .idea
 __pycache__
 .pytest_cache
+geckodriver.log
 
 /env
 /db.sqlite
+
+/submission
+/submission.zip
