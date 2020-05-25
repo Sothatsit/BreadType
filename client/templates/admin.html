@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- The stylesheet specific to this page. -->
+<link type="text/css" rel="stylesheet" href="/" />
+<!-- The code specific to this page. -->
+<script src="/"></script>
+{% endblock %}
+
+{% block content %}
+
+<h1>All Users</h1>
+<br>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th id="name_col">User Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <div>
+            <tr>
+                <td><a href="/profile/{{ user.id }}">{{ user.name }}</a></td>
+                <td><a href="mailto:{{ user.email_address }}">{{ user.email_address }}</td>
+            </tr>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

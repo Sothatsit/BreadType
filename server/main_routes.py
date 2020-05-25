@@ -4,7 +4,7 @@ Manages the routes for the main entry-points to the website.
 
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, send_from_directory, current_app, flash, request
-from .user_model import requires_role, load_user
+from .user_model import requires_role, load_user, load_all_users
 from .quiz_model import load_quiz
 from .error_routes import not_found
 
@@ -38,10 +38,11 @@ def profile(user_id):
 @main.route("/admin")
 @requires_role("admin")
 def admin():
-    """ Not actually useful, just for testing @requires_role. """
-    return render_template("profile.html", 
+    """ Admin page to view all current users """
+    users = load_all_users()
+    return render_template("admin.html", 
         title="Admin", 
-        name="admin")
+        users=users)
 
 
 @main.route("/<path:path>")
