@@ -352,12 +352,11 @@ function setupSliderConfig(questionNumber, configDiv, showStep) {
     }
 
     // Add in categories
-    var numberNamePrefix = `question_${questionNumber}_slider`;
     var breadTypeDiv = createDiv("bread_type", [
-        createNumberBoxes(`${numberNamePrefix}_category_1`),
-        createNumberBoxes(`${numberNamePrefix}_category_2`),
-        createNumberBoxes(`${numberNamePrefix}_category_3`),
-        createNumberBoxes(`${numberNamePrefix}_category_4`)
+        createNumberBoxes(`${paramNamePrefix}_category_1_peak`),
+        createNumberBoxes(`${paramNamePrefix}_category_2_peak`),
+        createNumberBoxes(`${paramNamePrefix}_category_3_peak`),
+        createNumberBoxes(`${paramNamePrefix}_category_4_peak`)
     ]);
     configDiv.appendChild(breadTypeDiv);
 
