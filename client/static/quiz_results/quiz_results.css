@@ -6,8 +6,11 @@ body {
     line-height: 2em;
 }
 
+.content-wrap {
+    padding-top: 50px;
+}
+
 #quiz_title {
-    margin-top: 50px;
     font-size: 56px;
 }
 
