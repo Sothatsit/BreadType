@@ -12,42 +12,48 @@ app.testing = True
 class SystemTest(unittest.TestCase):
     driver1 = None
     driver2 = None
+    driver3 = None
     
     def setUp(self):
         # Test with Firefox
-        self.driver1 = webdriver.Firefox(
-            executable_path = base_path + "/drivers/geckodriver"
-        )
-        # Test with Chrome -  sorry
-        self.driver2 = webdriver.Chrome(
-            executable_path = base_path + "/drivers/chromedriver"
-        )
-    
-        if not self.driver1 or not self.driver2:
-            self.skipTest('Web browser not available')
+        try:
+            self.driver1 = webdriver.Firefox()
+        except:
+            print('Firefox webdriver not found. Ignoring...')
+        # Test with Chrome - soz theres probs a better way to do this
+        try:
+            self.driver2 = webdriver.Chrome()
+        except:
+            print('Chrome webdriver not found. Ignoring...')
+        # Test with IE if windows
+        try:
+            self.driver3 = webdriver.IE()
+        except:
+            print('Internet Explorer webdriver not found. Ignoring...')
+        if not self.driver1 and not self.driver2 and not self.driver3:
+            self.skipTest('No webdrivers are available. Add the files to PATH. Skipping test.')
         else:
             db.init_app(app)
             with app.app_context():
                 db.create_all()
                 db.session.commit()
-            # self.driver.maximize_window()
-            self.driver1.get('http://localhost:5000/')
-            self.driver2.get('http://localhost:5000/')
 
         
     def tearDown(self):
-        if self.driver1 or self.driver2:
-            self.driver1.close()
-            self.driver2.close()
-            with app.app_context():
-                for quiz in load_all_quizzes():
-                    delete_db_quiz(quiz)
+        for driver in [self.driver1, self.driver2, self.driver3]:
+            if driver != None:
+                driver.close()
+        with app.app_context():
+            for quiz in load_all_quizzes():
+                delete_db_quiz(quiz)
                 db.session.query(User).delete()
                 db.session.commit()
                 db.session.remove()
 
     def test_signup_quiz(self):
-        for driver in [self.driver1, self.driver2]:
+        for driver in [self.driver1, self.driver2, self.driver3]:
+            if driver == None:
+                continue
             driver.get('http://localhost:5000/signup')
             driver.implicitly_wait(5)
 
@@ -157,10 +163,24 @@ class SystemTest(unittest.TestCase):
 
             # Check we got brought to the view quiz page
             url = driver.current_url
-            if driver == self.driver1:
+            if self.driver1:
+                if driver == self.driver1:
+                    self.assertEqual(url, 'http://localhost:5000/quiz/1')
+                elif self.driver2:
+                    if driver == self.driver2:
+                        self.assertEqual(url, 'http://localhost:5000/quiz/2')
+                    elif self.driver3:
+                        self.assertEqual(url, 'http://localhost:5000/quiz/3')
+                elif self.driver3:
+                    self.assertEqual(url, 'http://localhost:5000/quiz/2')
+            elif self.driver2:
+                if driver == self.driver2:
+                    self.assertEqual(url, 'http://localhost:5000/quiz/1')
+                elif self.driver3:
+                    self.assertEqual(url, 'http://localhost:5000/quiz/2')
+            elif self.driver3:
                 self.assertEqual(url, 'http://localhost:5000/quiz/1')
-            elif driver == self.driver2:
-                self.assertEqual(url, 'http://localhost:5000/quiz/2')
+
 
             # Select the first multi option and submit the quiz
             option = driver.find_element_by_id("q0-o0")
@@ -178,5 +198,5 @@ class SystemTest(unittest.TestCase):
             logout.click()
 
 if __name__ == '__main__':
-    unittest.main(verbosity=2)
+    unittest.main(verbosity=0)
 
