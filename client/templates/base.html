@@ -45,7 +45,7 @@
         <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% endif %}
 
-        {% if current_user.is_admin() %}
+        {% if current_user.is_authenticated and current_user.is_admin() %}
         <a href="{{ url_for('main.admin') }}">Admin Page</a>
         {% endif %}
     </nav>
