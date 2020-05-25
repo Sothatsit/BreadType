@@ -1,9 +1,9 @@
 import unittest, os, time
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
-from ..user_model import User, load_user_by_email
+from ..user_model import User, DBUserAnswer
 from .. import create_app, db
-from flask_login import login_user
+from ..quiz_model import load_all_quizzes, delete_db_quiz
 
 base_path = os.path.dirname(os.path.realpath(__file__))
 app = create_app()
@@ -18,7 +18,7 @@ class SystemTest(unittest.TestCase):
         )
     
         if not self.driver:
-            self.skipTest('Web browser for available')
+            self.skipTest('Web browser not available')
         else:
             db.init_app(app)
             with app.app_context():
@@ -32,6 +32,8 @@ class SystemTest(unittest.TestCase):
         if self.driver:
             self.driver.close()
             with app.app_context():
+                for quiz in load_all_quizzes():
+                    delete_db_quiz(quiz)
                 db.session.query(User).delete()
                 db.session.commit()
                 db.session.remove()
@@ -148,7 +150,10 @@ class SystemTest(unittest.TestCase):
         submit = self.driver.find_element_by_id("submit")
         submit.click()
 
-        self.driver.implicitly_wait(20)
+        # Check that answer is catg2
+        answer = self.driver.find_element_by_id('answer')
+        self.assertEqual(answer.get_attribute('innerHTML').strip(), 'catg2', msg='Correct answer')
+        time.sleep(3)
         logout = self.driver.find_element_by_partial_link_text('Logout')
         self.assertEqual(logout.get_attribute('innerHTML'), 'Logout', msg='Logout Fail')
         logout.click()
