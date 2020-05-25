@@ -1,9 +1,10 @@
-import unittest, os, test
+import unittest, os, time
 from ..question import Question, MalformedQuestion, MultiChoiceQuestion, FloatSliderQuestion, IntSliderQuestion
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from ..user_model import User
-import unittest, os, time
+from .. import create(app)
+
 
 base_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -23,14 +24,14 @@ class SystemTest(unittest.TestCase):
         else:
             db.init_app(app)
             db.create_all()
-            u1 = User(id=22, email_address='test@gmail.com', name='test',)
+            u1 = User(id=22, email_address='test@gmail.com', name='test')
             db.session.add(u1)
             db.session.commit()
             self.driver.maximize_window()
             self.driver.get('http://localhost:5000/')
         
     def tearDown(self):
-        if self.drvier:
+        if self.driver:
             self.driver.close()
             db.session.query(User).delete()
             db.session.commit()
@@ -52,7 +53,22 @@ class SystemTest(unittest.TestCase):
         submit = self.driver.find_element_by_id('signup')
         submit.click()
         logout = self.driver.find_element_by_partial_link_text('logout')
-        self.assertEqual(logout.get_attribute(innerHTML), 'logout test', msg='logged in')
+        self.assertEqual(logout.get_attribute('innerHTML'), 'logout', msg='logged in')
+
+    def test_quiz(self):
+        self.driver.get('http://127.0.0.1:5000/quiz/create')
+        self.driver.implicity_wait(5)
+        title_field = self.driver.find_element_by_id('title')
+        title_field.send_keys('my quiz')
+        catg1_field = self.driver.find_element_by_id('catg1')
+        catg1_field.send_keys('catg1')
+        catg2_field = self.driver.find_element_by_id('catg2')
+        catg2_field.send_keys('catg2')
+        catg3_field = self.driver.find_element_by_id('catg3')
+        catg3_field.send_keys('catg3')
+        catg4_field = self.driver.find_element_by_id('catg4')
+        catg4_field.send_keys('catg4')
+
 
 
 if __name__ == '__main__':
