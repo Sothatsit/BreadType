@@ -14,4 +14,4 @@ cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" || exit
 source ./run.sh pre-run
 
 # Run the tests
-pytest ./server
+python -m server.tests.test_user_quiz
